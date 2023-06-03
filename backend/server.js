@@ -1,49 +1,47 @@
+const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const userRoutes = require('./routes/user');
+const User = require('./models/User');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
-const http = require('http');
-const app = require('./app');
+require('dotenv').config({ path: '.env.local', override: true });
 
-const normalizePort = val => {//renvoie un port valide, qu'il soit fourni sous la forme d'un numéro ou d'une chaîne ;
-  const port = parseInt(val, 10);
+const bdd = process.env.BDD;
 
-  if (isNaN(port)) {
-    return val;
-  }
-  if (port >= 0) {
-    return port;
-  }
-  return false;
-};
+const app = express();
 
-const port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
+// Use to allow cross-origin requests
+app.use(cors());
+// Use to parse JSON body
+app.use(express.json());
 
-const errorHandler = error => {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
-  const address = server.address();
-  const bind = typeof address === 'string' ? 'pipe ' + address : 'port: ' + port;
-  switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges.');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use.');
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
-};
+mongoose.connect(bdd,
+  { 
+    useNewUrlParser: true,
+    useUnifiedTopology: true 
+  }).then(() => console.log('Connexion à MongoDB réussie !'))
+  .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-const server = http.createServer(app);
-
-server.on('error', errorHandler);//recherche les différentes erreurs et les gère de manière appropriée. Elle est ensuite enregistrée dans le serveur ;
-server.on('listening', () => {
-  const address = server.address();
-  const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + port;
-  console.log('Listening on ' + bind);
+app.get('/', (req, res) => {
+  res.send('Hello World!');
 });
 
-server.listen(port);
+app.post('/signup', (req, res) => {
+    bcrypt.hash(req.body.password, 10)
+        .then(hash => {
+            const user = new User({
+              email: req.body.email,
+              password: hash
+            });
+            user.save()
+            .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
+            .catch(error => res.status(400).json({ error }));
+        })
+        .catch(error => res.status(500).json({ error }));
+});
+
+app.listen(3000, () => {
+  console.log('Server listening on port 3000');
+});
