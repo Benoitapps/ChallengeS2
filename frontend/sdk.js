@@ -1,17 +1,21 @@
-const EMPTY_TRACKER = {
-    mouse: [], // { x: 0, y: 0, timestamp: 0, path: string }
-    clicks: [], // { x: 0, y: 0, timestamp: 0, target: HTMLElement, outerHTML: string, path: string }
-    startTime: new Date(),
-    endTime: null,
+const EMPTY_DATA = {
+    userId: null,
+    trackers: {
+        mouse: [], // { x: 0, y: 0, timestamp: 0, path: string }
+        clicks: [], // { x: 0, y: 0, timestamp: 0, target: HTMLElement, outerHTML: string, path: string }
+        startTime: new Date(),
+        endTime: null,
+    },
 };
 
 const MOUSE_DELAY = 1000;
 
 export default class SDK {
-    constructor() {
+    constructor(userId) {
+        this.userId = userId;
         this.mouseX = 0;
         this.mouseY = 0;
-        this.tracker = EMPTY_TRACKER;
+        this.data = EMPTY_DATA;
 
         this.initTracker();
         this.initSendData();
@@ -32,7 +36,7 @@ export default class SDK {
 
     getMousePosition() {
         setInterval(() => {
-            this.tracker.mouse.push({
+            this.data.trackers.mouse.push({
                 x: this.mouseX,
                 y: this.mouseY,
                 timestamp: Date.now(),
@@ -43,7 +47,7 @@ export default class SDK {
 
     trackClicks() {
         document.body.addEventListener("click", (e) => {
-            this.tracker.clicks.push({
+            this.data.trackers.clicks.push({
                 x: e.clientX,
                 y: e.clientY,
                 timestamp: Date.now(),
@@ -55,10 +59,11 @@ export default class SDK {
 
     initSendData() {
         window.addEventListener("unload", () => {
-            this.tracker.endTime = new Date();
-            let data = JSON.stringify(this.tracker);
+            this.data.userId = this.userId;
+            this.data.trackers.endTime = new Date();
+            let data = JSON.stringify(this.data);
             navigator.sendBeacon('http://localhost:3000/sdk', data);
-            this.tracker = EMPTY_TRACKER;
+            this.data = EMPTY_DATA;
         });
     }
 }
