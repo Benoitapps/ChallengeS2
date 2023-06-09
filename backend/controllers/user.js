@@ -5,7 +5,7 @@ const generateToken = require('../utils/generateToken');
 
 async function signup(req, res) {
     try {
-        if (!req.body?.email || !req.body?.password) {
+        if (!req.body?.email || !req.body?.password || !req.body?.website) {
             return res.status(400).json({ error: 'Missing parameters' });
         }
 
