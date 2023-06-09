@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 async function signup(req, res) {
     try {
-        if (!req.body?.email || !req.body?.password) {
+        if (!req.body?.email || !req.body?.password || !req.body?.website) {
             return res.status(400).json({ error: 'Missing parameters' });
         }
 
@@ -12,6 +12,8 @@ async function signup(req, res) {
         const user = new User({
             email: req.body.email,
             password: hashedPassword,
+            website: req.body.website,
+            is_verified: false,
             trackers: {},
         });
 

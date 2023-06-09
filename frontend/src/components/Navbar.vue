@@ -11,7 +11,10 @@
           <router-link to="/">Home</router-link>
         </li>
         <li>
-          <router-link to="/compte">Compte</router-link>
+          <router-link to="/register">Inscription</router-link>
+        </li>
+        <li>
+          <router-link to="/login">Conexion</router-link>
         </li>
       </ul>
     </nav>
