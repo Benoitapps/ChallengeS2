@@ -1,5 +1,5 @@
 const EMPTY_DATA = {
-    userId: null,
+    api_token: null,
     trackers: {
         mouse: [], // { x: 0, y: 0, timestamp: 0, path: string }
         clicks: [], // { x: 0, y: 0, timestamp: 0, target: HTMLElement, outerHTML: string, path: string }
@@ -8,11 +8,11 @@ const EMPTY_DATA = {
     },
 };
 
-const MOUSE_DELAY = 1000;
+const MOUSE_DELAY = 5000;
 
 export default class SDK {
-    constructor(userId) {
-        this.userId = userId;
+    constructor(api_token) {
+        this.api_token = api_token;
         this.mouseX = 0;
         this.mouseY = 0;
         this.data = EMPTY_DATA;
@@ -59,7 +59,7 @@ export default class SDK {
 
     initSendData() {
         window.addEventListener("unload", () => {
-            this.data.userId = this.userId;
+            this.data.api_token = this.api_token;
             this.data.trackers.endTime = new Date();
             let data = JSON.stringify(this.data);
             navigator.sendBeacon('http://localhost:3000/sdk', data);

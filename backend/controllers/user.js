@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const generateToken = require('../utils/generateToken');
 
 async function signup(req, res) {
     try {
@@ -12,7 +13,8 @@ async function signup(req, res) {
         const user = new User({
             email: req.body.email,
             password: hashedPassword,
-            trackers: {},
+            api_token: generateToken(32),
+            trackers: [],
         });
 
         await user.save();

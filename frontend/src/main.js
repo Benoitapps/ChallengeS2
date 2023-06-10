@@ -6,4 +6,4 @@ import SDK from '../sdk';
 const app = createApp(App);
 app.use(router).mount('#app');
 
-new SDK("647e10c62a0b097776d1c584"); // user id
+new SDK("cd0iuhk05n1o8d9tru01j9cqz1x6e5kp"); // api_token
