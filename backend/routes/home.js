@@ -3,10 +3,7 @@ const router = express.Router();
 const userCtrl = require('../controllers/user');
 const auth = require('../middleware/auth');
 
-router.post('/signup', userCtrl.signup);
-router.post('/login', userCtrl.login);
 
-// Test route exemple
-router.get('/test', (req, res) => res.status(200).json({ message: 'Test' }));
+router.get('/', userCtrl.getUser);
 
 module.exports = router;

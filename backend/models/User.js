@@ -19,7 +19,7 @@ const visitorSchema = new Schema({
 const userSchema = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  website: { type: String, required: true },
+  website: { type: String },
   is_verified: {type: Boolean },
   trackers: {
     mouse: [{
