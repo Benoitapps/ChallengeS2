@@ -37,6 +37,10 @@ async function login(req, res) {
         if (!user) {
             return res.status(401).json({ error: 'Utilisateur non trouvé !' });
         }
+        console.log(user.is_verified)
+        if (user.is_verified === false) {
+            return res.status(401).json({ error: 'Votre compte doit etre valider par un admin' });
+        }
 
         const validPassword = await bcrypt.compare(req.body.password, user.password);
 
@@ -49,7 +53,7 @@ async function login(req, res) {
             'RANDOM_TOKEN_SECRET',
             { expiresIn: '24h' }
         );
-
+        
         res.status(200).json({
             userId: user._id,
             token: token
@@ -59,4 +63,12 @@ async function login(req, res) {
     }
 }
 
-module.exports = { signup, login };
+async function getUser(req, res) {
+
+    User.find()
+    .then(user => res.status(200).json(user))
+    .catch(error => res.status(400).json({ error }));
+};
+
+
+module.exports = { signup, login, getUser };

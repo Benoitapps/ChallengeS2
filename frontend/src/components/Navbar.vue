@@ -14,7 +14,7 @@
           <router-link to="/register">Inscription</router-link>
         </li>
         <li>
-          <router-link to="/login">Conexion</router-link>
+          <router-link to="/login">Connexion</router-link>
         </li>
       </ul>
     </nav>

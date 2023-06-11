@@ -23,7 +23,7 @@ export default {
 
 
         if (response.ok) {
-          window.location.href = '/';
+          window.location.href = '/connecter';
         } else {
           // erreur
           const data = await response.json();
