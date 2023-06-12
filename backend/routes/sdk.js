@@ -13,16 +13,27 @@ router.post('/', async (req, res) => {
     }
 
     // update user
-    user.trackers.push(data.trackers);
+    const user_token = data.user_token;
+    const visitor = user.visitors.find((visitor) => visitor.user_token === user_token);
+
+    if (!visitor) {
+        user.visitors.push({
+            user_token: user_token,
+            dateFirstVisit: new Date(),
+            dateLastVisit: new Date(),
+            trackers: [data.trackers]
+        });
+    } else {
+        visitor.dateLastVisit = new Date();
+        visitor.trackers.push(data.trackers);
+    }
 
     // save user
-    user.save();
+    await user.save();
 
     // res user without password
     res.status(200).json({
-        userId: user._id,
-        email: user.email,
-        trackers: user.trackers
+        trackers: data.trackers
     });
 });
 

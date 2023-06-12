@@ -1,11 +1,26 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
+const Schema = mongoose.Schema;
 
-const userSchema = mongoose.Schema({
+const trackerSchema = new Schema({
+  mouse: [],
+  clicks: [],
+  startTime: Date,
+  endTime: Date
+});
+
+const visitorSchema = new Schema({
+  user_token: String,
+  dateFirstVisit: Date,
+  dateLastVisit: Date,
+  trackers: [trackerSchema]
+});
+
+const userSchema = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   api_token: { type: String, required: true },
-  trackers: { type: Array, required: false },
+  visitors: [visitorSchema],
 });
 
 userSchema.plugin(uniqueValidator);

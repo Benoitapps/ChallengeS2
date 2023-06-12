@@ -14,7 +14,7 @@ async function signup(req, res) {
             email: req.body.email,
             password: hashedPassword,
             api_token: generateToken(32),
-            trackers: [],
+            visitors: [],
         });
 
         await user.save();
