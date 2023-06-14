@@ -3,7 +3,9 @@
 </script>
 
 <template>
-  <h2>Compte</h2>
+  <main>
+    <h1>Graphiques</h1>
+  </main>
 </template>
 
 <style scoped lang="scss">

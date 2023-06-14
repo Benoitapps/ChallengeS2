@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from '../views/Home.vue';
-import Compte from "../views/Compte.vue";
+import KPI from '../views/KPI.vue';
+import Charts from "../views/Charts.vue";
+import Heatmap from "../views/Heatmap.vue";
+import Settings from "../views/Settings.vue";
 
 const index = createRouter(
     {
@@ -8,12 +10,20 @@ const index = createRouter(
         routes: [
             {
                 path: '/',
-                component: Home
+                component: KPI
             },
             {
 
-                path: '/compte',
-                component: Compte
+                path: '/charts',
+                component: Charts
+            },
+            {
+                path: '/heatmap',
+                component: Heatmap
+            },
+            {
+                path: '/settings',
+                component: Settings
             }
         ]
     });

@@ -39,4 +39,16 @@ a {
   text-decoration: none;
   color: inherit;
 }
+
+#app {
+  display: flex;
+}
+
+main {
+  width: calc(100% - 200px);
+  min-height: 100vh;
+  margin-left: 200px;
+  padding: 50px;
+  background: #F8F9FA;
+}
 </style>
