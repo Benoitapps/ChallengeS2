@@ -17,5 +17,8 @@ app.use("/sdk", sdkRoutes)
 
 app.listen(3000, () => {
   console.log('Server listening on port 3000');
-  connect();
+  if (process.env.NODE_ENV !== 'test')
+    connect();
 });
+
+module.exports = app;
