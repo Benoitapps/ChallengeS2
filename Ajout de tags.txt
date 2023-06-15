@@ -1,0 +1,34 @@
+Dans la partie front:
+    Créer une interface permettant a celui qui est connecté de pouvoir créer un tag a tracker
+        -> Il donne un nom a son tag et tu lui génère un ID (9 caractères)
+        -> L'id générer et le nom seront sauvegarder dans mongodb
+
+Dans le SDK:
+    faire un document.querySelectorAll("[sdk-analytique=jH75eZa]")
+    pour chaque bouton
+        ecouteur d'event sur le click
+            incrementation pour chaque clic avec un délai de 2s
+    fin de session envoyé le nombre de clic pour ce client (token)
+
+Coté back (sdk):
+    dans la fonction save ajouter la sauvegarde des clics sur le tag
+    tags: [
+        {
+            name: "Acheter article",
+            tag-id: "jH75eZa",
+            clics: [
+                {
+                    visitor_token: "6ij5fi4jI3Ej2fi",
+                    count: 43
+                }
+            ]
+        }
+    ]
+
+Du coté front du client
+    il faut que le client ajout le tag sur le bouton qui correspond par exemple (sdk-analytique="jH75eZa")
+
+    
+Pour les tunnels:
+    Du coté back office
+        Pouvoir créer des groupes de tags
