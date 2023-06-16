@@ -21,13 +21,14 @@ export default class SDK {
         this.data.api_token = api_token;
 
         console.log("SDK is running")
-        this.initTracker();
-        this.initSendData();
+        // this.initTracker();
+        this.initTags();
+        // this.initSendData();
     }
 
     initTracker() {
-        this.trackMouseMovement();
-        this.trackClicks();
+        // this.trackMouseMovement();
+        // this.trackClicks();
     }
 
     trackMouseMovement() {
@@ -75,6 +76,16 @@ export default class SDK {
 
             let data = JSON.stringify(this.data);
             navigator.sendBeacon('http://localhost:3000/sdk', data);
+        });
+    }
+
+    initTags() {
+        let tags = document.querySelectorAll("[data-tag^='']");
+        console.log("tags", tags);
+        tags.forEach((tag) => {
+            tag.addEventListener("click", (e) => {
+                console.log("click", e);
+            });
         });
     }
 }

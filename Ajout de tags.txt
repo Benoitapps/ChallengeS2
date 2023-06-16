@@ -4,7 +4,7 @@ Dans la partie front:
         -> L'id générer et le nom seront sauvegarder dans mongodb
 
 Dans le SDK:
-    faire un document.querySelectorAll("[sdk-analytique=jH75eZa]")
+    faire un document.querySelectorAll("[data-track=jH75eZa]")
     pour chaque bouton
         ecouteur d'event sur le click
             incrementation pour chaque clic avec un délai de 2s
