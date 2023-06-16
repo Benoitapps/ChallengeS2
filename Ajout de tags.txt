@@ -10,7 +10,7 @@ Dans le SDK:
             incrementation pour chaque clic avec un délai de 2s
     fin de session envoyé le nombre de clic pour ce client (token)
 
-Coté back (sdk):
+Coté back (sdk): 
     dans la fonction save ajouter la sauvegarde des clics sur le tag
     tags: [
         {
