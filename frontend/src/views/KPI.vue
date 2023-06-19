@@ -1,13 +1,96 @@
 <script setup>
+import Card from "../components/Card.vue";
+import { ref } from "vue";
 
+const periods = [
+  {
+    label: "Dernières 24h",
+    value: "24h"
+  },
+  {
+    label: "Dernières 7 jours",
+    value: "7d"
+  },
+  {
+    label: "Derniers 30 jours",
+    value: "30d"
+  },
+  {
+    label: "Dernières 12 mois",
+    value: "12m"
+  }
+];
+
+let visitedPages = ref(
+    [
+    {
+      label: "Accueil",
+      value: "50"
+    },
+    {
+      label: "Contact",
+      value: "30"
+    },
+    {
+      label: "A propos",
+      value: "20"
+    },
+    {
+      label: "Blog",
+      value: "10"
+    }
+  ]
+);
 </script>
 
 <template>
-  <main>
-    <h1>KPI</h1>
+  <main class="kpi">
+    <div class="kpi__container">
+      <Card
+          :primary="true"
+          :title="'Sessions'"
+          :type="'keys'"
+          :number="'50'"
+          :periods="periods"
+      />
+
+      <Card
+          :title="'Clics'"
+          :type="'keys'"
+          :number="'30300'"
+          :periods="periods"
+      />
+
+      <Card
+          :title="'Pages visités'"
+          :type="'keys'"
+          :list="visitedPages"
+          :periods="periods"
+      />
+
+      <Card
+          :title="'Durée moyenne des sessions'"
+          :type="'keys'"
+          :number="'03m 30s'"
+      />
+    </div>
   </main>
 </template>
 
 <style lang="scss">
+.kpi {
+  &__container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
 
+    @media screen and (max-width: 1199px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media screen and (max-width: 767px) {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+}
 </style>
