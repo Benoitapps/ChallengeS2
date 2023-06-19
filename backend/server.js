@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
+
 const userRoutes = require('./routes/user');
 const sdkRoutes = require('./routes/sdk');
 const homeRoutes = require('./routes/home');
@@ -10,6 +12,8 @@ const app = express();
 
 // Use to allow cross-origin requests
 app.use(cors());
+//cookies
+app.use(cookieParser());
 // Use to parse JSON body
 app.use(express.json());
 app.use(express.text());

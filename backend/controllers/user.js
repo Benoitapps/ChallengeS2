@@ -1,6 +1,8 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+
 
 async function signup(req, res) {
     try {
@@ -37,7 +39,7 @@ async function login(req, res) {
         if (!user) {
             return res.status(401).json({ error: 'Utilisateur non trouvé !' });
         }
-        console.log(user.is_verified)
+        //console.log(user.is_verified)
         if (user.is_verified === false) {
             return res.status(401).json({ error: 'Votre compte doit etre valider par un admin' });
         }
@@ -53,6 +55,13 @@ async function login(req, res) {
             'RANDOM_TOKEN_SECRET',
             { expiresIn: '24h' }
         );
+        console.log(token);
+
+        res.cookie('token', token, { 
+            maxAge: 24 * 60 * 60 * 1000, // Durée de validité du cookie en millisecondes (24 heures dans cet exemple)
+            httpOnly: false, // Empêche l'accès au cookie depuis JavaScript côté client
+            secure: false // Le cookie sera envoyé uniquement via une connexion HTTPS si votre application est en production
+        });
         
         res.status(200).json({
             userId: user._id,
