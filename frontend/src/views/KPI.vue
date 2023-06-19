@@ -62,16 +62,17 @@ let visitedPages = ref(
       />
 
       <Card
-          :title="'Pages visités'"
+          :title="'Pages visitées'"
           :type="'keys'"
           :list="visitedPages"
           :periods="periods"
       />
 
       <Card
-          :title="'Durée moyenne des sessions'"
+          :title="'Moyenne des sessions'"
           :type="'keys'"
           :number="'03m 30s'"
+          :periods="periods"
       />
     </div>
   </main>
@@ -81,8 +82,12 @@ let visitedPages = ref(
 .kpi {
   &__container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 30px;
+
+    @media screen and (max-width: 1599px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
 
     @media screen and (max-width: 1199px) {
       grid-template-columns: repeat(2, 1fr);

@@ -1,4 +1,7 @@
 <script setup>
+import Keys from "./Keys.vue";
+import Chart from "./Chart.vue";
+
 const props = defineProps({
   primary: {
     type: Boolean,
@@ -29,40 +32,17 @@ const props = defineProps({
 
 <template>
 <div :class="['card', {primary: props.primary}]">
-  <div
-      class="card__body"
+  <Keys
       v-if="props.type === 'keys'"
-  >
-    <h2>{{ props.title }}</h2>
-    <p
-        class="numbers"
-        v-if="props.number"
-    >
-      {{ props.number }}
-    </p>
+      :title="props.title"
+      :number="props.number"
+      :list="props.list"
+  />
 
-    <ul
-        class="lists"
-        v-if="props.list"
-    >
-      <li
-          v-for="(item, index) in props.list"
-          :key="index"
-          class="lists__item"
-      >
-        <p class="lists__item__label">{{ item.label }}</p>
-        <p class="lists__item__value">{{ item.value }}</p>
-      </li>
-    </ul>
-  </div>
-
-  <div
-      class="card__body"
+  <Chart
       v-if="props.type === 'charts'"
-  >
-    <h2>{{ props.title }}</h2>
-    Graphique
-  </div>
+      :title="props.title"
+  />
 
   <div
       class="card__footer"
@@ -92,61 +72,8 @@ const props = defineProps({
   overflow-y: auto;
   padding: 1.25rem; // 20px
 
-  &__body {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    overflow-y: auto;
-    gap: 1.25rem; // 20px
-
-    h2 {
-      color: var(--text-color);
-    }
-
-    .numbers {
-      font-size: 3.75rem; // 60px
-      line-height: 3.438rem; // 55px
-      font-weight: 700;
-      color: var(--text-color);
-    }
-
-    .lists {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-
-      &__item {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-
-        &__label {
-          font-size: 1.25rem; // 20px
-          font-weight: 500;
-          color: var(--text-color);
-        }
-
-        &__value {
-          font-size: 1.25rem; // 20px
-          font-weight: 700;
-          color: var(--text-color);
-        }
-      }
-    }
-  }
-
   &.primary {
     background-color: var(--primary) !important;
-
-    .card__body {
-      h2 {
-        color: var(--text-color) !important;
-      }
-
-      .numbers {
-        color: var(--text-color) !important;
-      }
-    }
   }
 
   &__footer {
