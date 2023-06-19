@@ -11,3 +11,7 @@ function save(req, res) {
     // // add this tag to the user's tags
     // let user = User.findById(req.body.user_id);
 };
+
+module.exports = {
+    save
+};
