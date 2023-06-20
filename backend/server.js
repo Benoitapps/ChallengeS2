@@ -11,9 +11,12 @@ const { connect } = require('./services/mongoose');
 const app = express();
 
 // Use to allow cross-origin requests
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials : true
+}));
 //cookies
-app.use(cookieParser());
+app.use(cookieParser("secret"));
 // Use to parse JSON body
 app.use(express.json());
 app.use(express.text());
