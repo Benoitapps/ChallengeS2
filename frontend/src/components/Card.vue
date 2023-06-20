@@ -2,9 +2,13 @@
 import Keys from "./Keys.vue";
 import Chart from "./Chart.vue";
 import More from "./More.vue";
-import { ref } from "vue";
+import {ref} from "vue";
 
 let props = defineProps({
+  index: {
+    type: Number,
+    default: 0
+  },
   favorite: {
     type: Boolean,
     default: false
@@ -32,10 +36,6 @@ let props = defineProps({
 });
 
 let isFavorite = ref(props.favorite);
-
-if(localStorage.getItem("favorite")) {
-  isFavorite.value = true;
-}
 
 function toggleFavorite() {
   isFavorite.value = !isFavorite.value;

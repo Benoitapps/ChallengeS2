@@ -1,6 +1,6 @@
 <script setup>
 import Card from "../components/Card.vue";
-import { ref } from "vue";
+import {ref} from "vue";
 
 const periods = [
   {
@@ -41,39 +41,49 @@ let visitedPages = ref(
     }
   ]
 );
+
+const cards = [
+  {
+    favorite: true,
+    title: "Sessions",
+    type: "keys",
+    number: "50",
+    periods: periods
+  },
+  {
+    title: "Clics",
+    type: "keys",
+    number: "30300",
+    periods: periods
+  },
+  {
+    title: "Pages visitées",
+    type: "keys",
+    list: visitedPages.value,
+    periods: periods
+  },
+  {
+    title: "Moyenne des sessions",
+    type: "keys",
+    number: "03m 30s",
+    periods: periods
+  }
+];
 </script>
 
 <template>
   <main class="kpi">
     <div class="kpi__container">
       <Card
-          :favorite="true"
-          :title="'Sessions'"
-          :type="'keys'"
-          :number="'50'"
-          :periods="periods"
-      />
-
-      <Card
-          :title="'Clics'"
-          :type="'keys'"
-          :number="'30300'"
-          :periods="periods"
-      />
-
-      <Card
-          :title="'Pages visitées'"
-          :type="'keys'"
-          :number="'100'"
-          :list="visitedPages"
-          :periods="periods"
-      />
-
-      <Card
-          :title="'Moyenne des sessions'"
-          :type="'keys'"
-          :number="'03m 30s'"
-          :periods="periods"
+          v-for="(card, index) in cards"
+          :key="index"
+          :index="index"
+          :favorite="card.favorite"
+          :title="card.title"
+          :type="card.type"
+          :number="card.number"
+          :list="card.list"
+          :periods="card.periods"
       />
     </div>
   </main>
