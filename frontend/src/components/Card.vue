@@ -9,6 +9,10 @@ let props = defineProps({
     type: Number,
     default: 0
   },
+  removed: {
+    type: Boolean,
+    default: false
+  },
   favorite: {
     type: Boolean,
     default: false
@@ -36,6 +40,7 @@ let props = defineProps({
 });
 
 let isFavorite = ref(props.favorite);
+let isRemoved = ref(props.removed);
 
 onMounted(() => {
   if(localStorage.getItem(`favorite${+props.index}`) === "true") {
@@ -69,13 +74,20 @@ function toggleFavorite() {
 
   handleLocalStorage();
 }
+
+function removeCard() {
+  isRemoved.value = true;
+}
 </script>
 
 <template>
-<div :class="['card', {favorite: isFavorite}]">
+<div
+    v-if="!isRemoved"
+    :class="['card', {favorite: isFavorite}]"
+>
   <div class="card__head">
     <h2>{{ props.title }}</h2>
-    <More @toggleFavorite="toggleFavorite($event)"/>
+    <More @toggleFavorite="toggleFavorite($event)" @removeCard="removeCard($event)"/>
   </div>
 
   <Keys

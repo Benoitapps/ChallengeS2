@@ -79,6 +79,7 @@ const cards = [
           v-for="(card, index) in cards"
           :key="index"
           :index="index"
+          :removed="card.removed"
           :favorite="card.favorite"
           :title="card.title"
           :type="card.type"
