@@ -16,10 +16,17 @@ app.use(cors({
   credentials : true
 }));
 //cookies
-app.use(cookieParser("secret"));
+app.use(cookieParser());
 // Use to parse JSON body
 app.use(express.json());
 app.use(express.text());
+
+app.get('/example', (req, res) => {
+  const cookies = req.cookies;
+  console.log(cookies);
+  // Utilisez les cookies ici
+  // ...
+});
 
 app.use("/", userRoutes)
 app.use("/connecter", homeRoutes)
