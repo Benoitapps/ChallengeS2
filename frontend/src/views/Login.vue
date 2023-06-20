@@ -1,6 +1,7 @@
 
 <script>
 import { ref } from 'vue';
+import router from "../router"
 
 export default {
   setup() {
@@ -15,6 +16,7 @@ export default {
           headers: {
             'Content-Type': 'application/json'
           },
+          credentials : 'include',
           body: JSON.stringify({
             email: email.value,
             password: password.value
@@ -23,7 +25,7 @@ export default {
 
 
         if (response.ok) {
-          window.location.href = '/connecter';
+          router.push('/connecter');
         } else {
           // erreur
           const data = await response.json();

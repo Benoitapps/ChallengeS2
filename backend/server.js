@@ -20,7 +20,7 @@ app.use(cors({
   credentials : true
 }));
 //cookies
-app.use(cookieParser());
+app.use(cookieParser("secret"));
 // Use to parse JSON body
 app.use(express.json());
 app.use(express.text());
