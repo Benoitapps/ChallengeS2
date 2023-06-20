@@ -2,7 +2,7 @@
 import Keys from "./Keys.vue";
 import Chart from "./Chart.vue";
 import More from "./More.vue";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 
 let props = defineProps({
   index: {
@@ -37,8 +37,37 @@ let props = defineProps({
 
 let isFavorite = ref(props.favorite);
 
+onMounted(() => {
+  if(localStorage.getItem(`favorite${+props.index}`) === "true") {
+    isFavorite.value = true;
+  }
+  else {
+    isFavorite.value = false;
+  }
+
+  handleLocalStorage();
+});
+
+function handleLocalStorage() {
+  if(
+      isFavorite.value &&
+      localStorage.getItem(`favorite${+props.index}`) === null
+  ) {
+    localStorage.setItem(`favorite${+props.index}`, true);
+  }
+  else if(
+      !isFavorite.value &&
+      localStorage.getItem(`favorite${+props.index}`) !== null
+  )
+  {
+    localStorage.removeItem(`favorite${+props.index}`);
+  }
+}
+
 function toggleFavorite() {
   isFavorite.value = !isFavorite.value;
+
+  handleLocalStorage();
 }
 </script>
 

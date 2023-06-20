@@ -59,6 +59,7 @@ const cards = [
   {
     title: "Pages visitées",
     type: "keys",
+    number: "100",
     list: visitedPages.value,
     periods: periods
   },

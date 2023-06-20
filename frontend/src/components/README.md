@@ -5,6 +5,10 @@ Il doit être mis à jour à chaque fois qu'un composant est modifié ou ajouté
 
 ## Card
 
+### index
+Type: `number` <br>
+Description : Index de la card.
+
 ### favorite
 Type: `boolean` <br>
 Description : Met en evidence la card en le mettant en vert.
