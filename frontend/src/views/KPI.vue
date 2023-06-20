@@ -47,7 +47,7 @@ let visitedPages = ref(
   <main class="kpi">
     <div class="kpi__container">
       <Card
-          :primary="true"
+          :favorite="true"
           :title="'Sessions'"
           :type="'keys'"
           :number="'50'"
@@ -64,6 +64,7 @@ let visitedPages = ref(
       <Card
           :title="'Pages visitées'"
           :type="'keys'"
+          :number="'100'"
           :list="visitedPages"
           :periods="periods"
       />

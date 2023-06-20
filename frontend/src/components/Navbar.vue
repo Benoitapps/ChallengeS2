@@ -122,6 +122,12 @@ onMounted(() => {
 
         &.selected {
           background-color: var(--primary);
+
+          a {
+            &:hover {
+              background-color: var(--primary) !important;
+            }
+          }
         }
       }
     }

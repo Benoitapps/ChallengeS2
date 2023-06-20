@@ -5,7 +5,7 @@ Il doit être mis à jour à chaque fois qu'un composant est modifié ou ajouté
 
 ## Card
 
-### primary
+### favorite
 Type: `boolean` <br>
 Description : Met en evidence la card en le mettant en vert.
 

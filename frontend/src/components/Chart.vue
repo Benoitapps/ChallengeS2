@@ -1,6 +1,6 @@
 <script setup>
 const props = defineProps({
-  primary: {
+  favorite: {
     type: Boolean,
     default: false
   },
@@ -15,7 +15,6 @@ const props = defineProps({
   <div
       class="card__body"
   >
-    <h2>{{ props.title }}</h2>
     Graphique
   </div>
 </template>
@@ -28,10 +27,6 @@ const props = defineProps({
     flex: 1;
     overflow-y: auto;
     gap: 1.25rem; // 20px
-
-    h2 {
-      color: var(--text-color);
-    }
   }
 }
 </style>

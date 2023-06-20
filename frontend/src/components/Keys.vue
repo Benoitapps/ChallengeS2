@@ -1,12 +1,8 @@
 <script setup>
 const props = defineProps({
-  primary: {
+  favorite: {
     type: Boolean,
     default: false
-  },
-  title: {
-    type: String,
-    default: ""
   },
   number: {
     type: String,
@@ -23,7 +19,6 @@ const props = defineProps({
   <div
       class="card__body"
   >
-    <h2>{{ props.title }}</h2>
     <p
         class="numbers"
         v-if="props.number"
@@ -55,10 +50,6 @@ const props = defineProps({
     flex: 1;
     overflow-y: auto;
     gap: 1.25rem; // 20px
-
-    h2 {
-      color: var(--text-color);
-    }
 
     .numbers {
       font-size: 3.75rem; // 60px

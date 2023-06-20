@@ -1,9 +1,11 @@
 <script setup>
 import Keys from "./Keys.vue";
 import Chart from "./Chart.vue";
+import More from "./More.vue";
+import { ref } from "vue";
 
-const props = defineProps({
-  primary: {
+let props = defineProps({
+  favorite: {
     type: Boolean,
     default: false
   },
@@ -28,10 +30,25 @@ const props = defineProps({
     default: () => []
   }
 });
+
+let isFavorite = ref(props.favorite);
+
+if(localStorage.getItem("favorite")) {
+  isFavorite.value = true;
+}
+
+function toggleFavorite() {
+  isFavorite.value = !isFavorite.value;
+}
 </script>
 
 <template>
-<div :class="['card', {primary: props.primary}]">
+<div :class="['card', {favorite: isFavorite}]">
+  <div class="card__head">
+    <h2>{{ props.title }}</h2>
+    <More @toggleFavorite="toggleFavorite($event)"/>
+  </div>
+
   <Keys
       v-if="props.type === 'keys'"
       :title="props.title"
@@ -69,11 +86,22 @@ const props = defineProps({
   background-color: var(--secondary);
   aspect-ratio: 1/1;
   border-radius: 10px;
-  overflow-y: auto;
   padding: 1.25rem; // 20px
 
-  &.primary {
+  &.favorite {
     background-color: var(--primary) !important;
+  }
+
+  &__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    margin-bottom: 20px;
+
+    h2 {
+      color: var(--text-color);
+    }
   }
 
   &__footer {

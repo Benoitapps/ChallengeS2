@@ -19,6 +19,7 @@ import Navbar from "./components/Navbar.vue";
   --primary: #67fe80;
   --secondary: #ffffff;
   --accent: #b8ffc3;
+  --error: #f23030;
 
   // Others
   --border: 1px solid #dadce0;
@@ -100,6 +101,8 @@ select {
 }
 
 main {
+  position: relative;
+  z-index: 1;
   width: calc(100% - 200px);
   min-height: 100vh;
   margin-left: 200px;
