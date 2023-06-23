@@ -33,7 +33,7 @@ let props = defineProps({
 
 const emits = defineEmits(["removeCard"]);
 
-let isFavorite = ref(false);
+const isFavorite = ref(false);
 
 onMounted(() => {
   if(localStorage.getItem(props.title) !== null) {

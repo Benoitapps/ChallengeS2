@@ -9,10 +9,6 @@ Il doit être mis à jour à chaque fois qu'un composant est modifié ou ajouté
 Type: `number` <br>
 Description : Index de la card.
 
-### :removed
-Type: `boolean` <br>
-Description : Etat de suppression de la card.
-
 ### :type
 Type: `string` <br>
 Description : Défini le type de card à afficher (`keys` ou `chart`).
