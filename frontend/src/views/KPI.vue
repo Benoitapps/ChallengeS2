@@ -1,6 +1,6 @@
 <script setup>
 import Card from "../components/Card.vue";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 
 const periods = [
   {
@@ -75,17 +75,32 @@ let cards = ref(
 let addingIsEnabled = ref(false);
 let cardsRemoved = ref([]);
 
+onMounted(() => {
+  if(localStorage.getItem("Cards") !== null) {
+    cards.value = JSON.parse(localStorage.getItem("Cards"));
+
+    if(localStorage.getItem("Cards-removed") !== null) {
+      cardsRemoved.value = JSON.parse(localStorage.getItem("Cards-removed"));
+      addingIsEnabled.value = true;
+    }
+  }
+});
+
 function removeCard(index) {
   addingIsEnabled.value = true;
   cardsRemoved.value.push(cards.value[index]);
   cards.value.splice(index, 1);
+  localStorage.setItem("Cards", JSON.stringify(cards.value));
+  localStorage.setItem("Cards-removed", JSON.stringify(cardsRemoved.value));
 }
 
 function addCard() {
   cards.value.push(cardsRemoved.value[0]);
   cardsRemoved.value.splice(0, 1);
+  localStorage.setItem("Cards", JSON.stringify(cards.value));
 
   if(cardsRemoved.value.length === 0) {
+    localStorage.removeItem("Cards-removed");
     addingIsEnabled.value = false;
   }
 }
@@ -98,7 +113,6 @@ function addCard() {
           v-for="(card, index) in cards"
           :key="card.title"
           :index="index"
-          :removed="card.removed"
           :title="card.title"
           :type="card.type"
           :number="card.number"
