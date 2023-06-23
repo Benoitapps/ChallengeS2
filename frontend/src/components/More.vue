@@ -1,5 +1,5 @@
 <script setup>
-const emit = defineEmits(["toggleFavorite", "removeCard"]);
+const emits = defineEmits(["toggleFavorite", "removeCard"]);
 
 function openPopup(elem) {
   closeAllPopups();
@@ -22,11 +22,11 @@ function closeAllPopups() {
 }
 
 function toggleFavorite() {
-  emit("toggleFavorite");
+  emits("toggleFavorite");
 }
 
 function removeCard() {
-  emit("removeCard");
+  emits("removeCard");
 }
 
 window.addEventListener("click", () => {
@@ -89,6 +89,7 @@ window.addEventListener("click", () => {
     border-radius: 10px;
     background-color: var(--background);
     overflow: hidden;
+    border: var(--border);
 
     li {
       display: flex;
