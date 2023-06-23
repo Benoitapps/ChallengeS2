@@ -122,7 +122,7 @@ function addCard() {
       />
 
       <button
-          v-if="addingIsEnabled"
+          v-show="addingIsEnabled"
           class="card__add"
           @click.stop="addCard"
       >
