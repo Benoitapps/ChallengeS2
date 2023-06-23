@@ -96,7 +96,7 @@ function addCard() {
     <div class="kpi__container">
       <Card
           v-for="(card, index) in cards"
-          :key="index"
+          :key="card.title"
           :index="index"
           :removed="card.removed"
           :title="card.title"
@@ -140,6 +140,14 @@ function addCard() {
     }
 
     .card {
+      * {
+        scrollbar-width: none !important;
+
+        &::-webkit-scrollbar {
+          display: none !important;
+        }
+      }
+
       &__add {
         display: flex;
         justify-content: center;

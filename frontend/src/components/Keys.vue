@@ -62,6 +62,8 @@ const props = defineProps({
       display: flex;
       flex-direction: column;
       gap: 8px;
+      flex: 1;
+      overflow-y: auto;
 
       &__item {
         display: flex;
