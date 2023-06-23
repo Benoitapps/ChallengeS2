@@ -1,9 +1,5 @@
 <script setup>
 const props = defineProps({
-  favorite: {
-    type: Boolean,
-    default: false
-  },
   number: {
     type: String,
     default: ""

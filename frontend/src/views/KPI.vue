@@ -21,7 +21,7 @@ const periods = [
   }
 ];
 
-let visitedPages = ref(
+const visitedPages = ref(
     [
     {
       label: "Accueil",
@@ -42,7 +42,7 @@ let visitedPages = ref(
   ]
 );
 
-let cards = ref(
+const cards = ref(
       [
     {
       title: "Sessions",
@@ -72,8 +72,8 @@ let cards = ref(
   ]
 );
 
-let addingIsEnabled = ref(false);
-let cardsRemoved = ref([]);
+const addingIsEnabled = ref(false);
+const cardsRemoved = ref([]);
 
 onMounted(() => {
   if(localStorage.getItem("Cards") !== null) {
