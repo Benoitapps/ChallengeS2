@@ -40,6 +40,8 @@ Ce guide vous explique comment intégrer le SDK de suivi d'analytiques dans votr
 
     onMounted(() => {
         this.sdk = inject('sdk');
+        // Utilisez le SDK ici
+        // Exemple : this.sdk.trackMouseMovement();
     }
     ```
 
