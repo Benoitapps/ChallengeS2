@@ -1,4 +1,14 @@
 <script setup>
+import { onMounted, inject, onUnmounted } from 'vue';
+
+onMounted(() => {
+  const sdk = inject('sdk');
+  sdk.trackMouseClick();
+
+  onUnmounted(() => {
+    sdk.stopTrackingMouseClick();
+  });
+});
 
 </script>
 

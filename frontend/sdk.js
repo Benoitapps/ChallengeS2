@@ -11,7 +11,7 @@ const EMPTY_DATA = {
     trackers: EMPTY_TRACKERS,
 };
 
-const MOUSE_DELAY = 5000;
+const MOUSE_DELAY = 1000;
 
 export default class SDK {
     constructor(api_token) {
@@ -21,37 +21,54 @@ export default class SDK {
         this.data.api_token = api_token;
 
         console.log("SDK is running")
-        // this.initTracker();
-        this.initTags();
-        // this.initSendData();
+        this.initSendData();
     }
 
     initTracker() {
-        // this.trackMouseMovement();
-        // this.trackClicks();
+        this.trackMouseMovement();
+        this.trackMouseClick();
+    }
+
+    stopTracker() {
+        this.stopTrackingMouseMovement();
+        this.stopTrackingMouseClick();
     }
 
     trackMouseMovement() {
-        document.addEventListener("mousemove", (e) => {
+        console.log("start tracking mouse movement");
+        this.mouseMoveHandler = (e) => {
             this.mouseX = e.clientX;
             this.mouseY = e.clientY;
-        });
+        };
+        document.addEventListener("mousemove", this.mouseMoveHandler);
         this.getMousePosition();
     }
 
+    stopTrackingMouseMovement() {
+        console.log("stop tracking mouse movement");
+        document.removeEventListener("mousemove", this.mouseMoveHandler);
+        this.stopUpdatingMousePosition();
+    }
+
     getMousePosition() {
-        setInterval(() => {
+        this.mousePositionInterval = setInterval(() => {
             this.data.trackers.mouse.push({
                 x: this.mouseX,
                 y: this.mouseY,
                 timestamp: Date.now(),
                 path: window.location.pathname,
             });
+            console.log("mouse position : ", this.mouseX, this.mouseY)
         }, MOUSE_DELAY);
     }
 
-    trackClicks() {
-        document.body.addEventListener("click", (e) => {
+    stopUpdatingMousePosition() {
+        clearInterval(this.mousePositionInterval);
+    }
+
+    trackMouseClick() {
+        console.log('start tracking mouse click');
+        this.trackerFunction = (e) => {
             this.data.trackers.clicks.push({
                 x: e.clientX,
                 y: e.clientY,
@@ -59,7 +76,15 @@ export default class SDK {
                 target: e.target.outerHTML,
                 path: window.location.pathname,
             });
-        });
+            console.table("click on this element : ", e.target)
+        };
+
+        document.body.addEventListener("click", this.trackerFunction);
+    }
+
+    stopTrackingMouseClick() {
+        console.log("stop tracking mouse click")
+        document.body.removeEventListener("click", this.trackerFunction);
     }
 
     getFingerprintUser() {
@@ -70,21 +95,20 @@ export default class SDK {
     }
 
     initSendData() {
-        window.addEventListener("unload", () => {
+        window.addEventListener("unload", (e) => {
             this.data.trackers.endTime = new Date();
             this.data.user_token = this.getFingerprintUser();
 
             let data = JSON.stringify(this.data);
-            navigator.sendBeacon('http://localhost:3000/sdk', data);
+            // navigator.sendBeacon('http://localhost:3000/sdk', data);
         });
     }
 
     initTags() {
-        let tags = document.querySelectorAll("[data-tag^='']");
-        console.log("tags", tags);
+        let tags = document.querySelectorAll('button[data-tag]');
         tags.forEach((tag) => {
             tag.addEventListener("click", (e) => {
-                console.log("click", e);
+                console.table("click on this tag : ", e.target);
             });
         });
     }

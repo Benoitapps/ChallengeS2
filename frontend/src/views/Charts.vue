@@ -1,5 +1,14 @@
 <script setup>
+import { onMounted, inject, onUnmounted } from 'vue';
 
+onMounted(() => {
+  const sdk = inject('sdk');
+  sdk.initTracker();
+
+  onUnmounted(() => {
+    sdk.stopTracker();
+  });
+});
 </script>
 
 <template>

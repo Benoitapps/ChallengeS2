@@ -1,4 +1,14 @@
 <script setup>
+import { onMounted, inject } from 'vue';
+
+onMounted(() => {
+  const sdk = inject('sdk');
+  sdk.initTags();
+  console.log('Tags.vue is mounted');
+});
+
+// on mounted only for this component
+
 
 </script>
 
@@ -17,7 +27,7 @@
           <button>Générer</button>
         </div>
         <div>
-          <input type="text" placeholder="<button sdk-analytique='jH75eZa'>Générer</button>" disabled> 
+          <input type="text" placeholder="<button data-tag='4tfjeu24st'>Générer</button>" disabled> 
           <button data-tag="4tfjeu24st">Copier</button>
         </div>
       </div>
