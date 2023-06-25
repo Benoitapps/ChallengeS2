@@ -33,6 +33,16 @@ Ce guide vous explique comment intégrer le SDK de suivi d'analytiques dans votr
 
 - Veuillez à remplacer `apiToken` par votre token qui doit être récupéré sur le site.
 
+4. Pour utiliser le plugin dans un composant, vous devez l'importer et l'injecter dans le composant :
+
+    ```javascript
+    import { inject } from 'vue';
+
+    onMounted(() => {
+        this.sdk = inject('sdk');
+    }
+    ```
+
 
 ## Étape 2 : Utilisation du SDK
 
