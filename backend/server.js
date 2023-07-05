@@ -7,8 +7,11 @@ const sdkRoutes = require('./routes/sdk');
 const homeRoutes = require('./routes/home');
 const adminRoutes = require('./routes/admin');
 const { connect } = require('./services/mongoose');
+const { connectpg } = require('./db/');
 
 const app = express();
+const sequelize = require('sequelize')
+
 
 // Use to allow cross-origin requests
 app.use(cors({
@@ -20,13 +23,6 @@ app.use(cookieParser());
 // Use to parse JSON body
 app.use(express.json());
 app.use(express.text());
-
-app.get('/example', (req, res) => {
-  const cookies = req.cookies;
-  console.log(cookies);
-  // Utilisez les cookies ici
-  // ...
-});
 
 app.use("/", userRoutes)
 app.use("/connecter", homeRoutes)
