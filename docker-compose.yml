@@ -32,8 +32,7 @@ services:
       DATABASE_URL: postgres://root:password@db:5432/app
       JWT_SECRET: ImAstrongSecret
     working_dir: /usr/src/app
-    volumes:
-      - ./4IW3/server:/usr/src/app
+    
     command: npm run dev
 
 volumes:

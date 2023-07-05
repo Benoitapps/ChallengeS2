@@ -1,25 +1,28 @@
-const User = require('../models/User');
+//const User2 = require('../models/User');
+//const User = require('../db/models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const generateToken = require('../utils/generateToken');
 const cookieParser = require('cookie-parser');
+const services = '../services/user'
+const User = require("../db").User;
 
 
 async function signup(req, res) {
     try {
+       //const t = await connection.transaction();
         if (!req.body?.email || !req.body?.password || !req.body?.website) {
             return res.status(400).json({ error: 'Missing parameters' });
         }
 
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        const user = new User({
+        const user =  User.create({
             email: req.body.email,
             password: hashedPassword,
-            api_token: generateToken(32),
-            visitors: [],
-        });
+            website: req.body.website,
 
-        await user.save();
+        });
+        //await user.save();
         res.status(201).json({ 
             message: 'Utilisateur créé !',
             email: user.email
@@ -31,10 +34,12 @@ async function signup(req, res) {
 
 async function login(req, res) {
     try {
+        console.log("je passe ");
         if (!req.body?.email || !req.body?.password) {
             return res.status(400).json({ error: 'Missing parameters' });
         }
-        const user = await User.findOne({ email: req.body.email });
+        const user = await User.findOne({ 
+            where: {email: req.body.email },});
 
         if (!user) {
             return res.status(401).json({ error: 'Utilisateur non trouvé !' });
@@ -76,7 +81,7 @@ async function login(req, res) {
 
 async function getUser(req, res) {
 
-    User.find()
+    User.findAll()
     .then(user => res.status(200).json(user))
     .catch(error => res.status(400).json({ error }));
 };

@@ -25,13 +25,6 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.text());
 
-app.get('/example', (req, res) => {
-  const cookies = req.cookies;
-  console.log(cookies);
-  // Utilisez les cookies ici
-  // ...
-});
-
 app.use("/", userRoutes)
 app.use("/connecter", homeRoutes)
 app.use("/admin", adminRoutes)
