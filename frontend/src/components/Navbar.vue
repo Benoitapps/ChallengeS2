@@ -53,6 +53,12 @@ onMounted(() => {
             </svg>
             Paramètres
           </router-link>
+          </li>
+        <li>
+          <router-link to="/register">Inscription</router-link>
+        </li>
+        <li>
+          <router-link to="/login">Connexion</router-link>
         </li>
       </ul>
     </nav>

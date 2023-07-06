@@ -19,10 +19,28 @@ const visitorSchema = new Schema({
 const userSchema = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  api_token: { type: String, required: true },
-  visitors: [visitorSchema],
+  website: { type: String },
+  is_verified: {type: Boolean },
+  trackers: {
+    mouse: [{
+      x: Number,
+      y: Number,
+      timestamp: Number,
+      path: String
+    }],
+    clicks: [{
+      x: Number,
+      y: Number,
+      timestamp: Number,
+      target: String,
+      outerHTML: String,
+      path: String
+    }],
+    startTime: Date,
+    endTime: Date
+  }
 });
 
 userSchema.plugin(uniqueValidator);
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('Usertracker', userSchema);
