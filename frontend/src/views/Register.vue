@@ -49,6 +49,7 @@ export default {
 </script>
 
 <template>
+  <main>
   <div>
     <h2>Inscription</h2>
     <form @submit.prevent="signup"><!-- Permet d'envoyer quand le formaulaire est remplis-->
@@ -68,6 +69,7 @@ export default {
     </form>
     <p v-if="error" class="error">{{ error }}</p>
   </div>
+</main>
 </template>
 
 <style scoped>
