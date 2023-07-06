@@ -80,7 +80,7 @@ p,
 label,
 a,
 input,
-button, {
+button {
   font-family: Roboto, sans-serif;
   color: var(--text-color);
 }
