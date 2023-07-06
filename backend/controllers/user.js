@@ -55,9 +55,9 @@ async function login(req, res) {
         if (!validPassword) {
             return res.status(401).json({ error: 'Mot de passe incorrect !' });
         }
-
+        console.log("lID "+ user.id);
         const token = jwt.sign(
-            { userId: user._id },
+            { userId: user.id },
             'RANDOM_TOKEN_SECRET',
             { expiresIn: '24h' }
         );
@@ -72,7 +72,7 @@ async function login(req, res) {
         });
         
         res.status(200).json({
-            userId: user._id,
+            userId: user.id,
             token: token
         });
     } catch (error) {
@@ -87,15 +87,39 @@ async function getUser(req, res) {
     .catch(error => res.status(400).json({ error }));
 };
 
-async function getConnectedUser(req) {
-    if (req.login()) {
-      const connectedUser = req.user;
-      return connectedUser;
-    } else {
-      return null;
+function getConnectedUser(req, res) {
+    const token = req.cookies.token;
+  
+    if (!token) {
+      return res.status(401).json({ error: 'Token not found' });
+    }
+  
+    try {
+      const decoded = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+      const userId = decoded.userId;
+  
+      // Rechercher l'utilisateur correspondant à l'ID
+      User.findOne({ where: { id: userId } })
+        .then(user => {
+          if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+          }
+  
+          // Renvoyer les informations de l'utilisateur connecté
+          res.status(200).json({
+            userId: user.id,
+            email: user.email,
+            website: user.website,
+            // Ajoutez d'autres propriétés de l'utilisateur si nécessaire
+          });
+        })
+        .catch(error => {
+          res.status(500).json({ error: error.message });
+        });
+    } catch (error) {
+      res.status(401).json({ error: 'Invalid token' });
     }
   }
-  
 
 
 module.exports = { signup, login, getUser, getConnectedUser };
