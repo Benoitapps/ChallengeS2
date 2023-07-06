@@ -19,6 +19,7 @@ export default {
         if (response.ok) {
           const data = await response.json();
           users.value = [data];
+          localStorage.setItem('myUser', JSON.stringify(data));
         } else {
           const data = await response.json();
           error.value = data.error;
@@ -41,18 +42,33 @@ export default {
 
 <template>
     <main>
-    <h2>Utilisateur connecté :</h2>
-    <ul>
-      <li v-for="ligne in users" :key="ligne">
-        <div>{{ ligne.email }} </div>
-        <div>{{ ligne.website }}</div>
+      <h2>Utilisateur connecté :</h2>
+      <ul>
+        <li v-for="ligne in users" :key="ligne">
+          <div>{{ ligne.email }}</div>
+          <div>{{ ligne.website }}</div>
         </li>
-    </ul>
-    <p v-if="error">{{ error }}</p>
-  </main>
+      </ul>
+      <p v-if="error">{{ error }}</p>
+      <router-link to="/profil/modifier" class="modifier-button">Modifier</router-link>
+    </main>
   </template>
   
-
-<style scoped lang="scss">
-
-</style>
+  <style scoped lang="scss">
+  .modifier-button {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #4caf50;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+  }
+  </style>
+ 
+  
+  
+  
+  
+  
+  
+  
