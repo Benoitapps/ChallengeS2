@@ -2,7 +2,6 @@
 //const User = require('../db/models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const generateToken = require('../utils/generateToken');
 const cookieParser = require('cookie-parser');
 const services = '../services/user'
 const User = require("../db").User;

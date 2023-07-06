@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
-const UserService = require("./services/user.js");
 const userRoutes = require('./routes/user');
 const sdkRoutes = require('./routes/sdk');
 const homeRoutes = require('./routes/home');
@@ -15,12 +14,7 @@ const sequelize = require('sequelize')
 
 
 // Use to allow cross-origin requests
-app.use(cors({
-  origin: "http://localhost:5173",
-  credentials : true
-}));
-//cookies
-app.use(cookieParser());
+app.use(cors());
 // Use to parse JSON body
 app.use(express.json());
 app.use(express.text());
