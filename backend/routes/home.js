@@ -6,5 +6,6 @@ const authMiddleware = require('../middleware/authMiddleware');
 
 
 router.get('/',authMiddleware, userCtrl.getUser);
+router.get('/co',authMiddleware, userCtrl.getConnectedUser);
 
 module.exports = router;

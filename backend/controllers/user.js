@@ -3,8 +3,10 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
+const authMiddleware = require('../middleware/authMiddleware');
 const services = '../services/user'
 const User = require("../db").User;
+{ authMiddleware }
 
 
 async function signup(req, res) {
@@ -33,7 +35,7 @@ async function signup(req, res) {
 
 async function login(req, res) {
     try {
-        console.log("je passe ");
+        //console.log("je passe ");
         if (!req.body?.email || !req.body?.password) {
             return res.status(400).json({ error: 'Missing parameters' });
         }
@@ -85,5 +87,15 @@ async function getUser(req, res) {
     .catch(error => res.status(400).json({ error }));
 };
 
+async function getConnectedUser(req) {
+    if (req.login()) {
+      const connectedUser = req.user;
+      return connectedUser;
+    } else {
+      return null;
+    }
+  }
+  
 
-module.exports = { signup, login, getUser };
+
+module.exports = { signup, login, getUser, getConnectedUser };
