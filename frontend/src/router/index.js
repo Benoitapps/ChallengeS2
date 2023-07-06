@@ -7,6 +7,7 @@ import Register from "../views/Register.vue";
 import Login from "../views/Login.vue";
 import HomeConnect from "../views/HomeConnect.vue";
 import Admin from "../views/Admin.vue";
+import Profil from "../views/Profil.vue";
 const index = createRouter(
     {
         history: createWebHistory(),
@@ -45,7 +46,11 @@ const index = createRouter(
             {
                 path: '/admin',
                 component: Admin
-            }
+            },
+            {
+                path: '/profil',
+                component: Profil
+            },
         ]
     });
 

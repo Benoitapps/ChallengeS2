@@ -61,14 +61,16 @@ export default {
 
 
 <template>
+  <main>
     <h2>Utilisateurs :</h2>
     <ul>
       <li v-for="user in users" :key="user._id">
         {{ user.email }}
-        <button @click="verifyUser(user._id)">Vérifier</button>
+        <button @click="verifyUser(user.id)">Vérifier</button>
       </li>
     </ul>
     <p v-if="error">{{ error }}</p>
+  </main>
   </template>
 <style lang="scss">
 

@@ -1,64 +1,83 @@
-const ValidationError = require("../errors/ValidationError");
+const { User } = require("../db");
 const Sequelize = require("sequelize");
-const User = require("../db").User;
+const ValidationError = require("../errors/ValidationError");
 
-module.exports = function () {
+module.exports = function UserService() {
   return {
-    async findAll(criteria, { page = null, itemsPerPage = null, order = {} }) {
-      return await User.findAll({
-        where: criteria,
-        limit: itemsPerPage,
-        offset: (page - 1) * itemsPerPage,
-        order: Object.entries(order),
-      });
+    findAll: async function (filters, options) {
+      let dbOptions = {
+        where: filters,
+      };
+      // options.order = {name: "ASC", dob: "DESC"}
+      if (options.order) {
+        // => [["name", "ASC"], ["dob", "DESC"]]
+        dbOptions.order = Object.entries(options.order);
+      }
+      if (options.limit) {
+        dbOptions.limit = options.limit;
+        dbOptions.offset = options.offset;
+      }
+      return User.findAll(dbOptions);
     },
-    async create(data) {
+    findOne: async function (filters) {
+      return User.findOne({ where: filters });
+    },
+    create: async function (data) {
       try {
-        const user = await User.create(data);
-        return user;
-      } catch (error) {
-        if (error instanceof Sequelize.ValidationError) {
-          throw ValidationError.createFromSequelizeValidationError(error);
+        return await User.create(data);
+      } catch (e) {
+        if (e instanceof Sequelize.ValidationError) {
+          throw ValidationError.fromSequelizeValidationError(e);
         }
-        throw error;
+        throw e;
       }
     },
-    async findOne(id) {
-      return await User.findByPk(id);
-    },
-    async replaceOne(id, newData) {
+    replace: async function (filters, newData) {
       try {
-        const deleted = await this.deleteOne(id);
-        const user = await this.create({ ...newData, id });
-
-        return [user, !deleted];
-      } catch (error) {
-        if (error instanceof Sequelize.ValidationError) {
-          throw ValidationError.createFromSequelizeValidationError(error);
+        const nbDeleted = await this.delete(filters);
+        const user = await this.create(newData);
+        return [[user, nbDeleted === 0]];
+      } catch (e) {
+        if (e instanceof Sequelize.ValidationError) {
+          throw ValidationError.fromSequelizeValidationError(e);
         }
-        throw error;
+        throw e;
       }
     },
-    async updateOne(id, newData) {
+    update: async (filters, newData) => {
       try {
-        const [nbUpdated, newValues] = await User.update(newData, {
-          where: { id },
+        const [nbUpdated, users] = await User.update(newData, {
+          where: filters,
           returning: true,
+          individualHooks: true,
         });
-        if (nbUpdated === 0) {
-          return null;
+
+        return users;
+      } catch (e) {
+        if (e instanceof Sequelize.ValidationError) {
+          throw ValidationError.fromSequelizeValidationError(e);
         }
-        return newValues[0];
-      } catch (error) {
-        if (error instanceof Sequelize.ValidationError) {
-          throw ValidationError.createFromSequelizeValidationError(error);
-        }
-        throw error;
+        throw e;
       }
     },
-    async deleteOne(id) {
-      const nbDeleted = await User.destroy({ where: { id } });
-      return nbDeleted === 1;
+    delete: async (filters) => {
+      return User.destroy({ where: filters });
+    },
+    login: async (email, password) => {
+      const user = await User.findOne({ where: { email } });
+      if (!user) {
+        throw new ValidationError({
+          email: "Invalid credentials",
+        });
+      }
+      const isPasswordValid = await user.isPasswordValid(password);
+      if (!isPasswordValid) {
+        throw new ValidationError({
+          email: "Invalid credentials",
+        });
+      }
+
+      return user;
     },
   };
 };
