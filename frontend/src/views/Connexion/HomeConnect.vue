@@ -1,5 +1,6 @@
 <script>
 import { ref } from 'vue';
+import router from '../../router';
 
 export default {
   setup() {
@@ -18,7 +19,9 @@ export default {
 
         if (response.ok) {
           const data = await response.json();
-          users.value = [data];
+          users.value = [data.email];
+          localStorage.setItem('myUser', JSON.stringify(data));
+          router.push('/');
         } else {
           const data = await response.json();
           error.value = data.error;
@@ -38,21 +41,16 @@ export default {
 };
 </script>
 
-
 <template>
-    <main>
-    <h2>Utilisateur connecté :</h2>
-    <ul>
-      <li v-for="ligne in users" :key="ligne">
-        <div>{{ ligne.email }} </div>
-        <div>{{ ligne.website }}</div>
-        </li>
-    </ul>
-    <p v-if="error">{{ error }}</p>
-  </main>
-  </template>
-  
+  <main>
+  <h2>Utilisateur connecté :</h2>
+  <ul>
+    <li v-for="user in users" :key="user">{{ user }}</li>
+  </ul>
+  <p v-if="error">{{ error }}</p>
+</main>
+</template>
 
-<style scoped lang="scss">
+<style lang="scss">
 
 </style>
