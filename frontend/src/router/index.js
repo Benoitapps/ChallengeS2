@@ -3,12 +3,13 @@ import KPI from '../views/KPI.vue';
 import Charts from "../views/Charts.vue";
 import Heatmap from "../views/Heatmap.vue";
 import Settings from "../views/Settings.vue";
-import Register from "../views/Register.vue";
-import Login from "../views/Login.vue";
-import HomeConnect from "../views/HomeConnect.vue";
+import Register from "../views/Connexion/Register.vue";
+import Login from "../views/Connexion/Login.vue";
+import HomeConnect from "../views/Connexion/HomeConnect.vue";
 import Admin from "../views/Admin.vue";
 import Profil from "../views/Profil/Profil.vue";
 import ProfilModify from "../views/Profil/ProfilModify.vue";
+import Logout from "../views/Connexion/Logout.vue";
 
 const index = createRouter(
     {
@@ -56,6 +57,10 @@ const index = createRouter(
             {
                 path: '/profil/modifier',
                 component: ProfilModify
+            },
+            {
+                path: '/logout',
+                component: Logout
             },
         ]
     });

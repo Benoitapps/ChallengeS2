@@ -122,4 +122,13 @@ function getConnectedUser(req, res) {
   }
 
 
-module.exports = { signup, login, getUser, getConnectedUser };
+  async function logout(req, res) {
+    try {
+      res.clearCookie('token');
+      res.status(200).json({ message: 'Déconnexion réussie' });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+  
+  module.exports = { signup, login, getUser, getConnectedUser, logout };

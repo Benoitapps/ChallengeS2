@@ -14,10 +14,12 @@ export default {
         const userData = localStorage.getItem('myUser');
         if (userData) {
           const parsedData = JSON.parse(userData);
+          //console.log(parsedData);
           users.value = [parsedData];
-          userId.value = parsedData.id;
-          console.log("monID"+ userId.value);
+          userId.value = parsedData.userId;
+          //console.log("monID"+ userId.value);
           updatedEmail.value = parsedData.email;
+          //console.log("monEMAIL"+ updatedEmail.value);
           updatedWebsite.value = parsedData.website;
         }
       } catch (error) {

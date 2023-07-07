@@ -1,5 +1,6 @@
 <script>
 import { ref } from 'vue';
+import router from '../../router';
 
 export default {
   setup() {
@@ -19,6 +20,8 @@ export default {
         if (response.ok) {
           const data = await response.json();
           users.value = [data.email];
+          localStorage.setItem('myUser', JSON.stringify(data));
+          router.push('/');
         } else {
           const data = await response.json();
           error.value = data.error;
