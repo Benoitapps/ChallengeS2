@@ -1,5 +1,6 @@
 <script setup>
 import Card from "../../components/TableauDeBord/Card.vue";
+import AddCard from "../../components/TableauDeBord/AddCard.vue";
 import {onMounted, ref} from "vue";
 
 const periods = [
@@ -21,7 +22,7 @@ const periods = [
   }
 ];
 
-const data = [
+const data = ref([
   { date: "24-Apr-07", amount: 93.24 },
   { date: "25-Apr-07", amount: 95.35 },
   { date: "26-Apr-07", amount: 98.84 },
@@ -35,9 +36,9 @@ const data = [
   { date: "8-May-07", amount: 105.06 },
   { date: "9-May-07", amount: 106.88 },
   { date: "10-May-07", amount: 107.34 },
-];
+]);
 
-const data2 = [
+const data2 = ref([
   { date: "24-Apr-07", amount: 16 },
   { date: "25-Apr-07", amount: 47 },
   { date: "26-Apr-07", amount: 41 },
@@ -51,7 +52,7 @@ const data2 = [
   { date: "8-May-07", amount: 26 },
   { date: "9-May-07", amount: 25 },
   { date: "10-May-07", amount: 50 }
-];
+]);
 
 const cards = ref(
     [
@@ -69,6 +70,39 @@ const cards = ref(
       }
     ]
 );
+
+const addingIsEnabled = ref(false);
+const cardsRemoved = ref([]);
+
+onMounted(() => {
+  if(localStorage.getItem("Charts") !== null) {
+    cards.value = JSON.parse(localStorage.getItem("Charts"));
+
+    if(localStorage.getItem("Charts-removed") !== null) {
+      cardsRemoved.value = JSON.parse(localStorage.getItem("Charts-removed"));
+      addingIsEnabled.value = true;
+    }
+  }
+});
+
+function removeCard(index) {
+  addingIsEnabled.value = true;
+  cardsRemoved.value.push(cards.value[index]);
+  cards.value.splice(index, 1);
+  localStorage.setItem("Charts", JSON.stringify(cards.value));
+  localStorage.setItem("Charts-removed", JSON.stringify(cardsRemoved.value));
+}
+
+function addCard() {
+  cards.value.push(cardsRemoved.value[0]);
+  cardsRemoved.value.splice(0, 1);
+  localStorage.setItem("Charts", JSON.stringify(cards.value));
+
+  if(cardsRemoved.value.length === 0) {
+    localStorage.removeItem("Charts-removed");
+    addingIsEnabled.value = false;
+  }
+}
 </script>
 
 <template>
@@ -82,6 +116,12 @@ const cards = ref(
         :type="card.type"
         :periods="card.periods"
         :data="card.data"
+        @removeCard="removeCard($event)"
+      />
+
+      <AddCard
+          v-show="addingIsEnabled"
+          @addCard="addCard($event)"
       />
     </div>
   </main>
@@ -108,29 +148,6 @@ const cards = ref(
 
         &::-webkit-scrollbar {
           display: none !important;
-        }
-      }
-
-      &__add {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        aspect-ratio: 1/1;
-        background: var(--secondary);
-        border: var(--border);
-        border-radius: 10px;
-        cursor: pointer;
-
-        svg {
-          width: 100px;
-
-          path {
-            fill: var(--text-color);
-          }
-        }
-
-        &:hover {
-          background: var(--accent) !important;
         }
       }
     }

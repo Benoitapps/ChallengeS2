@@ -40,7 +40,7 @@ const emits = defineEmits(["removeCard"]);
 const isFavorite = ref(false);
 
 onMounted(() => {
-  if(localStorage.getItem(props.title) !== null) {
+  if(localStorage.getItem(`${props.type}-${props.title}`) !== null) {
     isFavorite.value = true;
   }
 
@@ -50,16 +50,16 @@ onMounted(() => {
 function handleLocalStorage() {
   if(
       isFavorite.value === true &&
-      localStorage.getItem(props.title) === null
+      localStorage.getItem(`${props.type}-${props.title}`) === null
   ) {
-    localStorage.setItem(props.title, "true");
+    localStorage.setItem(`${props.type}-${props.title}`, "true");
   }
   else if(
       isFavorite.value === false &&
-      localStorage.getItem(props.title) === "true"
+      localStorage.getItem(`${props.type}-${props.title}`) === "true"
   )
   {
-    localStorage.removeItem(props.title);
+    localStorage.removeItem(`${props.type}-${props.title}`);
   }
 }
 

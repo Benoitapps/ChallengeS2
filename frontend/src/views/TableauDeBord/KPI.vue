@@ -1,5 +1,6 @@
 <script setup>
 import Card from "../../components/TableauDeBord/Card.vue";
+import AddCard from "../../components/TableauDeBord/AddCard.vue";
 import {onMounted, ref} from "vue";
 
 const periods = [
@@ -76,11 +77,11 @@ const addingIsEnabled = ref(false);
 const cardsRemoved = ref([]);
 
 onMounted(() => {
-  if(localStorage.getItem("Cards") !== null) {
-    cards.value = JSON.parse(localStorage.getItem("Cards"));
+  if(localStorage.getItem("KPI") !== null) {
+    cards.value = JSON.parse(localStorage.getItem("KPI"));
 
-    if(localStorage.getItem("Cards-removed") !== null) {
-      cardsRemoved.value = JSON.parse(localStorage.getItem("Cards-removed"));
+    if(localStorage.getItem("KPI-removed") !== null) {
+      cardsRemoved.value = JSON.parse(localStorage.getItem("KPI-removed"));
       addingIsEnabled.value = true;
     }
   }
@@ -90,17 +91,17 @@ function removeCard(index) {
   addingIsEnabled.value = true;
   cardsRemoved.value.push(cards.value[index]);
   cards.value.splice(index, 1);
-  localStorage.setItem("Cards", JSON.stringify(cards.value));
-  localStorage.setItem("Cards-removed", JSON.stringify(cardsRemoved.value));
+  localStorage.setItem("KPI", JSON.stringify(cards.value));
+  localStorage.setItem("KPI-removed", JSON.stringify(cardsRemoved.value));
 }
 
 function addCard() {
   cards.value.push(cardsRemoved.value[0]);
   cardsRemoved.value.splice(0, 1);
-  localStorage.setItem("Cards", JSON.stringify(cards.value));
+  localStorage.setItem("KPI", JSON.stringify(cards.value));
 
   if(cardsRemoved.value.length === 0) {
-    localStorage.removeItem("Cards-removed");
+    localStorage.removeItem("KPI-removed");
     addingIsEnabled.value = false;
   }
 }
@@ -121,15 +122,10 @@ function addCard() {
           @removeCard="removeCard($event)"
       />
 
-      <button
+      <AddCard
           v-show="addingIsEnabled"
-          class="card__add"
-          @click.stop="addCard"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48">
-          <path d="M450-200v-250H200v-60h250v-250h60v250h250v60H510v250h-60Z"/>
-        </svg>
-      </button>
+          @addCard="addCard($event)"
+      />
     </div>
   </main>
 </template>
@@ -159,29 +155,6 @@ function addCard() {
 
         &::-webkit-scrollbar {
           display: none !important;
-        }
-      }
-
-      &__add {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        aspect-ratio: 1/1;
-        background: var(--secondary);
-        border: var(--border);
-        border-radius: 10px;
-        cursor: pointer;
-
-        svg {
-          width: 100px;
-
-          path {
-            fill: var(--text-color);
-          }
-        }
-
-        &:hover {
-          background: var(--accent) !important;
         }
       }
     }
