@@ -12,6 +12,7 @@ import ProfilModify from "../views/Profil/ProfilModify.vue";
 import Logout from "../views/Connexion/Logout.vue";
 import Tags from "../views/Tags.vue";
 import Test from "../views/Test.vue";
+import Download from "../views/Download.vue";
 
 const index = createRouter(
     {
@@ -67,6 +68,10 @@ const index = createRouter(
             {
                 path: '/tags',
                 component: Tags
+            },
+            {
+                path: '/download',
+                component: Download
             },
             {
                 path: '/test',
