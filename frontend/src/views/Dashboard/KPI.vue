@@ -109,7 +109,7 @@ function addCard() {
 
 <template>
   <main class="kpi">
-    <div class="kpi__container">
+    <ul class="kpi__container">
       <Card
           v-for="(card, index) in cards"
           :key="card.title"
@@ -126,7 +126,7 @@ function addCard() {
           v-show="addingIsEnabled"
           @addCard="addCard($event)"
       />
-    </div>
+    </ul>
   </main>
 </template>
 

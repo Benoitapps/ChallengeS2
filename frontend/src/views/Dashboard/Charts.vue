@@ -107,7 +107,7 @@ function addCard() {
 
 <template>
   <main class="charts">
-    <div class="charts__container">
+    <ul class="charts__container">
       <Card
         v-for="(card, index) in cards"
         :key="card.title"
@@ -123,7 +123,7 @@ function addCard() {
           v-show="addingIsEnabled"
           @addCard="addCard($event)"
       />
-    </div>
+    </ul>
   </main>
 </template>
 

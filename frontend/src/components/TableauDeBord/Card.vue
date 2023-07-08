@@ -75,7 +75,7 @@ function removeCard() {
 </script>
 
 <template>
-  <div
+  <li
       :class="['card', {favorite: isFavorite}]"
   >
     <div class="card__head">
@@ -110,7 +110,7 @@ function removeCard() {
         </option>
       </select>
     </div>
-  </div>
+  </li>
 </template>
 
 <style scoped lang="scss">
