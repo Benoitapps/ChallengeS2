@@ -1,5 +1,5 @@
 <script setup>
-import Card from "../components/Card.vue";
+import Card from "../../components/TableauDeBord/Card.vue";
 import {onMounted, ref} from "vue";
 
 const periods = [

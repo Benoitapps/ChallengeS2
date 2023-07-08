@@ -28,6 +28,10 @@ let props = defineProps({
   periods: {
     type: Array,
     default: () => []
+  },
+  data: {
+    type: Array,
+    default: () => []
   }
 });
 
@@ -81,14 +85,15 @@ function removeCard() {
 
     <Keys
         v-if="props.type === 'keys'"
-        :title="props.title"
         :number="props.number"
         :list="props.list"
     />
 
     <Chart
         v-if="props.type === 'charts'"
+        :index="props.index"
         :title="props.title"
+        :data="props.data"
     />
 
     <div
@@ -140,6 +145,7 @@ function removeCard() {
 
     &__period {
       font-size: 1rem; // 16px
+      cursor: pointer;
     }
   }
 }

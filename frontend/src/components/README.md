@@ -32,6 +32,17 @@ Options:
 | `label`     | string | Label de valeur   |
 | `value`     | string | Valeur à afficher |
 
+### :data
+Type: `array` <br>
+Description : Les données à envoyer pour l'affichage d'un graphique.
+
+Options:
+
+| Propriété | Type | Description                                                         |
+|-----------| --- |---------------------------------------------------------------------|
+| `date`    | string | Le jour de la mesure au format jour mois année <br/>ex: `24-Apr-07` |
+| `amount` | string | Montant (de clics, sessions ..etc)                                  |
+
 ### :periods
 Type: `array` <br>
 Description : Options du select qui permet de choisir la période à afficher.

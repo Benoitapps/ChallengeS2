@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import KPI from '../views/KPI.vue';
-import Charts from "../views/Charts.vue";
-import Heatmap from "../views/Heatmap.vue";
+import KPI from '../views/TableauDeBord/KPI.vue';
+import Charts from "../views/TableauDeBord/Charts.vue";
+import Heatmap from "../views/TableauDeBord/Heatmap.vue";
 import Settings from "../views/Settings.vue";
 import Register from "../views/Connexion/Register.vue";
 import Login from "../views/Connexion/Login.vue";
