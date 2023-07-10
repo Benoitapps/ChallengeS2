@@ -1,7 +1,7 @@
 <script setup>
 import Card from "../../components/TableauDeBord/Card.vue";
 import AddCard from "../../components/TableauDeBord/AddCard.vue";
-import {onMounted, ref} from "vue";
+import {inject, onMounted, onUnmounted, ref} from "vue";
 
 const periods = [
   {
@@ -85,6 +85,13 @@ onMounted(() => {
       addingIsEnabled.value = true;
     }
   }
+
+  const sdk = inject('sdk');
+  sdk.initTracker();
+
+  onUnmounted(() => {
+    sdk.stopTracker();
+  });
 });
 
 function removeCard(index) {

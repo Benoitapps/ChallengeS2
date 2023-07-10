@@ -1,7 +1,7 @@
 <script setup>
 import Card from "../../components/TableauDeBord/Card.vue";
 import AddCard from "../../components/TableauDeBord/AddCard.vue";
-import {onMounted, ref, onUnmounted} from "vue";
+import {onMounted, ref, onUnmounted, inject} from "vue";
 
 const periods = [
   {
