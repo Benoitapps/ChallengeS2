@@ -10,37 +10,17 @@ const trackerSchema = new Schema({
 });
 
 const visitorSchema = new Schema({
-  user_token: String,
+  user_fingerprint: String,
   dateFirstVisit: Date,
   dateLastVisit: Date,
   trackers: [trackerSchema]
 });
 
-const userSchema = new Schema({
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  website: { type: String },
-  is_verified: {type: Boolean },
-  trackers: {
-    mouse: [{
-      x: Number,
-      y: Number,
-      timestamp: Number,
-      path: String
-    }],
-    clicks: [{
-      x: Number,
-      y: Number,
-      timestamp: Number,
-      target: String,
-      outerHTML: String,
-      path: String
-    }],
-    startTime: Date,
-    endTime: Date
-  }
+const userTrackerSchema = new Schema({
+  api_token: { type: String, required: true },
+  visitors: [visitorSchema],
 });
 
-userSchema.plugin(uniqueValidator);
+userTrackerSchema.plugin(uniqueValidator);
 
-module.exports = mongoose.model('Usertracker', userSchema);
+module.exports = mongoose.model('Usertracker', userTrackerSchema);

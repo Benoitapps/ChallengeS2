@@ -6,8 +6,8 @@ const cookieParser = require('cookie-parser');
 const authMiddleware = require('../middleware/authMiddleware');
 const services = '../services/user'
 const User = require("../db").User;
-{ authMiddleware }
-
+const generateToken = require('../utils/generateToken');
+const Usertracker = require('../models/Usertracker');
 
 async function signup(req, res) {
     try {
@@ -16,14 +16,22 @@ async function signup(req, res) {
             return res.status(400).json({ error: 'Missing parameters' });
         }
 
+        const apiToken = generateToken(32);
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         const user =  User.create({
             email: req.body.email,
             password: hashedPassword,
             website: req.body.website,
-
+            api_token: apiToken,
         });
-        //await user.save();
+        
+        // Save api token tag in mongodb
+        const userTracker = new Usertracker({
+            api_token: apiToken,
+            visitors: [],
+        });
+        await userTracker.save();
+
         res.status(201).json({ 
             message: 'Utilisateur créé !',
             email: user.email
