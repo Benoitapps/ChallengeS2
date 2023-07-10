@@ -94,20 +94,32 @@ export default class SDK {
         return localStorage.getItem('fingerprint');
     }
 
-    initSendData() {
-        window.addEventListener("unload", (e) => {
-            this.data.trackers.endTime = new Date();
-            this.data.user_fingerprint = this.getFingerprintUser();
-            navigator.sendBeacon('http://localhost:3000/sdk', JSON.stringify(this.data));
+    initSendData() {        
+        window.addEventListener("visibilitychange", (event) => {
+            if (event.target.visibilityState === "hidden") {
+                this.data.trackers.endTime = new Date();
+                this.data.user_fingerprint = this.getFingerprintUser();
+                // navigator.sendBeacon('http://localhost:3000/sdk', JSON.stringify(this.data));
+
+                // ! vider les data
+                console.log("send data to backend : ", this.data);
+                // let api_token = this.data.api_token;
+                // let user_fingerprint = this.data.user_fingerprint;
+
+                this.data.trackers = EMPTY_TRACKERS;
+                // this.data.api_token = api_token;
+                // this.data.user_fingerprint = user_fingerprint;
+                console.log("data is empty : ", this.data);
+            }
         });
     }
 
-    initTags() {
-        let tags = document.querySelectorAll('button[data-tag]');
-        tags.forEach((tag) => {
-            tag.addEventListener("click", (e) => {
-                console.table("click on this tag : ", e.target);
-            });
-        });
-    }
+    // initTags() {
+    //     let tags = document.querySelectorAll('button[data-tag]');
+    //     tags.forEach((tag) => {
+    //         tag.addEventListener("click", (e) => {
+    //             console.table("click on this tag : ", e.target);
+    //         });
+    //     });
+    // }
 }

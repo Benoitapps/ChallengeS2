@@ -49,12 +49,10 @@ try {
     await userTracker.save();
 
     // respond with data
-    res.status(200).json({
-        trackers: data.trackers,
-    });
+    res.status(200); // pas de json car on ne veut pas de réponse avec le sendBeacon
 } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Erreur serveur" });
+    res.status(500);
 }
 });
 
