@@ -1,4 +1,42 @@
 <script setup>
+import { ref } from 'vue';
+
+let downloadComplete = ref(false);
+let step = ref(1);
+
+const downloadSDK = () => {
+  fetch('/sdk.js')
+    .then(response => response.blob())
+    .then(blob => {
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'sdk.js');
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+
+      downloadComplete.value = true;
+    })
+    .catch(error => {
+      console.error(error);
+    });
+};
+
+const skipStep = () => {
+  if (step.value < 3) {
+    step.value++;
+  }
+};
+
+const finishTutorial = () => {
+  step.value = 1;
+};
 
 </script>
 
@@ -9,37 +47,46 @@
       <a id="downloadButton" @click="downloadSDK">Télécharger</a>
 
       <div v-if="downloadComplete" class="tutorial">
-      <transition name="fade">
-        <div v-if="step === 1" class="step">
-          <h2>Étape 1</h2>
-          <p>Explication de l'étape 1...</p>
-          <button @click="skipStep">Suivant</button>
-        </div>
-      </transition>
+        <transition name="fade">
+          <div v-if="step === 1" class="step">
+            <h2>Étape 1</h2>
+            <h1>Ajouter</h1>
+            <p>Ajoutez le fichier "sdk.js" à la racine de votre serveur.</p>
+            <button @click="skipStep" class="buttonSkip">Suivant</button>
+          </div>
+        </transition>
 
-      <transition name="fade">
-        <div v-if="step === 2" class="step">
-          <h2>Étape 2</h2>
-          <p>Explication de l'étape 2...</p>
-          <button @click="skipStep">Suivant</button>
-        </div>
-      </transition>
+        <transition name="fade">
+          <div v-if="step === 2" class="step">
+            <h2>Étape 2</h2>
+            <h1>Connecter</h1>
+            <p>Récupérez votre clé API dans votre profil, puis ajoutez-la dans votre fichier .env.</p>
+            <p>Par la suite, ajoutez "new SDK (VOTRE_CLE_API);" dans votre fichier main.js si applicable, ou bien
+              uniquement dans les pages souhaitées, avec VOTRE_CLE_API votre variable d'environnement. N'oubliez pas
+              d'inclure le fichier dans les imports.</p>
+            <p>Attention, vous ne devez JAMAIS partager votre clé API avec un tiers. Si vous pensez que ce n'est plus le
+              cas, vous pouvez re-générer une clé API dans votre profil.</p>
+            <button @click="skipStep" class="buttonSkip">Suivant</button>
+          </div>
+        </transition>
 
-      <transition name="fade">
-        <div v-if="step === 3" class="step">
-          <h2>Étape 3</h2>
-          <p>Explication de l'étape 3...</p>
-          <button @click="finishTutorial">Réinitialiser</button>
-        </div>
-      </transition>
-    </div>
+        <transition name="fade">
+          <div v-if="step === 3" class="step">
+            <h2>Étape 3</h2>
+            <h1>Utiliser</h1>
+            <p>C'est parti ! Si tout s'est bien déroulé vous pouvez déjà consulter des données dans les divers
+              statistiques proposées ; si ce n'est pas le cas veuillez réessayer ce tutoriel.</p>
+            <button @click="finishTutorial" class="buttonSkip">Recommencer</button>
+          </div>
+        </transition>
+      </div>
 
     </div>
   </main>
 </template>
 
 <style scoped lang="scss">
-  .fade-enter-active,
+.fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s;
 }
@@ -52,55 +99,27 @@
 .step {
   margin-bottom: 20px;
 }
+
+#downloadButton {
+  cursor: pointer;
+}
+
+.tutorial {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin: 20px;
+  border-radius: 8px;
+}
+
+button {
+  background-color: blue;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
 </style>
-
-<script>
-export default {
-  data() {
-    return {
-      downloadComplete: false,
-      step: 1,
-    };
-  },
-  methods: {
-    downloadSDK() {
-      fetch('/sdk.js')
-        .then(response => response.blob())
-        .then(blob => {
-          // Créer un lien temporaire pour le téléchargement
-          const url = window.URL.createObjectURL(blob);
-
-          // Créer un élément d'ancrage invisible pour le téléchargement
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', 'sdk.js');
-
-          // Ajouter l'élément d'ancrage à la page
-          document.body.appendChild(link);
-
-          // Simuler le clic sur le lien pour déclencher le téléchargement
-          link.click();
-
-          // Nettoyer les ressources
-          window.URL.revokeObjectURL(url);
-          document.body.removeChild(link);
-
-          // Après le téléchargement, définir la variable pour afficher le tutoriel
-          this.downloadComplete = true;
-        })
-        .catch(error => {
-          console.error(error);
-        });
-    },
-    skipStep() {
-      if (this.step < 3) {
-        this.step++;
-      }
-    },
-    finishTutorial() {
-      // Réinitialiser les variables ou effectuer d'autres actions après la fin du tutoriel
-      this.step = 1;
-    },
-  },
-};
-</script>
