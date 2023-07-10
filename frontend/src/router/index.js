@@ -10,6 +10,7 @@ import Admin from "../views/Admin.vue";
 import Profil from "../views/Profil/Profil.vue";
 import ProfilModify from "../views/Profil/ProfilModify.vue";
 import Logout from "../views/Connexion/Logout.vue";
+import Tags from "../views/Tags.vue";
 
 const index = createRouter(
     {
@@ -61,6 +62,10 @@ const index = createRouter(
             {
                 path: '/logout',
                 component: Logout
+            },
+            {
+                path: '/tags',
+                component: Tags
             },
         ]
     });

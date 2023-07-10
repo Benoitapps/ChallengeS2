@@ -12,6 +12,7 @@ const UserService = require("./services/user.js");
 const errorsHandler = require("./middleware/errorsHandler");
 
 
+const tagRoutes = require('./routes/tag');
 const { connect } = require('./services/mongoose');
 const { connectpg } = require('./db/');
 
@@ -35,10 +36,9 @@ app.use("/connecter", homeRoutes)
 app.use("/admin", adminRoutes)
 app.use("/sdk", sdkRoutes)
 app.use( "/users", trueUserRoutes)
-
+app.use("/tags", tagRoutes)
 
 app.use(errorsHandler);
-
 
 app.listen(3000, () => {
   console.log('Server listening on port 3000');
