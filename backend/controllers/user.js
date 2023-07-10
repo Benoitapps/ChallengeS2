@@ -7,7 +7,6 @@ const authMiddleware = require('../middleware/authMiddleware');
 const services = '../services/user'
 const User = require("../db").User;
 const generateToken = require('../utils/generateToken');
-const Usertracker = require('../models/Usertracker');
 
 async function signup(req, res) {
     try {
@@ -17,7 +16,7 @@ async function signup(req, res) {
         }
 
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        const user =  User.create({
+        const user =  await User.create({
             email: req.body.email,
             password: hashedPassword,
             website: req.body.website,
