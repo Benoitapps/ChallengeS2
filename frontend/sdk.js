@@ -7,7 +7,7 @@ const EMPTY_TRACKERS = {
 
 const EMPTY_DATA = {
     api_token: null,
-    user_token: null,
+    user_fingerprint: null,
     trackers: EMPTY_TRACKERS,
 };
 
@@ -97,10 +97,8 @@ export default class SDK {
     initSendData() {
         window.addEventListener("unload", (e) => {
             this.data.trackers.endTime = new Date();
-            this.data.user_token = this.getFingerprintUser();
-
-            let data = JSON.stringify(this.data);
-            // navigator.sendBeacon('http://localhost:3000/sdk', data);
+            this.data.user_fingerprint = this.getFingerprintUser();
+            // navigator.sendBeacon('http://localhost:3000/sdk', JSON.stringify(this.data));
         });
     }
 

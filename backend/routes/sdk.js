@@ -1,24 +1,24 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/Usertracker');
+const Usertracker = require('../models/Usertracker');
 
 router.post('/', async (req, res) => {
     let data = JSON.parse(req.body);
 
     // find user by api_token
-    const user = await User.findOne({ api_token: data.api_token });
+    const user = await Usertracker.findOne({ api_token: data.api_token });
 
     if (!user) {
         return res.status(401).json({ error: 'Utilisateur non trouvé !' });
     }
 
     // update user
-    const user_token = data.user_token;
-    const visitor = user.visitors.find((visitor) => visitor.user_token === user_token);
+    const user_fingerprint = data.user_fingerprint;
+    const visitor = user.visitors.find((visitor) => visitor.user_fingerprint === user_fingerprint);
 
     if (!visitor) {
         user.visitors.push({
-            user_token: user_token,
+            user_fingerprint: user_fingerprint,
             dateFirstVisit: new Date(),
             dateLastVisit: new Date(),
             trackers: [data.trackers]

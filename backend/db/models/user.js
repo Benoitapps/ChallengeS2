@@ -30,6 +30,10 @@ module.exports = function (connection) {
       is_verified:{
         type : DataTypes.BOOLEAN,
         defaultValue: false,
+      },
+      api_token: {
+        type: DataTypes.STRING,
+        allowNull: false,
       }
     },
     {
