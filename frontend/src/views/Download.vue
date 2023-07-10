@@ -44,11 +44,11 @@ const finishTutorial = () => {
   <main>
     <h1>Télécharger le SDK</h1>
     <div>
-      <a id="downloadButton" @click="downloadSDK">Télécharger</a>
+      <button id="downloadButton" @click="downloadSDK">Télécharger</button>
 
       <div v-if="downloadComplete" class="tutorial">
         <transition name="fade">
-          <div v-if="step === 1" class="step">
+          <div v-show="step === 1" class="step">
             <h2>Étape 1</h2>
             <h1>Ajouter</h1>
             <p>Ajoutez le fichier "sdk.js" à la racine de votre serveur.</p>
@@ -57,7 +57,7 @@ const finishTutorial = () => {
         </transition>
 
         <transition name="fade">
-          <div v-if="step === 2" class="step">
+          <div v-show="step === 2" class="step">
             <h2>Étape 2</h2>
             <h1>Connecter</h1>
             <p>Récupérez votre clé API dans votre profil, puis ajoutez-la dans votre fichier .env.</p>
@@ -71,7 +71,7 @@ const finishTutorial = () => {
         </transition>
 
         <transition name="fade">
-          <div v-if="step === 3" class="step">
+          <div v-show="step === 3" class="step">
             <h2>Étape 3</h2>
             <h1>Utiliser</h1>
             <p>C'est parti ! Si tout s'est bien déroulé vous pouvez déjà consulter des données dans les divers
