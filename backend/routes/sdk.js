@@ -6,11 +6,9 @@ const User = require("../db").User;
 router.post("/", async (req, res) => {
 try {
     let data = JSON.parse(req.body);
-    console.log(data.api_token, "---------------------------------");
 
     // find user by api_token
-    const user = await User.findOne({ api_token: data.api_token });
-
+    const user = await User.findOne({ where: { api_token: data.api_token } });
     if (!user) {
         return res.status(401).json({ error: "Utilisateur non trouvé !" });
     }
