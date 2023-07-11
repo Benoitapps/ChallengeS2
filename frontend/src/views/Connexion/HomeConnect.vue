@@ -18,6 +18,7 @@ export default {
         });
 
         if (response.ok) {
+          console.log("stocke donne");
           const data = await response.json();
           users.value = [data.email];
           localStorage.setItem('myUser', JSON.stringify(data));

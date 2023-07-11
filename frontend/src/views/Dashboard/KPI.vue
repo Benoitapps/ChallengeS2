@@ -3,6 +3,38 @@ import Card from "../../components/TableauDeBord/Card.vue";
 import AddCard from "../../components/TableauDeBord/AddCard.vue";
 import {inject, onMounted, onUnmounted, ref} from "vue";
 
+    const clics = ref('');
+    const sessions = ref('');
+    const error = ref('');
+
+    const getConnectedUser = async () => {
+      console.log("je passe");
+      try {
+        const response = await fetch('http://localhost:3000/kpi', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+           clics.value = data.totalClicks;
+           sessions.value = data.totalSessions
+            console.log(clics);
+
+        } else {
+          const data = await response.json();
+          error.value = data.error;
+        }
+      } catch (e) {
+        error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
+      }
+    
+  };
+  getConnectedUser();
+
 const periods = [
   {
     label: "Dernières 24h",
@@ -48,13 +80,13 @@ const cards = ref(
     {
       title: "Sessions",
       type: "keys",
-      number: "50",
+      number: sessions,
       periods: periods
     },
     {
       title: "Clics",
       type: "keys",
-      number: "30300",
+      number: clics,
       periods: periods
     },
     {
@@ -112,6 +144,7 @@ function addCard() {
     addingIsEnabled.value = false;
   }
 }
+
 </script>
 
 <template>

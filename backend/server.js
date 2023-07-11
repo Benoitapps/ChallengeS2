@@ -9,6 +9,7 @@ const adminRoutes = require('./routes/admin');
 const trueUserRoutes = require('./routes/trueUser');
 const GenericController = require("./controllers/generic");
 const UserService = require("./services/user.js");
+const kpiroutes = require("./routes/kpi");
 const errorsHandler = require("./middleware/errorsHandler");
 
 
@@ -37,6 +38,8 @@ app.use("/admin", adminRoutes)
 app.use("/sdk", sdkRoutes)
 app.use( "/users", trueUserRoutes)
 app.use("/tags", tagRoutes)
+app.use("/kpi", kpiroutes)
+
 
 app.use(errorsHandler);
 
