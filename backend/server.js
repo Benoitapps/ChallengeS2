@@ -7,6 +7,7 @@ const sdkRoutes = require('./routes/sdk');
 const homeRoutes = require('./routes/home');
 const adminRoutes = require('./routes/admin');
 const trueUserRoutes = require('./routes/trueUser');
+const chartRoutes = require('./routes/charts');
 const GenericController = require("./controllers/generic");
 const UserService = require("./services/user.js");
 const kpiroutes = require("./routes/kpi");
@@ -23,7 +24,7 @@ const sequelize = require('sequelize')
 
 // Use to allow cross-origin requests
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: "http://127.0.0.1:5173",
   credentials : true
 }));
 //cookies
@@ -40,6 +41,7 @@ app.use( "/users", trueUserRoutes)
 app.use("/tags", tagRoutes)
 app.use("/kpi", kpiroutes)
 
+app.use("/charts", chartRoutes)
 
 app.use(errorsHandler);
 

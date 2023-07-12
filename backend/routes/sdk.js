@@ -1,40 +1,61 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Usertracker = require('../models/Usertracker');
+const Usertracker = require("../models/Usertracker");
+const User = require("../db").User;
 
-router.post('/', async (req, res) => {
+router.post("/", async (req, res) => {
+try {
     let data = JSON.parse(req.body);
 
     // find user by api_token
-    const user = await Usertracker.findOne({ api_token: data.api_token });
-
+    const user = await User.findOne({ where: { api_token: data.api_token } });
     if (!user) {
-        return res.status(401).json({ error: 'Utilisateur non trouvé !' });
+        return res.status(401).json({ error: "Utilisateur non trouvé !" });
     }
 
-    // update user
-    const user_fingerprint = data.user_fingerprint;
-    const visitor = user.visitors.find((visitor) => visitor.user_fingerprint === user_fingerprint);
+    // update or create user tracker
+    let userTracker = await Usertracker.findOne({ api_token: data.api_token });
 
-    if (!visitor) {
-        user.visitors.push({
+    if (!userTracker) {
+        // create user tracker if it doesn't exist
+        userTracker = new Usertracker({
+            api_token: data.api_token,
+            visitors: [],
+        });
+    }
+
+    const user_fingerprint = data.user_fingerprint;
+    const visitorIndex = userTracker.visitors.findIndex(
+        (visitor) => visitor.user_fingerprint === user_fingerprint
+    );
+
+    if (visitorIndex === -1) {
+        // create a new visitor if not found
+        const newVisitor = {
             user_fingerprint: user_fingerprint,
             dateFirstVisit: new Date(),
             dateLastVisit: new Date(),
-            trackers: [data.trackers]
-        });
+            trackers: [data.trackers],
+        };
+        userTracker.visitors.push(newVisitor);
     } else {
+        // update existing visitor
+        const visitor = userTracker.visitors[visitorIndex];
         visitor.dateLastVisit = new Date();
         visitor.trackers.push(data.trackers);
     }
 
-    // save user
-    await user.save();
+    // save user tracker
+    await userTracker.save();
 
-    // res user without password
+    // respond with data
     res.status(200).json({
-        trackers: data.trackers
+        trackers: data.trackers,
     });
+} catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erreur serveur" });
+}
 });
 
 module.exports = router;

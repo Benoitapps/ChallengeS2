@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator');
 const Schema = mongoose.Schema;
 
 const trackerSchema = new Schema({
@@ -20,7 +19,5 @@ const userTrackerSchema = new Schema({
   api_token: { type: String, required: true },
   visitors: [visitorSchema],
 });
-
-userTrackerSchema.plugin(uniqueValidator);
 
 module.exports = mongoose.model('Usertracker', userTrackerSchema);

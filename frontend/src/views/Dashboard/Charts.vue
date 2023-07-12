@@ -1,7 +1,7 @@
 <script setup>
 import Card from "../../components/TableauDeBord/Card.vue";
 import AddCard from "../../components/TableauDeBord/AddCard.vue";
-import {onMounted, ref, onUnmounted, inject} from "vue";
+import {onMounted, ref, reactive, onUnmounted, inject} from "vue";
 
 const periods = [
   {
@@ -22,39 +22,26 @@ const periods = [
   }
 ];
 
-const data = ref([
-  { date: "24-Apr-07", amount: 93.24 },
-  { date: "25-Apr-07", amount: 95.35 },
-  { date: "26-Apr-07", amount: 98.84 },
-  { date: "27-Apr-07", amount: 99.92 },
-  { date: "30-Apr-07", amount: 99.8 },
-  { date: "1-May-07", amount: 99.47 },
-  { date: "2-May-07", amount: 100.39 },
-  { date: "3-May-07", amount: 100.4 },
-  { date: "4-May-07", amount: 100.81 },
-  { date: "7-May-07", amount: 103.92 },
-  { date: "8-May-07", amount: 105.06 },
-  { date: "9-May-07", amount: 106.88 },
-  { date: "10-May-07", amount: 107.34 },
+const data = reactive([
+  { date: "24/4/2007 17:05:00", amount: 16 },
+  { date: "25/4/2007 09:25:00", amount: 47 },
+  { date: "26/4/2007 12:48:00", amount: 41 },
+  { date: "27/4/2007 21:47:00", amount: 27 },
+  { date: "30/4/2007 00:54:00", amount: 87 },
+  { date: "1/5/2007 05:37:00", amount: 32 },
+  { date: "2/5/2007 05:37:00", amount: 96 },
+  { date: "3/5/2007 05:37:00", amount: 83 },
+  { date: "4/5/2007 05:37:00", amount: 99 },
+  { date: "7/5/2007 05:37:00", amount: 98 },
+  { date: "8/5/2007 05:37:00", amount: 26 },
+  { date: "9/5/2007 05:37:00", amount: 25 },
+  { date: "10/5/2007 05:37:00", amount: 50 }
 ]);
 
-const data2 = ref([
-  { date: "24-Apr-07", amount: 16 },
-  { date: "25-Apr-07", amount: 47 },
-  { date: "26-Apr-07", amount: 41 },
-  { date: "27-Apr-07", amount: 27 },
-  { date: "30-Apr-07", amount: 87 },
-  { date: "1-May-07", amount: 32 },
-  { date: "2-May-07", amount: 96 },
-  { date: "3-May-07", amount: 83 },
-  { date: "4-May-07", amount: 99 },
-  { date: "7-May-07", amount: 98 },
-  { date: "8-May-07", amount: 26 },
-  { date: "9-May-07", amount: 25 },
-  { date: "10-May-07", amount: 50 }
-]);
+const chartSessions = ref([]);
+const chartClicks = ref([]);
 
-const cards = ref(
+const cards = reactive(
     [
       {
         title: "Sessions",
@@ -65,7 +52,7 @@ const cards = ref(
       {
         title: "Clics",
         type: "charts",
-        data: data2,
+        data: chartClicks,
         periods: periods
       }
     ]
@@ -75,6 +62,48 @@ const addingIsEnabled = ref(false);
 const cardsRemoved = ref([]);
 
 onMounted(() => {
+  const datas = ref();
+  const sdk = inject('sdk');
+  sdk.initTracker();
+
+  const getData = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/charts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials : 'include',
+        body: JSON.stringify({
+          type: "clicks",
+          periods: "24h"
+        })
+      });
+
+      if (response.ok) {
+        datas.value = await response.json();
+        getCharts();
+      }
+    }
+    catch (e) {
+      console.log(e);
+    }
+  };
+
+  getData();
+
+  function getCharts() {
+    datas.value.forEach(data => {
+      let date = new Date(data.date);
+      let heureLocale = date.toLocaleString('fr-FR', { timeZone: 'Europe/Paris' });
+
+      chartClicks.value.push({
+        date: heureLocale,
+        amount: data.totalClicks
+      })
+    });
+  }
+
   if(localStorage.getItem("Charts") !== null) {
     cards.value = JSON.parse(localStorage.getItem("Charts"));
 
@@ -83,9 +112,6 @@ onMounted(() => {
       addingIsEnabled.value = true;
     }
   }
-
-  const sdk = inject('sdk');
-  sdk.initTracker();
 
   onUnmounted(() => {
     sdk.stopTracker();

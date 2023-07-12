@@ -7,7 +7,6 @@ const authMiddleware = require('../middleware/authMiddleware');
 const services = '../services/user'
 const User = require("../db").User;
 const generateToken = require('../utils/generateToken');
-const Usertracker = require('../models/Usertracker');
 
 
 
@@ -51,7 +50,6 @@ async function signup(req, res) {
 
 async function login(req, res) {
     try {
-        //console.log("je passe ");
         if (!req.body?.email || !req.body?.password) {
             return res.status(400).json({ error: 'Missing parameters' });
         }
@@ -61,7 +59,7 @@ async function login(req, res) {
         if (!user) {
             return res.status(401).json({ error: 'Utilisateur non trouvé !' });
         }
-        //console.log(user.is_verified)
+
         if (user.is_verified === false) {
             return res.status(401).json({ error: 'Votre compte doit etre valider par un admin' });
         }
@@ -72,12 +70,12 @@ async function login(req, res) {
             return res.status(401).json({ error: 'Mot de passe incorrect !' });
         }
         console.log("lID "+ user.api_token);
+
         const token = jwt.sign(
             { userToken: user.api_token },
             'RANDOM_TOKEN_SECRET',
             { expiresIn: '24h' }
         );
-        //console.log(token);
 
         res.cookie('token', token, { 
             maxAge: 24 * 60 * 60 * 1000, // Durée de validité du cookie en millisecondes (24 heures dans cet exemple)
