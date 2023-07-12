@@ -154,7 +154,7 @@ function addCard() {
 
       <AddCard
           v-show="addingIsEnabled"
-          @addCard="addCard($event)"
+          @addCard="addCard()"
       />
     </ul>
   </main>
