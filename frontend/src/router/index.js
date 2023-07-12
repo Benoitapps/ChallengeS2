@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router';
 import KPI from '../views/Dashboard/KPI.vue';
 import Charts from "../views/Dashboard/Charts.vue";
 import Heatmap from "../views/Dashboard/Heatmap.vue";
-import Settings from "../views/Settings.vue";
 import Register from "../views/Connexion/Register.vue";
 import Login from "../views/Connexion/Login.vue";
 import HomeConnect from "../views/Connexion/HomeConnect.vue";
@@ -27,10 +26,6 @@ const index = createRouter(
             {
                 path: '/heatmap',
                 component: Heatmap
-            },
-            {
-                path: '/settings',
-                component: Settings
             },
             {
                 path: '/register',
