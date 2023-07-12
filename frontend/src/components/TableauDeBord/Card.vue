@@ -35,7 +35,7 @@ let props = defineProps({
   }
 });
 
-const emits = defineEmits(["removeCard"]);
+defineEmits(["removeCard"]);
 
 const isFavorite = ref(false);
 
@@ -68,10 +68,6 @@ function toggleFavorite() {
 
   handleLocalStorage();
 }
-
-function removeCard() {
-  emits("removeCard", props.index);
-}
 </script>
 
 <template>
@@ -80,7 +76,7 @@ function removeCard() {
   >
     <div class="card__head">
       <h2>{{ props.title }}</h2>
-      <More @toggleFavorite="toggleFavorite($event)" @removeCard="removeCard($event)"/>
+      <More @toggleFavorite="toggleFavorite()" @removeCard="$emit('removeCard', props.index)"/>
     </div>
 
     <Keys
