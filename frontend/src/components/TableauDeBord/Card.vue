@@ -4,6 +4,7 @@ import Chart from "./Chart.vue";
 import More from "./More.vue";
 import {onMounted, ref} from "vue";
 
+
 let props = defineProps({
   index: {
     type: Number,
@@ -35,7 +36,9 @@ let props = defineProps({
   }
 });
 
-const emits = defineEmits(["removeCard"]);
+const emits = defineEmits(["removeCard","updatePeriod"]);
+
+const selectedPeriod = ref('');
 
 const isFavorite = ref(false);
 
@@ -71,6 +74,7 @@ function toggleFavorite() {
 
 function removeCard() {
   emits("removeCard", props.index);
+  
 }
 </script>
 
@@ -97,12 +101,9 @@ function removeCard() {
     />
 
     <div
-        class="card__footer"
-        v-if="props.periods.length > 0"
-    >
-      <select class="card__footer__period">
-        <option
-            v-for="period in props.periods"
+        class="card__footer" v-if="props.periods.length > 0">
+      <select class="card__footer__period" v-model="selectedPeriod" @change="$emit('updateSelectPeriod', selectedPeriod)">
+        <option v-for="period in props.periods"
             :key="period"
             :value="period.value"
         >

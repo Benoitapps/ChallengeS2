@@ -5,5 +5,6 @@ const auth = require('../middleware/auth');
 const authMiddleware = require('../middleware/authMiddleware');
 
 router.get('/', kpiCtrl.someOtherFunction);
+router.get('/:name/:date', kpiCtrl.someOtherFunction);
 
 module.exports = router;

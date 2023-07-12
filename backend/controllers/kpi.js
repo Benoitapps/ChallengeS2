@@ -36,7 +36,9 @@ function getConnectedUserId(req) {
     try {
       //const userToken = await getConnectedUserId(req);
       //console.log("les token est " + userToken);
-  
+      const date = req.param.date;
+      const name = req.param.
+      console.log("date : "+ req.param.name);
       //session 
       const pipeline = [
         { $match: { "api_token": "ikb3yt96da5pz1d47x5wv1dn12v3voly" } },
