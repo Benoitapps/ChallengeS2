@@ -22,22 +22,6 @@ const periods = [
   }
 ];
 
-const data = reactive([
-  { date: "2007-04-24T17:05:00.188Z", amount: 16 },
-  { date: "2007-04-25T09:25:00.188Z", amount: 47 },
-  { date: "2007-04-26T12:48:00.188Z", amount: 41 },
-  { date: "2007-04-27T21:47:00.188Z", amount: 27 },
-  { date: "2007-04-30T00:54:00.188Z", amount: 87 },
-  { date: "2007-05-01T05:37:00.188Z", amount: 32 },
-  { date: "2007-05-02T05:37:00.188Z", amount: 96 },
-  { date: "2007-05-03T05:37:00.188Z", amount: 83 },
-  { date: "2007-05-04T05:37:00.188Z", amount: 99 },
-  { date: "2007-05-07T05:37:00.188Z", amount: 98 },
-  { date: "2007-05-08T05:37:00.188Z", amount: 26 },
-  { date: "2007-05-09T05:37:00.188Z", amount: 25 },
-  { date: "2007-05-10T05:37:00.188Z", amount: 50 }
-]);
-
 const chartSessions = ref([]);
 const chartClicks = ref([]);
 
@@ -46,7 +30,7 @@ const cards = reactive(
       {
         title: "Sessions",
         type: "charts",
-        data: data,
+        data: chartSessions,
         periods: periods
       },
       {
@@ -58,11 +42,10 @@ const cards = reactive(
     ]
 );
 
-const datas = ref();
+const datas = ref([]);
 const addingIsEnabled = ref(false);
 const cardsRemoved = ref([]);
 const title = ref('');
-const type = ref('');
 const period = ref('');
 
 onMounted(() => {
@@ -73,29 +56,31 @@ onMounted(() => {
     period.value = periods[0].value;
   }
 
-  const getData = async () => {
-    try {
-      const response = await fetch('http://localhost:3000/charts', {
+  function getData() {
+    cards.forEach(card => {
+      fetch('http://localhost:3000/charts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         credentials : 'include',
         body: JSON.stringify({
-          type: "clicks",
+          title: card.title.toLowerCase(),
           periods: period.value
         })
-      });
+      })
+        .then(response => response.json())
+        .then(data => {
+          if(datas.value.length > 0) {
+            datas.value.splice(0, datas.value.length);
+          }
 
-      if (response.ok) {
-        datas.value = await response.json();
-        getCharts();
-      }
-    }
-    catch (e) {
-      console.log(e);
-    }
-  };
+          datas.value = data;
+          getCharts(card.title.toLowerCase());
+        })
+        .catch(e => console.log(e));
+    });
+  }
 
   getData();
 
@@ -113,15 +98,22 @@ onMounted(() => {
   });
 });
 
-function getCharts() {
+function getCharts(title) {
+  chartSessions.value.splice(0, chartClicks.value.length);
   chartClicks.value.splice(0, chartClicks.value.length);
 
   datas.value.forEach(data => {
-    console.log(data.date);
-    chartClicks.value.push({
-      date: data.date,
-      amount: data.totalClicks
-    })
+    if(title === 'sessions') {
+      chartSessions.value.push({
+        date: data.date,
+        amount: data.totalSessions
+      })
+    } else if(title === 'clics') {
+      chartClicks.value.push({
+        date: data.date,
+        amount: data.totalClicks
+      })
+    }
   });
 }
 
@@ -148,31 +140,27 @@ const updateChart = async (values) => {
   title.value = values[0].toLowerCase();
   period.value = values[1];
 
-  if(title.value === 'clics') {
-    type.value = 'clicks';
-  }
+  fetch('http://localhost:3000/charts', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials : 'include',
+    body: JSON.stringify({
+      title: title.value.toLowerCase(),
+      periods: period.value
+    })
+  })
+    .then(response => response.json())
+    .then(data => {
+      if(datas.value.length > 0) {
+        datas.value.splice(0, datas.value.length);
+      }
 
-  try {
-    const response = await fetch('http://localhost:3000/charts', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials : 'include',
-      body: JSON.stringify({
-        type: type.value,
-        periods: period.value
-      })
-    });
-
-    if (response.ok) {
-      datas.value = await response.json();
-      getCharts();
-    }
-  }
-  catch (e) {
-    console.log(e);
-  }
+      datas.value = data;
+      getCharts(title.value.toLowerCase());
+    })
+    .catch(e => console.log(e));
 }
 </script>
 

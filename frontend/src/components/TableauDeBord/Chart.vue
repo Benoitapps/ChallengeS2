@@ -27,7 +27,6 @@ watch(props.data, () => {
   generateChart();
 });
 
-
 const xMarker = ref(0);
 const yMarker = ref(0);
 const opacityMarker = ref(0);
@@ -39,10 +38,14 @@ let dimensions = {
 }
 
 function generateChart() {
+  xMarker.value = 0;
+  yMarker.value = 0;
+  opacityMarker.value = 0;
+
   dimensions = {
     width: document.querySelector("[data-chart]").clientWidth,
     height: document.querySelector("[data-chart]").clientHeight,
-    marginTop: 8
+    marginTop: 0
   }
 
   const xAccessor = (d) => d.date = new Date(d.date)
