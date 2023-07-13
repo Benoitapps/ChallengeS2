@@ -59,3 +59,13 @@ Description : Evenement qui permet de supprimer la card.
 
 ### @addCard
 Description : Evenement qui permet d'ajouter la card.
+
+### @updatePeriod
+Description : Evenement qui permet de mettre à jour la période.
+
+Valeurs à récupérer:
+
+| Propriété  | Type | Description          |
+|------------| --- |----------------------|
+| `array[0]` | string | Titre de la card     |
+| `array[1]` | string | Période sélectionnée |

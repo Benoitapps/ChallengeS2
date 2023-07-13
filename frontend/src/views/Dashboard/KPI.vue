@@ -176,7 +176,7 @@ function updatePeriod(card, selectedPeriod) {
         @removeCard="removeCard($event)"
       >
       </Card>
-      <AddCard v-show="addingIsEnabled" @addCard="addCard($event)" />
+      <AddCard v-show="addingIsEnabled" @addCard="addCard()" />
     </ul>
   </main>
 </template>

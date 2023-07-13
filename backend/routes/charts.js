@@ -6,7 +6,7 @@ router.post('/', (req, res) => {
     let unit = '';
     let amount = 0;
 
-    if(!req.body?.type || !req.body?.periods) {
+    if(!req.body?.title || !req.body?.periods) {
         return res.status(400).json({ error: 'Missing parameters' });
     } else {
         if(req.body?.periods === '24h') {
@@ -23,7 +23,7 @@ router.post('/', (req, res) => {
             amount = 12;
         }
 
-        if(req.body?.type === 'clicks') {
+        if(req.body?.title === 'clics') {
             usertrackers.aggregate(
                 [
                     {
@@ -66,6 +66,52 @@ router.post('/', (req, res) => {
                 ]
             )
                 .then(clicks => res.json(clicks))
+                .catch(err => res.status(400).json('Error: ' + err));
+        }
+
+        if(req.body?.title === 'sessions') {
+            usertrackers.aggregate(
+                [
+                    {
+                        $match: {
+                            api_token:
+                                "ikb3yt96da5pz1d47x5wv1dn12v3voly",
+                        },
+                    },
+                    {
+                        $unwind: "$visitors",
+                    },
+                    {
+                        $unwind: "$visitors.trackers",
+                    },
+                    {
+                        $match: {
+                            $expr: {
+                                $gte: [
+                                    "$visitors.trackers.endTime",
+                                    {
+                                        $dateSubtract: {
+                                            startDate: "$$NOW",
+                                            unit: unit,
+                                            amount: amount,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                    {
+                        $project: {
+                            _id: "$_id",
+                            totalSessions: {
+                                $sum: 1
+                            },
+                            date: "$visitors.trackers.endTime",
+                        },
+                    },
+                ]
+            )
+                .then(sessions => res.json(sessions))
                 .catch(err => res.status(400).json('Error: ' + err));
         }
     }

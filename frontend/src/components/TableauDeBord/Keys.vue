@@ -80,5 +80,21 @@ const props = defineProps({
       }
     }
   }
+
+  &.favorite {
+    &__body {
+      scrollbar-color: var(--secondary) var(--primary);
+
+      &::-webkit-scrollbar {
+        &-thumb {
+          background: var(--secondary);
+        }
+
+        &-track {
+          background: var(--primary);
+        }
+      }
+    }
+  }
 }
 </style>

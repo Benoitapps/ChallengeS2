@@ -22,22 +22,6 @@ const periods = [
   }
 ];
 
-const data = reactive([
-  { date: "24/4/2007 17:05:00", amount: 16 },
-  { date: "25/4/2007 09:25:00", amount: 47 },
-  { date: "26/4/2007 12:48:00", amount: 41 },
-  { date: "27/4/2007 21:47:00", amount: 27 },
-  { date: "30/4/2007 00:54:00", amount: 87 },
-  { date: "1/5/2007 05:37:00", amount: 32 },
-  { date: "2/5/2007 05:37:00", amount: 96 },
-  { date: "3/5/2007 05:37:00", amount: 83 },
-  { date: "4/5/2007 05:37:00", amount: 99 },
-  { date: "7/5/2007 05:37:00", amount: 98 },
-  { date: "8/5/2007 05:37:00", amount: 26 },
-  { date: "9/5/2007 05:37:00", amount: 25 },
-  { date: "10/5/2007 05:37:00", amount: 50 }
-]);
-
 const chartSessions = ref([]);
 const chartClicks = ref([]);
 
@@ -46,7 +30,7 @@ const cards = reactive(
       {
         title: "Sessions",
         type: "charts",
-        data: data,
+        data: chartSessions,
         periods: periods
       },
       {
@@ -58,51 +42,47 @@ const cards = reactive(
     ]
 );
 
+const datas = ref([]);
 const addingIsEnabled = ref(false);
 const cardsRemoved = ref([]);
+const title = ref('');
+const period = ref('');
 
 onMounted(() => {
-  const datas = ref();
   const sdk = inject('sdk');
   sdk.initTracker();
 
-  const getData = async () => {
-    try {
-      const response = await fetch('http://localhost:3000/charts', {
+  if(period.value === '') {
+    period.value = periods[0].value;
+  }
+
+  function getData() {
+    cards.forEach(card => {
+      fetch('http://localhost:3000/charts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         credentials : 'include',
         body: JSON.stringify({
-          type: "clicks",
-          periods: "24h"
+          title: card.title.toLowerCase(),
+          periods: period.value
         })
-      });
-
-      if (response.ok) {
-        datas.value = await response.json();
-        getCharts();
-      }
-    }
-    catch (e) {
-      console.log(e);
-    }
-  };
-
-  getData();
-
-  function getCharts() {
-    datas.value.forEach(data => {
-      let date = new Date(data.date);
-      let heureLocale = date.toLocaleString('fr-FR', { timeZone: 'Europe/Paris' });
-
-      chartClicks.value.push({
-        date: heureLocale,
-        amount: data.totalClicks
       })
+        .then(response => response.json())
+        .then(data => {
+          if(datas.value.length > 0) {
+            datas.value.splice(0, datas.value.length);
+          }
+
+          datas.value = data;
+          getCharts(card.title.toLowerCase());
+        })
+        .catch(e => console.log(e));
     });
   }
+
+  getData();
 
   if(localStorage.getItem("Charts") !== null) {
     cards.value = JSON.parse(localStorage.getItem("Charts"));
@@ -117,6 +97,25 @@ onMounted(() => {
     sdk.stopTracker();
   });
 });
+
+function getCharts(title) {
+  chartSessions.value.splice(0, chartClicks.value.length);
+  chartClicks.value.splice(0, chartClicks.value.length);
+
+  datas.value.forEach(data => {
+    if(title === 'sessions') {
+      chartSessions.value.push({
+        date: data.date,
+        amount: data.totalSessions
+      })
+    } else if(title === 'clics') {
+      chartClicks.value.push({
+        date: data.date,
+        amount: data.totalClicks
+      })
+    }
+  });
+}
 
 function removeCard(index) {
   addingIsEnabled.value = true;
@@ -136,6 +135,33 @@ function addCard() {
     addingIsEnabled.value = false;
   }
 }
+
+const updateChart = async (values) => {
+  title.value = values[0].toLowerCase();
+  period.value = values[1];
+
+  fetch('http://localhost:3000/charts', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials : 'include',
+    body: JSON.stringify({
+      title: title.value.toLowerCase(),
+      periods: period.value
+    })
+  })
+    .then(response => response.json())
+    .then(data => {
+      if(datas.value.length > 0) {
+        datas.value.splice(0, datas.value.length);
+      }
+
+      datas.value = data;
+      getCharts(title.value.toLowerCase());
+    })
+    .catch(e => console.log(e));
+}
 </script>
 
 <template>
@@ -150,11 +176,12 @@ function addCard() {
         :periods="card.periods"
         :data="card.data"
         @removeCard="removeCard($event)"
+        @updatePeriod="updateChart($event)"
       />
 
       <AddCard
           v-show="addingIsEnabled"
-          @addCard="addCard($event)"
+          @addCard="addCard()"
       />
     </ul>
   </main>

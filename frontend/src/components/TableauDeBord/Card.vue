@@ -2,7 +2,7 @@
 import Keys from "./Keys.vue";
 import Chart from "./Chart.vue";
 import More from "./More.vue";
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 
 
 let props = defineProps({
@@ -41,6 +41,7 @@ const emits = defineEmits(["removeCard","updatePeriod"]);
 const selectedPeriod = ref('');
 
 const isFavorite = ref(false);
+const periodSelected = ref(props.periods[0].value);
 
 onMounted(() => {
   if(localStorage.getItem(`${props.type}-${props.title}`) !== null) {
@@ -68,7 +69,6 @@ function handleLocalStorage() {
 
 function toggleFavorite() {
   isFavorite.value = !isFavorite.value;
-
   handleLocalStorage();
 }
 
@@ -76,6 +76,9 @@ function removeCard() {
   emits("removeCard", props.index);
   
 }
+watch(periodSelected, (newValue) => {
+  emit("updatePeriod", [props.title, newValue]);
+});
 </script>
 
 <template>
@@ -84,7 +87,7 @@ function removeCard() {
   >
     <div class="card__head">
       <h2>{{ props.title }}</h2>
-      <More @toggleFavorite="toggleFavorite($event)" @removeCard="removeCard($event)"/>
+      <More @toggleFavorite="toggleFavorite()" @removeCard="$emit('removeCard', props.index)"/>
     </div>
 
     <Keys

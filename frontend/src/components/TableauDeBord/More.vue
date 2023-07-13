@@ -1,21 +1,11 @@
 <script setup>
 import {ref} from "vue";
 
-const emits = defineEmits(["toggleFavorite", "removeCard"]);
+defineEmits(["toggleFavorite", "removeCard"]);
 const popupOpen = ref(false);
 
 function togglePopup() {
   popupOpen.value = !popupOpen.value;
-}
-
-function toggleFavorite() {
-  emits("toggleFavorite");
-  togglePopup();
-}
-
-function removeCard() {
-  emits("removeCard");
-  togglePopup();
 }
 
 window.addEventListener("click", function() {
@@ -35,13 +25,13 @@ window.addEventListener("click", function() {
         class="more__popup"
         v-show="popupOpen"
     >
-      <li @click.stop="toggleFavorite()">
+      <li @click.stop="$emit('toggleFavorite'); togglePopup()">
         <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48">
           <path d="m323-205 157-94 157 95-42-178 138-120-182-16-71-168-71 167-182 16 138 120-42 178ZM233-80l65-281L80-550l288-25 112-265 112 265 288 25-218 189 65 281-247-149L233-80Zm247-355Z"/>
         </svg>
         <p>Favori</p>
       </li>
-      <li @click.stop="removeCard()">
+      <li @click.stop="$emit('removeCard'); togglePopup()">
         <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48">
           <path d="M261-120q-24.75 0-42.375-17.625T201-180v-570h-41v-60h188v-30h264v30h188v60h-41v570q0 24-18 42t-42 18H261Zm438-630H261v570h438v-570ZM367-266h60v-399h-60v399Zm166 0h60v-399h-60v399ZM261-750v570-570Z"/>
         </svg>
