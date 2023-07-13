@@ -14,12 +14,14 @@ const props = defineProps({
 });
 
 onMounted(() => {
-  generateChart();
-
-  window.addEventListener("resize", function () {
-    d3.select(`#chart-${props.index} svg`).selectAll("path").remove();
+  if(props.data.length > 0) {
     generateChart();
-  });
+
+    window.addEventListener("resize", function () {
+      d3.select(`#chart-${props.index} svg`).selectAll("path").remove();
+      generateChart();
+    });
+  }
 });
 
 watch(props.data, () => {
@@ -38,10 +40,6 @@ let dimensions = {
 }
 
 function generateChart() {
-  xMarker.value = 0;
-  yMarker.value = 0;
-  opacityMarker.value = 0;
-
   dimensions = {
     width: document.querySelector("[data-chart]").clientWidth,
     height: document.querySelector("[data-chart]").clientHeight,
@@ -143,9 +141,7 @@ function generateChart() {
     </div>
 
     <figure data-chart>
-      <svg
-          @mousemove=""
-      >
+      <svg>
         <line
             :x1="xMarker"
             :x2="xMarker"
@@ -183,6 +179,7 @@ function generateChart() {
       position: absolute;
       top: 0;
       left: 0;
+      pointer-events: none;
     }
 
     [data-chart] {
