@@ -55,79 +55,75 @@ function generateChart() {
     return `${formatDate(to)}`
   }
 
-  const draw = (data) => {
-    const svg = d3
-        .select(`#chart-${props.index} svg`)
-        .attr('width', dimensions.width)
-        .attr('height', dimensions.height)
-        .attr('viewBox', `0 0 ${dimensions.width} ${dimensions.height}`)
+  const svg = d3
+      .select(`#chart-${props.index} svg`)
+      .attr('width', dimensions.width)
+      .attr('height', dimensions.height)
+      .attr('viewBox', `0 0 ${dimensions.width} ${dimensions.height}`)
 
-    const xDomain = d3.extent(data, xAccessor)
-    const yDomain = [0, d3.max(data, yAccessor)]
+  const xDomain = d3.extent(props.data, xAccessor)
+  const yDomain = [0, d3.max(props.data, yAccessor)]
 
-    const xScale = d3.scaleTime()
-        .domain(xDomain)
-        .range([0, dimensions.width])
+  const xScale = d3.scaleTime()
+      .domain(xDomain)
+      .range([0, dimensions.width])
 
-    const yScale = d3.scaleLinear()
-        .domain(yDomain)
-        .range([dimensions.height, dimensions.marginTop])
+  const yScale = d3.scaleLinear()
+      .domain(yDomain)
+      .range([dimensions.height, dimensions.marginTop])
 
-    /* Area */
-    const areaGenerator = d3.area()
-        .x((d) => xScale(xAccessor(d)))
-        .y1((d) => yScale(yAccessor(d)))
-        .y0(dimensions.height)
-        .curve(d3.curveBumpX)
+  /* Area */
+  const areaGenerator = d3.area()
+      .x((d) => xScale(xAccessor(d)))
+      .y1((d) => yScale(yAccessor(d)))
+      .y0(dimensions.height)
+      .curve(d3.curveBumpX)
 
-    const area = svg
-        .insert('path', 'line')
-        .datum(data)
-        .attr('d', areaGenerator)
-        .attr('fill', 'var(--chart-fill)')
+  const area = svg
+      .insert('path', 'line')
+      .datum(props.data)
+      .attr('d', areaGenerator)
+      .attr('fill', 'var(--chart-fill)')
 
-    /* Line */
-    const lineGenerator = d3.line()
-        .x((d) => xScale(xAccessor(d)))
-        .y((d) => yScale(yAccessor(d)))
-        .curve(d3.curveBumpX)
+  /* Line */
+  const lineGenerator = d3.line()
+      .x((d) => xScale(xAccessor(d)))
+      .y((d) => yScale(yAccessor(d)))
+      .curve(d3.curveBumpX)
 
-    const line = svg
-        .insert('path', 'line')
-        .datum(data)
-        .attr('d', lineGenerator)
-        .attr('stroke', 'var(--chart-stroke)')
-        .attr('stroke-width', 'var(--chart-stroke-width)')
-        .attr('stroke-linejoin', 'round')
-        .attr('fill', 'none')
+  const line = svg
+      .insert('path', 'line')
+      .datum(props.data)
+      .attr('d', lineGenerator)
+      .attr('stroke', 'var(--chart-stroke)')
+      .attr('stroke-width', 'var(--chart-stroke-width)')
+      .attr('stroke-linejoin', 'round')
+      .attr('fill', 'none')
 
-    /* Bisector */
-    const bisect = d3.bisector(xAccessor)
+  /* Bisector */
+  const bisect = d3.bisector(xAccessor)
 
-    /* Events */
-    svg.on('mousemove', (e) => {
-      const [posX, posY] = d3.pointer(e);
-      const date = xScale.invert(posX);
+  /* Events */
+  svg.on('mousemove', (e) => {
+    const [posX, posY] = d3.pointer(e);
+    const date = xScale.invert(posX);
 
-      const index = bisect.center(data, date);
-      const d = data[index];
+    const index = bisect.center(props.data, date);
+    const d = props.data[index];
 
-      xMarker.value = xScale(xAccessor(d));
-      yMarker.value = yScale(yAccessor(d));
-      opacityMarker.value = 1;
+    xMarker.value = xScale(xAccessor(d));
+    yMarker.value = yScale(yAccessor(d));
+    opacityMarker.value = 1;
 
-      d3.select(`#chart-${props.index} [data-heading]`).text(getText(data, d));
-      d3.select(`#chart-${props.index} [data-total]`).text(yAccessor(d));
-    })
+    d3.select(`#chart-${props.index} [data-heading]`).text(getText(props.data, d));
+    d3.select(`#chart-${props.index} [data-total]`).text(yAccessor(d));
+  })
 
-    svg.on('mouseleave', () => {
-      opacityMarker.value = 0;
-      d3.select(`#chart-${props.index} [data-heading]`).text('');
-      d3.select(`#chart-${props.index} [data-total]`).text('');
-    })
-  }
-
-  draw(props.data);
+  svg.on('mouseleave', () => {
+    opacityMarker.value = 0;
+    d3.select(`#chart-${props.index} [data-heading]`).text('');
+    d3.select(`#chart-${props.index} [data-total]`).text('');
+  })
 }
 </script>
 
@@ -144,7 +140,9 @@ function generateChart() {
     </div>
 
     <figure data-chart>
-      <svg>
+      <svg
+          @mousemove=""
+      >
         <line
             :x1="xMarker"
             :x2="xMarker"
@@ -197,6 +195,18 @@ function generateChart() {
 
   &.favorite {
     .card__body {
+      scrollbar-color: var(--secondary) var(--primary);
+
+      &::-webkit-scrollbar {
+        &-thumb {
+          background: var(--secondary);
+        }
+
+        &-track {
+          background: var(--primary);
+        }
+      }
+
       [data-chart] {
         svg {
           --chart-stroke: var(--secondary) !important;
