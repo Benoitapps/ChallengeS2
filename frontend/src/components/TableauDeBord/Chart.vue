@@ -1,6 +1,6 @@
 <script setup>
 import * as d3 from "d3";
-import {onMounted, computed, watch, ref} from "vue";
+import {onMounted, watch, ref} from "vue";
 
 const props = defineProps({
   index: {
@@ -17,89 +17,191 @@ onMounted(() => {
   generateChart();
 
   window.addEventListener("resize", function () {
-    d3.select(`#chart-${props.index}`).selectAll("*").remove();
+    d3.select(`#chart-${props.index} svg`).selectAll("path").remove();
     generateChart();
   });
 });
 
 watch(props.data, () => {
-  d3.select(`#chart-${props.index}`).selectAll("*").remove();
+  d3.select(`#chart-${props.index} svg`).selectAll("path").remove();
   generateChart();
 });
 
+
+const xMarker = ref(0);
+const yMarker = ref(0);
+const opacityMarker = ref(0);
+
+let dimensions = {
+  width: 0,
+  height: 0,
+  marginTop: 0
+}
+
 function generateChart() {
-  console.log(props.data);
-  const width = document.querySelector(".card__body").clientWidth
-  const height = document.querySelector(".card__body").clientHeight - 18;
-  const svg = d3.select(`#chart-${props.index}`).attr("width", width).attr("height", height);
-  const g = svg.append("g");
-  const parseTime = d3.utcParse("%d/%m/%Y %H:%M:%S");
-  const x = d3
-      .scaleTime()
-      .domain(
-          d3.extent(props.data, function (d) {
-            return parseTime(d.date);
-          })
-      )
-      .rangeRound([0, width]);
+  dimensions = {
+    width: document.querySelector("[data-chart]").clientWidth,
+    height: document.querySelector("[data-chart]").clientHeight,
+    marginTop: 8
+  }
 
-  const y = d3
-      .scaleLinear()
-      .domain(
-          d3.extent(props.data, function (d) {
-            return d.amount;
-          })
-      )
-      .rangeRound([height, 0]);
-  const line = d3.line()
-      .x(function (d) {
-        return x(parseTime(d.date));
-      })
-      .y(function (d) {
-        return y(d.amount);
-      });
+  const xAccessor = (d) => d.date = new Date(d.date)
+  const yAccessor = (d) => d.amount
+  const formatDate = d3.timeFormat('%d-%m-%Y')
 
-  g.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
-  g.append("path")
-      .datum(props.data)
-      .attr("fill", "none")
-      .attr("stroke", "var(--chart-stroke)")
-      .attr("stroke-width", "var(--chart-stroke-width)")
-      .attr("stroke-linejoin", "round")
-      .attr("d", line)
-  ;
+  const getText = (data, d) => {
+    const to = xAccessor(d);
+
+    return `${formatDate(to)}`
+  }
+
+  const draw = (data) => {
+    const svg = d3
+        .select(`#chart-${props.index} svg`)
+        .attr('width', dimensions.width)
+        .attr('height', dimensions.height)
+        .attr('viewBox', `0 0 ${dimensions.width} ${dimensions.height}`)
+
+    const xDomain = d3.extent(data, xAccessor)
+    const yDomain = [0, d3.max(data, yAccessor)]
+
+    const xScale = d3.scaleTime()
+        .domain(xDomain)
+        .range([0, dimensions.width])
+
+    const yScale = d3.scaleLinear()
+        .domain(yDomain)
+        .range([dimensions.height, dimensions.marginTop])
+
+    /* Area */
+    const areaGenerator = d3.area()
+        .x((d) => xScale(xAccessor(d)))
+        .y1((d) => yScale(yAccessor(d)))
+        .y0(dimensions.height)
+        .curve(d3.curveBumpX)
+
+    const area = svg
+        .insert('path', 'line')
+        .datum(data)
+        .attr('d', areaGenerator)
+        .attr('fill', 'var(--chart-fill)')
+
+    /* Line */
+    const lineGenerator = d3.line()
+        .x((d) => xScale(xAccessor(d)))
+        .y((d) => yScale(yAccessor(d)))
+        .curve(d3.curveBumpX)
+
+    const line = svg
+        .insert('path', 'line')
+        .datum(data)
+        .attr('d', lineGenerator)
+        .attr('stroke', 'var(--chart-stroke)')
+        .attr('stroke-width', 'var(--chart-stroke-width)')
+        .attr('stroke-linejoin', 'round')
+        .attr('fill', 'none')
+
+    /* Bisector */
+    const bisect = d3.bisector(xAccessor)
+
+    /* Events */
+    svg.on('mousemove', (e) => {
+      const [posX, posY] = d3.pointer(e);
+      const date = xScale.invert(posX);
+
+      const index = bisect.center(data, date);
+      const d = data[index];
+
+      xMarker.value = xScale(xAccessor(d));
+      yMarker.value = yScale(yAccessor(d));
+      opacityMarker.value = 1;
+
+      d3.select(`#chart-${props.index} [data-heading]`).text(getText(data, d));
+      d3.select(`#chart-${props.index} [data-total]`).text(yAccessor(d));
+    })
+
+    svg.on('mouseleave', () => {
+      opacityMarker.value = 0;
+      d3.select(`#chart-${props.index} [data-heading]`).text('');
+      d3.select(`#chart-${props.index} [data-total]`).text('');
+    })
+  }
+
+  draw(props.data);
 }
 </script>
 
 <template>
   <div
       class="card__body"
+      :id="'chart-' + props.index"
   >
-    <svg :id="'chart-' + props.index"></svg>
+    <div class="card__body__infos">
+      <h3 data-heading></h3>
+      <div class="chart-info">
+        <p data-total></p>
+      </div>
+    </div>
+
+    <figure data-chart>
+      <svg>
+        <line
+            :x1="xMarker"
+            :x2="xMarker"
+            y1="0"
+            :y2="dimensions.height"
+            stroke-width="var(--chart-stroke-width)"
+            stroke="var(--chart-stroke)"
+            :opacity="opacityMarker"
+        >
+        </line>
+        <circle
+            :cx="xMarker"
+            :cy="yMarker"
+            r="8"
+            fill="var(--chart-stroke)"
+            :opacity="opacityMarker"
+        >
+        </circle>
+      </svg>
+    </figure>
   </div>
 </template>
 
 <style scoped lang="scss">
 .card  {
   &__body {
+    position: relative;
     display: flex;
     flex-direction: column;
     flex: 1;
     overflow-y: auto;
     gap: 1.25rem; // 20px
 
-    svg {
+    &__infos {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    [data-chart] {
       flex: 1;
-      --chart-stroke: var(--primary);
-      --chart-stroke-width: 3;
+
+      svg {
+        --chart-stroke: var(--primary);
+        --chart-stroke-width: 3;
+        --chart-fill: var(--accent);
+      }
     }
   }
 
   &.favorite {
-    svg {
-      --chart-stroke: var(--secondary);
+    .card__body {
+      [data-chart] {
+        svg {
+          --chart-stroke: var(--secondary) !important;
+        }
+      }
     }
   }
 }

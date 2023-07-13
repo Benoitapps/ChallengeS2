@@ -2,7 +2,7 @@
 import Keys from "./Keys.vue";
 import Chart from "./Chart.vue";
 import More from "./More.vue";
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 
 let props = defineProps({
   index: {
@@ -35,9 +35,10 @@ let props = defineProps({
   }
 });
 
-defineEmits(["removeCard"]);
+const emit = defineEmits(["removeCard", "updatePeriod"]);
 
 const isFavorite = ref(false);
+const periodSelected = ref(props.periods[0].value);
 
 onMounted(() => {
   if(localStorage.getItem(`${props.type}-${props.title}`) !== null) {
@@ -65,9 +66,12 @@ function handleLocalStorage() {
 
 function toggleFavorite() {
   isFavorite.value = !isFavorite.value;
-
   handleLocalStorage();
 }
+
+watch(periodSelected, (newValue) => {
+  emit("updatePeriod", [props.title, newValue]);
+});
 </script>
 
 <template>
@@ -96,7 +100,7 @@ function toggleFavorite() {
         class="card__footer"
         v-if="props.periods.length > 0"
     >
-      <select class="card__footer__period">
+      <select class="card__footer__period" v-model="periodSelected">
         <option
             v-for="period in props.periods"
             :key="period"
