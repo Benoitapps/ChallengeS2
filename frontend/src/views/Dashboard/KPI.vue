@@ -53,7 +53,7 @@ const visitedPages = ref([
 
 const cards = ref([
   {
-    id : "sessions",
+    id : "Sessions",
     title: "Sessions",
     type: "keys",
     number: sessions,
@@ -61,7 +61,7 @@ const cards = ref([
     period: "24h",
   },
   {
-    id : "clics",
+    id : "Clics",
     title: "Clics",
     type: "keys",
     number: clics,
@@ -107,7 +107,7 @@ const getKPI = async () => {
       if(nameCard.value != "test"){
         console.log("post a ete realiser aec succes");
         cards.value.forEach(element => {
-          console.log(nameCard.value+ " et "+element.id);
+          //console.log(nameCard.value+ " et "+element.id);
           if(nameCard.value == element.id){
             element.number = data.res;
           }
