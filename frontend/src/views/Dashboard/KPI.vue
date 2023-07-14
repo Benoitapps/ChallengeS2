@@ -58,7 +58,7 @@ const cards = ref([
     type: "keys",
     number: sessions,
     periods: periods,
-    period: "24h",
+
   },
   {
     id : "Clics",
@@ -66,7 +66,7 @@ const cards = ref([
     type: "keys",
     number: clics,
     periods: periods,
-    period: "24h",
+
   },
   {
     title: "Pages visitées",
@@ -74,7 +74,7 @@ const cards = ref([
     number: "100",
     list: visitedPages.value,
     periods: periods,
-    period: "24h",
+
   },
   {
     id : "Moyennedessessions",
@@ -82,7 +82,7 @@ const cards = ref([
     type: "keys",
     number: moysessions,
     periods: periods,
-    period: "24h",
+
   },
 ]);
 
