@@ -10,6 +10,10 @@ let props = defineProps({
     type: Number,
     default: 0
   },
+  id: {
+    type: String,
+    default: ""
+  },
   type: {
     type: String,
     default: "keys"

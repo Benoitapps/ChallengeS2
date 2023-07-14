@@ -5,6 +5,7 @@ import { inject, onMounted, onUnmounted, ref } from "vue";
 
 const clics = ref("");
 const sessions = ref("");
+const moysessions = ref("");
 const error = ref("");
 const nameCard = ref("");
 const resperiod = ref("");
@@ -52,6 +53,7 @@ const visitedPages = ref([
 
 const cards = ref([
   {
+    id : "sessions",
     title: "Sessions",
     type: "keys",
     number: sessions,
@@ -59,6 +61,7 @@ const cards = ref([
     period: "24h",
   },
   {
+    id : "clics",
     title: "Clics",
     type: "keys",
     number: clics,
@@ -74,9 +77,10 @@ const cards = ref([
     period: "24h",
   },
   {
+    id : "Moyennedessessions",
     title: "Moyenne des sessions",
     type: "keys",
-    number: "03m 30s",
+    number: moysessions,
     periods: periods,
     period: "24h",
   },
@@ -103,14 +107,15 @@ const getKPI = async () => {
       if(nameCard.value != "test"){
         console.log("post a ete realiser aec succes");
         cards.value.forEach(element => {
-          console.log(nameCard.value+ " et "+element.title);
-          if(nameCard.value == element.title){
+          console.log(nameCard.value+ " et "+element.id);
+          if(nameCard.value == element.id){
             element.number = data.res;
           }
         });
       }else{
         clics.value = data.totalClicks;
-        sessions.value = data.totalSessions
+        sessions.value = data.totalSessions;
+        moysessions.value = data.resMoyenne;
 
       console.log(response);
       }
@@ -172,7 +177,7 @@ function addCard() {
 function updatePeriod(card, selectedPeriod) {
   
   resperiod.value = selectedPeriod;
-  nameCard.value = card.title;
+  nameCard.value = card.id;
   getKPI();
   console.log("la cate est : "+ card.title);
   console.log("la peridoe est : ");
