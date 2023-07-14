@@ -36,7 +36,7 @@ let props = defineProps({
   }
 });
 
-const emits = defineEmits(["removeCard","updatePeriod"]);
+const emits = defineEmits(["removeCard","updateSelectPeriod"]);
 
 const selectedPeriod = ref('');
 
@@ -45,6 +45,9 @@ const isFavorite = ref(false);
 onMounted(() => {
   if(localStorage.getItem(`${props.type}-${props.title}`) !== null) {
     isFavorite.value = true;
+  }
+  if (props.periods.length > 0) {
+    selectedPeriod.value = props.periods[0].value; // Définir la première période comme sélectionnée par défaut
   }
 
   handleLocalStorage();
@@ -76,6 +79,10 @@ function removeCard() {
   emits("removeCard", props.index);
   
 }
+
+function updateSelectPeriod(selectedPeriod) {
+  emits("updateSelectPeriod", selectedPeriod);
+}
 </script>
 
 <template>
@@ -100,17 +107,17 @@ function removeCard() {
         :data="props.data"
     />
 
-    <div
-        class="card__footer" v-if="props.periods.length > 0">
-      <select class="card__footer__period" v-model="selectedPeriod" @change="$emit('updateSelectPeriod', selectedPeriod)">
-        <option v-for="period in props.periods"
-            :key="period"
-            :value="period.value"
-        >
-          {{ period.label }}
-        </option>
-      </select>
-    </div>
+    <div class="card__footer" v-if="props.periods.length > 0">
+  <select class="card__footer__period" v-model="selectedPeriod"  @change="updateSelectPeriod(selectedPeriod)">
+    <option v-for="(period, index) in props.periods"
+        :key="index"
+        :value="period.value"
+    >
+      {{ period.label }}
+    </option>
+  </select>
+</div>
+
   </li>
 </template>
 

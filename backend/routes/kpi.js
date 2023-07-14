@@ -4,7 +4,7 @@ const kpiCtrl = require('../controllers/kpi');
 const auth = require('../middleware/auth');
 const authMiddleware = require('../middleware/authMiddleware');
 
-router.get('/', kpiCtrl.someOtherFunction);
-router.get('/:name/:date', kpiCtrl.someOtherFunction);
+router.get('/', kpiCtrl.getKPI);
+router.post('/post/:nameCard/:resperiod', kpiCtrl.kpiChoice);
 
 module.exports = router;

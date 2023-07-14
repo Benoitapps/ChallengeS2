@@ -7,40 +7,13 @@ const clics = ref("");
 const sessions = ref("");
 const error = ref("");
 const nameCard = ref("");
-const resselectedPeriod = ref("");
-
-
-
-const getConnectedUser = async () => {
-  console.log("je passe");
-  try {
-    const response = await fetch(`http://localhost:3000/kpi/${nameCard.value}/${resselectedPeriod.value}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      clics.value = data.totalClicks;
-      sessions.value = data.totalSessions;
-      console.log(clics);
-    } else {
-      const data = await response.json();
-      error.value = data.error;
-    }
-  } catch (e) {
-    error.value =
-      "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
-  }
-};
-
-getConnectedUser();
-
+const resperiod = ref("");
 const periods = [
-  {
+{
+    label: "Tout",
+    value: "test",
+  },
+{
     label: "Dernières 24h",
     value: "24h",
   },
@@ -109,6 +82,53 @@ const cards = ref([
   },
 ]);
 
+nameCard.value = "test";
+resperiod.value = "test2";
+
+const getKPI = async () => {
+  console.log("je passe");
+  
+  try {
+    const response = await fetch(`http://localhost:3000/kpi/post/${nameCard.value}/${resperiod.value}`, {
+      method: "Post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    console.log(response);
+    if (response.ok) {
+      const data = await response.json();
+
+      if(nameCard.value != "test"){
+        console.log("post a ete realiser aec succes");
+        cards.value.forEach(element => {
+          console.log(nameCard.value+ " et "+element.title);
+          if(nameCard.value == element.title){
+            element.number = data.res;
+          }
+        });
+      }else{
+        clics.value = data.totalClicks;
+        sessions.value = data.totalSessions
+
+      console.log(response);
+      }
+     // clics.value = data.totalClicks;
+
+    } else {
+      const data = await response.json();
+      error.value = data.error;
+    }
+  } catch (e) {
+    error.value =
+      "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
+  }
+};
+
+getKPI();
+
+
 const addingIsEnabled = ref(false);
 const cardsRemoved = ref([]);
 
@@ -151,9 +171,9 @@ function addCard() {
 
 function updatePeriod(card, selectedPeriod) {
   
-  resselectedPeriod.value = selectedPeriod;
+  resperiod.value = selectedPeriod;
   nameCard.value = card.title;
-  getConnectedUser();
+  getKPI();
   console.log("la cate est : "+ card.title);
   console.log("la peridoe est : ");
   console.log(selectedPeriod);
