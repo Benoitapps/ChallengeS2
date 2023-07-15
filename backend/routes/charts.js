@@ -57,7 +57,7 @@ router.post('/', (req, res) => {
                     {
                         $project: {
                             _id: "$_id",
-                            totalClicks: {
+                            amount: {
                                 $size: "$visitors.trackers.clicks",
                             },
                             date: "$visitors.trackers.endTime",
@@ -103,7 +103,7 @@ router.post('/', (req, res) => {
                     {
                         $project: {
                             _id: "$_id",
-                            totalSessions: {
+                            amount: {
                                 $sum: 1
                             },
                             date: "$visitors.trackers.endTime",

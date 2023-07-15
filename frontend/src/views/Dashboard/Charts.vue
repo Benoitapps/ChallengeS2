@@ -21,28 +21,22 @@ const periods = [
     value: "12m"
   }
 ];
-
-const chartSessions = ref([]);
-const chartClicks = ref([]);
-
 const cards = reactive(
     [
       {
         title: "Sessions",
         type: "charts",
-        data: chartSessions,
+        data: [],
         periods: periods
       },
       {
         title: "Clics",
         type: "charts",
-        data: chartClicks,
+        data: [],
         periods: periods
       }
     ]
 );
-
-const datas = ref([]);
 const addingIsEnabled = ref(false);
 const cardsRemoved = ref([]);
 const title = ref('');
@@ -56,30 +50,27 @@ onMounted(() => {
     period.value = periods[0].value;
   }
 
-  function getData() {
-    cards.forEach(card => {
-      fetch('http://localhost:3000/charts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials : 'include',
-        body: JSON.stringify({
-          title: card.title.toLowerCase(),
-          periods: period.value
-        })
-      })
-        .then(response => response.json())
-        .then(data => {
-          if(datas.value.length > 0) {
-            datas.value.splice(0, datas.value.length);
-          }
+  async function getData() {
+    try {
+      for (const card of cards) {
+        const response = await fetch('http://localhost:3000/charts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials : 'include',
+          body: JSON.stringify({
+            title: card.title.toLowerCase(),
+            periods: period.value
+          })
+        });
+        const data = await response.json();
 
-          datas.value = data;
-          getCharts(card.title.toLowerCase());
-        })
-        .catch(e => console.log(e));
-    });
+        card.data = data;
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   getData();
@@ -97,25 +88,6 @@ onMounted(() => {
     sdk.stopTracker();
   });
 });
-
-function getCharts(title) {
-  chartSessions.value.splice(0, chartClicks.value.length);
-  chartClicks.value.splice(0, chartClicks.value.length);
-
-  datas.value.forEach(data => {
-    if(title === 'sessions') {
-      chartSessions.value.push({
-        date: data.date,
-        amount: data.totalSessions
-      })
-    } else if(title === 'clics') {
-      chartClicks.value.push({
-        date: data.date,
-        amount: data.totalClicks
-      })
-    }
-  });
-}
 
 function removeCard(index) {
   addingIsEnabled.value = true;
@@ -140,27 +112,28 @@ const updateChart = async (values) => {
   title.value = values[0].toLowerCase();
   period.value = values[1];
 
-  fetch('http://localhost:3000/charts', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    credentials : 'include',
-    body: JSON.stringify({
-      title: title.value.toLowerCase(),
-      periods: period.value
-    })
-  })
-    .then(response => response.json())
-    .then(data => {
-      if(datas.value.length > 0) {
-        datas.value.splice(0, datas.value.length);
-      }
+  try {
+      const response = await fetch('http://localhost:3000/charts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials : 'include',
+        body: JSON.stringify({
+          title: title.value.toLowerCase(),
+          periods: period.value
+        })
+      });
+      const data = await response.json();
 
-      datas.value = data;
-      getCharts(title.value.toLowerCase());
-    })
-    .catch(e => console.log(e));
+      cards.forEach(card => {
+        if(card.title.toLowerCase() === title.value.toLowerCase()) {
+          card.data = data;
+        }
+      });
+  } catch (error) {
+    console.log(error);
+  }
 }
 </script>
 

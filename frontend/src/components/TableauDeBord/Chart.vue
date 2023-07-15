@@ -24,7 +24,7 @@ onMounted(() => {
   }
 });
 
-watch(props.data, () => {
+watch(props, () => {
   d3.select(`#chart-${props.index} svg`).selectAll("path").remove();
   generateChart();
 });

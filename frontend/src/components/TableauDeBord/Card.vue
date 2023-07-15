@@ -146,6 +146,10 @@ watch(periodSelected, (newValue) => {
     &__period {
       font-size: 1rem; // 16px
       cursor: pointer;
+
+      &:focus {
+        outline: none;
+      }
     }
   }
 }
