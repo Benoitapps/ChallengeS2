@@ -30,6 +30,43 @@ async function getKpiUser(req, res) {
         res.status(500).json({error: error.message });
       }
     };
+
+    async function getKpiNotUser(req, res) {
+      const token = req.cookies.token;
+    
+      try {
+        const userId = req.params.id;
+    
+        const user = await User.findOne({
+          where: { id: userId },
+          include: [KpiName], // Inclure le modèle KpiName dans la requête
+        });
+    
+        if (!user) {
+          return res.status(404).json({ message: "Utilisateur non trouvé." });
+        }
+    
+        // Récupérer tous les KPI disponibles
+        const allKpiNames = await KpiName.findAll();
+    
+        // Récupérer les noms des KPI liés à l'utilisateur
+        const userKpiNames = user.KpiNames.map((kpiName) => kpiName.name);
+       
+    
+        // Filtrer les KPI non liés à l'utilisateur
+        const unlinkedKpiNames = allKpiNames.filter(
+          (kpiName) => !userKpiNames.includes(kpiName.name)
+        );
+    
+        // Récupérer uniquement les noms des KPI non liés à l'utilisateur
+        const unlinkedKpiNamesOnly = unlinkedKpiNames.map((kpiName) => kpiName.name);
+    
+        res.json({ userId, unlinkedKpiNames: unlinkedKpiNamesOnly });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+      }
+    };
   
     async function addKpiToUser(req, res) {
         const userId = req.params.userId; // Utilisez "userId" au lieu de "const { userId, kpiNameId } = req.params;"
@@ -38,7 +75,7 @@ async function getKpiUser(req, res) {
       
         try {
           const user = await User.findOne({ where: { id: userId } });
-          const kpiName = await KpiName.findOne({ where: { id: kpiNameId } });
+          const kpiName = await KpiName.findOne({ where: { name: kpiNameId } });
       
           if (!user || !kpiName) {
             return res.status(404).json({ message: "Utilisateur ou KpiName non trouvé." });
@@ -59,7 +96,7 @@ async function getKpiUser(req, res) {
       
         try {
           const user = await User.findOne({ where: { id: userId } });
-          const kpiName = await KpiName.findOne({ where: { id: kpiNameId } });
+          const kpiName = await KpiName.findOne({ where: { name: kpiNameId } });
       
           if (!user || !kpiName) {
             return res.status(404).json({ message: "Utilisateur ou KpiName non trouvé." });
@@ -86,5 +123,5 @@ async function getKpiUser(req, res) {
       }
     
      
-      module.exports = { getKpiUser, addKpiToUser,removeKpiFromUser, getAllKpiNames };
+      module.exports = { getKpiUser, addKpiToUser,removeKpiFromUser, getAllKpiNames, getKpiNotUser };
       

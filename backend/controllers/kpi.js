@@ -208,7 +208,7 @@ const result3 = await Usertracker.aggregate(pipeline3).exec();
             amount = 24;
         } else if(req.params?.resperiod === '7d') {
             unit = 'day';
-            amount = 3;
+            amount = 4;
         } else if(req.params?.resperiod === '30d') {
             unit = 'day';
             amount = 30;

@@ -1,14 +1,20 @@
 <script setup>
 import Card from "../../components/TableauDeBord/Card.vue";
 import AddCard from "../../components/TableauDeBord/AddCard.vue";
+import Modal from "../../components/Modal.vue";
+import ModalProvider from '../../providers/ModalProvider.vue';
+import { getAllKpi , afftab } from "./KPIbdd.vue";
 import { inject, onMounted, onUnmounted, ref } from "vue";
 
+const userId = ref('');
 const clics = ref("");
 const sessions = ref("");
 const moysessions = ref("");
 const error = ref("");
 const nameCard = ref("");
 const resperiod = ref("");
+const kpiData = ref([]);
+const kpiUserData = ref([]);
 const periods = [
 {
     label: "Tout",
@@ -58,6 +64,7 @@ const cards = ref([
     type: "keys",
     number: sessions,
     periods: periods,
+    state: false
 
   },
   {
@@ -66,6 +73,7 @@ const cards = ref([
     type: "keys",
     number: clics,
     periods: periods,
+    state: false
 
   },
   {
@@ -74,6 +82,7 @@ const cards = ref([
     number: "100",
     list: visitedPages.value,
     periods: periods,
+    state: false
 
   },
   {
@@ -82,12 +91,33 @@ const cards = ref([
     type: "keys",
     number: moysessions,
     periods: periods,
+    state: false
 
   },
+  
 ]);
 
 nameCard.value = "test";
 resperiod.value = "test2";
+
+
+
+
+const getConnectedUser = async () => {
+  try {
+    const userData = localStorage.getItem('myUser');;
+    if (userData) {
+      const parsedData = JSON.parse(userData);
+
+      userId.value = parsedData.userId;
+
+      console.log("mon id est le : "+ userId.value)
+    }
+  } catch (error) {
+    error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
+  }
+};
+
 
 const getKPI = async () => {
   console.log("je passe");
@@ -113,6 +143,7 @@ const getKPI = async () => {
           }
         });
       }else{
+        console.log("le tout ")
         clics.value = data.totalClicks;
         sessions.value = data.totalSessions;
         moysessions.value = data.resMoyenne;
@@ -131,7 +162,112 @@ const getKPI = async () => {
   }
 };
 
+
+const getAllKPI = async () => {
+  console.log("je passe");
+
+  try {
+    const response = await fetch(`http://localhost:3000/kpi/bddnot/${userId.value}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    if (response.ok) {
+      const data = await response.json();
+      kpiData.value = data; // Update the kpiData variable with the fetched data
+      console.log("les KPI :");
+      console.log( kpiData.value);
+      //console.log(data.value);
+    } else {
+      const errorData = await response.json();
+      error.value = errorData.error;
+    }
+  } catch (e) {
+    error.value = "Une erreur s'est produite lors de la récupération des KPI";
+  }
+}
+
+const getUserKPI = async () => {
+  console.log("je passe");
+
+  try {
+    const response = await fetch(`http://localhost:3000/kpi/bdd/${userId.value}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    if (response.ok) {
+      const data = await response.json();
+      kpiUserData.value = data.kpiNames; // Update kpiUserData with the fetched kpiNames array
+      console.log("les KPIUser :");
+      console.log(kpiUserData.value);
+    } else {
+      const errorData = await response.json();
+      error.value = errorData.error;
+    }
+  } catch (e) {
+    error.value = "Une erreur s'est produite lors de la récupération des KPI";
+  }
+}
+
+const getUserAddKPI = async (kpi) => {
+  console.log("je passe");
+
+  try {
+    const response = await fetch(`http://localhost:3000/kpi/addbdd/${userId.value}/${kpi}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    if (response.ok) {
+      await getAllKPI();
+      await getUserKPI();
+
+      console.log("post kpi fonctionne  :");
+    } else {
+      const errorData = await response.json();
+      error.value = errorData.error;
+    }
+  } catch (e) {
+    error.value = "Une erreur s'est produite lors de la récupération des KPI";
+  }
+}
+
+const getUserdeleteKPI = async (kpi) => {
+  console.log("je passe");
+
+  try {
+    const response = await fetch(`http://localhost:3000/kpi/removebdd/${userId.value}/${kpi}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    if (response.ok) {
+      await getAllKPI();
+      await getUserKPI();
+      console.log("delete kpi fonctionne  :");
+    } else {
+      const errorData = await response.json();
+      error.value = errorData.error;
+    }
+  } catch (e) {
+    error.value = "Une erreur s'est produite lors de la récupération des KPI";
+  }
+}
+
+
+getConnectedUser();
 getKPI();
+getAllKPI();
+getUserKPI();
 
 
 const addingIsEnabled = ref(false);
@@ -183,6 +319,7 @@ function updatePeriod(card, selectedPeriod) {
   console.log("la peridoe est : ");
   console.log(selectedPeriod);
 }
+
 </script>
 
 <template>
@@ -203,8 +340,34 @@ function updatePeriod(card, selectedPeriod) {
       </Card>
       <AddCard v-show="addingIsEnabled" @addCard="addCard($event)" />
     </ul>
+    <Modal>
+      <template #activator="{ openModal }">
+        <button class="button" title="Ouvrir la modal" @click="openModal" />
+      </template>
+    
+      <template #default>
+        Seslectioner
+        <ul>
+          <li v-for="kpiUser in kpiUserData" :key="kpiUser.id">
+            {{ kpiUser }}:
+            <button @click="getUserdeleteKPI(kpiUser)">{{ kpiUser.value }}suprimmer</button>
+          </li>
+        </ul>
+        Non Seslectioner
+        <ul>
+          <li v-for="kpi in kpiData.unlinkedKpiNames" :key="kpi.id">
+            {{ kpi }}:
+            <button @click="getUserAddKPI(kpi)">{{ kpi.id }}ajouter</button>
+          </li>
+        </ul>
+      </template>
+      <template #close-icon="{ closeModal }">
+        <button title="X" @click="closeModal" />
+      </template>
+    </Modal>
   </main>
 </template>
+
 
 <style lang="scss">
 .kpi {
@@ -239,5 +402,11 @@ function updatePeriod(card, selectedPeriod) {
 
 .card__periods span.active {
   font-weight: bold;
+}
+
+
+.button{
+  width: 10em;
+  height: 10em;
 }
 </style>

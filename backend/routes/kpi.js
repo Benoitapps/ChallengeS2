@@ -9,6 +9,8 @@ router.get('/', kpiCtrl.getKPI);
 router.post('/post/:nameCard/:resperiod', kpiCtrl.kpiChoice);
 
 router.get('/bdd/:id', kpiBddCtrl.getKpiUser);
+router.get('/bddnot/:id', kpiBddCtrl.getKpiNotUser);
+
 router.post('/addbdd/:userId/:kpiNameId', kpiBddCtrl.addKpiToUser);
 router.delete('/removebdd/:userId/:kpiNameId', kpiBddCtrl.removeKpiFromUser);
 

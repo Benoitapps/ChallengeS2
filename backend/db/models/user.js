@@ -44,5 +44,8 @@ module.exports = function (connection) {
     }
   );
 
+//User.belongsToMany(KpiName, { through: "UserKpiNames" });
+  //KpiName.belongsToMany(User, { through: "UserKpiNames" });
+
   return User;
 };
