@@ -5,6 +5,8 @@ import Modal from "../../components/Modal.vue";
 import ModalProvider from '../../providers/ModalProvider.vue';
 import { getAllKpi , afftab } from "./KPIbdd.vue";
 import { inject, onMounted, onUnmounted, ref } from "vue";
+import { reactive, watch, watchEffect  } from "vue";
+
 
 const userId = ref('');
 const clics = ref("");
@@ -57,51 +59,60 @@ const visitedPages = ref([
   },
 ]);
 
-const cards = ref([
-  {
-    id : "Sessions",
-    title: "Sessions",
-    type: "keys",
-    number: sessions,
-    periods: periods,
-    state: false
+const cards = ref([]);
 
-  },
-  {
-    id : "Clics",
-    title: "Clics",
-    type: "keys",
-    number: clics,
-    periods: periods,
-    state: false
+watchEffect(() => {
+  const reactiveCards = reactive([
+    {
+      id: "Sessions",
+      title: "Sessions",
+      type: "keys",
+      number: sessions,
+      periods: periods,
+      state: testState("Sessions"),
+    },
+    {
+      id: "Clics",
+      title: "Clics",
+      type: "keys",
+      number: clics,
+      periods: periods,
+      state: testState("Clics"),
+    },
+    {
+      title: "Pages visitées",
+      type: "keys",
+      number: "100",
+      list: visitedPages.value,
+      periods: periods,
+      state: testState("e"),
+    },
+    {
+      id: "Moyennedessessions",
+      title: "Moyenne des sessions",
+      type: "keys",
+      number: moysessions,
+      periods: periods,
+      state: testState("a"),
+    },
+  ]);
 
-  },
-  {
-    title: "Pages visitées",
-    type: "keys",
-    number: "100",
-    list: visitedPages.value,
-    periods: periods,
-    state: false
-
-  },
-  {
-    id : "Moyennedessessions",
-    title: "Moyenne des sessions",
-    type: "keys",
-    number: moysessions,
-    periods: periods,
-    state: false
-
-  },
-  
-]);
+  cards.value = reactiveCards;
+});
 
 nameCard.value = "test";
 resperiod.value = "test2";
 
-
-
+function testState(name) {
+  console.log("je passe dans test state");
+  for (const element of kpiUserData.value) {
+    console.log("le element "+ element);
+    if (element === name) {
+      return true;
+    }
+  }
+  return false;
+}
 
 const getConnectedUser = async () => {
   try {
@@ -334,10 +345,11 @@ function updatePeriod(card, selectedPeriod) {
         :number="card.number"
         :list="card.list"
         :periods="card.periods" 
+        :state="card.state"
+        
         @updateSelectPeriod="(selectedPeriod) => updatePeriod(card, selectedPeriod)"
         @removeCard="removeCard($event)"
-      >
-      </Card>
+      ></Card>
       <AddCard v-show="addingIsEnabled" @addCard="addCard($event)" />
     </ul>
     <Modal>

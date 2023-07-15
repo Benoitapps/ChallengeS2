@@ -37,6 +37,10 @@ let props = defineProps({
   data: {
     type: Array,
     default: () => []
+  },
+  state: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -91,8 +95,8 @@ function updateSelectPeriod(selectedPeriod) {
 
 <template>
   <li
-      :class="['card', {favorite: isFavorite}]"
-  >
+      :class="['card', {favorite: isFavorite}]"  v-if="props.state">
+  
     <div class="card__head">
       <h2>{{ props.title }}</h2>
       <More @toggleFavorite="toggleFavorite($event)" @removeCard="removeCard($event)"/>
