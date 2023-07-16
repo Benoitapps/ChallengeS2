@@ -22,11 +22,19 @@ onMounted(() => {
       generateChart();
     });
   }
+  else {
+    d3.select(`#chart-${props.index} [data-heading]`).text('Aucunes données enregistrées dans cette période');
+  }
 });
 
 watch(props, () => {
-  d3.select(`#chart-${props.index} svg`).selectAll("path").remove();
-  generateChart();
+  if(props.data.length > 0) {
+    d3.select(`#chart-${props.index} svg`).selectAll("path").remove();
+    generateChart();
+  }
+  else {
+    d3.select(`#chart-${props.index} [data-heading]`).text('Aucunes données enregistrées dans cette période');
+  }
 });
 
 const xMarker = ref(0);
@@ -106,24 +114,28 @@ function generateChart() {
 
   /* Events */
   svg.on('mousemove', (e) => {
-    const [posX, posY] = d3.pointer(e);
-    const date = xScale.invert(posX);
+    if(props.data.length > 0) {
+      const [posX, posY] = d3.pointer(e);
+      const date = xScale.invert(posX);
 
-    const index = bisect.center(props.data, date);
-    const d = props.data[index];
+      const index = bisect.center(props.data, date);
+      const d = props.data[index];
 
-    xMarker.value = xScale(xAccessor(d));
-    yMarker.value = yScale(yAccessor(d));
-    opacityMarker.value = 1;
+      xMarker.value = xScale(xAccessor(d));
+      yMarker.value = yScale(yAccessor(d));
+      opacityMarker.value = 1;
 
-    d3.select(`#chart-${props.index} [data-heading]`).text(getText(props.data, d));
-    d3.select(`#chart-${props.index} [data-total]`).text(yAccessor(d));
+      d3.select(`#chart-${props.index} [data-heading]`).text(getText(props.data, d));
+      d3.select(`#chart-${props.index} [data-total]`).text(yAccessor(d));
+    }
   })
 
   svg.on('mouseleave', () => {
-    opacityMarker.value = 0;
-    d3.select(`#chart-${props.index} [data-heading]`).text('');
-    d3.select(`#chart-${props.index} [data-total]`).text('');
+    if(props.data.length > 0) {
+      opacityMarker.value = 0;
+      d3.select(`#chart-${props.index} [data-heading]`).text('');
+      d3.select(`#chart-${props.index} [data-total]`).text('');
+    }
   })
 }
 </script>
