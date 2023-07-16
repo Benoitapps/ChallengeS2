@@ -45,14 +45,14 @@ const opacityMarker = ref(0);
 let dimensions = {
   width: 0,
   height: 0,
-  marginTop: 0
+  marginTop: 8
 }
 
 function generateChart() {
   dimensions = {
     width: document.querySelector("[data-chart]").clientWidth,
     height: document.querySelector("[data-chart]").clientHeight,
-    marginTop: 0
+    marginTop: 8
   }
 
   const xAccessor = (d) => d.date = new Date(d.date)

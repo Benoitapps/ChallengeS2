@@ -9,7 +9,7 @@ const periods = [
     value: "24h"
   },
   {
-    label: "Dernières 7 jours",
+    label: "Derniers 7 jours",
     value: "7d"
   },
   {
@@ -17,7 +17,7 @@ const periods = [
     value: "30d"
   },
   {
-    label: "Dernières 12 mois",
+    label: "Derniers 12 mois",
     value: "12m"
   }
 ];

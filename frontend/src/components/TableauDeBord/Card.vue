@@ -3,6 +3,7 @@ import Keys from "./Keys.vue";
 import Chart from "./Chart.vue";
 import More from "./More.vue";
 import {onMounted, ref, watch} from "vue";
+import TimeScale from "./TimeScale.vue";
 
 let props = defineProps({
   index: {
@@ -35,10 +36,9 @@ let props = defineProps({
   }
 });
 
-const emit = defineEmits(["removeCard", "updatePeriod"]);
+defineEmits(["removeCard", "updatePeriod"]);
 
 const isFavorite = ref(false);
-const periodSelected = ref(props.periods[0].value);
 
 onMounted(() => {
   if(localStorage.getItem(`${props.type}-${props.title}`) !== null) {
@@ -69,9 +69,6 @@ function toggleFavorite() {
   handleLocalStorage();
 }
 
-watch(periodSelected, (newValue) => {
-  emit("updatePeriod", [props.title, newValue]);
-});
 </script>
 
 <template>
@@ -100,15 +97,10 @@ watch(periodSelected, (newValue) => {
         class="card__footer"
         v-if="props.periods.length > 0"
     >
-      <select class="card__footer__period" v-model="periodSelected">
-        <option
-            v-for="period in props.periods"
-            :key="period"
-            :value="period.value"
-        >
-          {{ period.label }}
-        </option>
-      </select>
+      <TimeScale
+          :periods="props.periods"
+          @updatePeriod="$emit('updatePeriod', [props.title, $event])"
+      />
     </div>
   </li>
 </template>
@@ -142,15 +134,6 @@ watch(periodSelected, (newValue) => {
   &__footer {
     padding-top: 1.25rem; // 20px
     width: 100%;
-
-    &__period {
-      font-size: 1rem; // 16px
-      cursor: pointer;
-
-      &:focus {
-        outline: none;
-      }
-    }
   }
 }
 </style>
