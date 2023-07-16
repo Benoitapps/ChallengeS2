@@ -28,8 +28,9 @@ onMounted(() => {
 });
 
 watch(props, () => {
+  d3.select(`#chart-${props.index} svg`).selectAll("path").remove();
+
   if(props.data.length > 0) {
-    d3.select(`#chart-${props.index} svg`).selectAll("path").remove();
     generateChart();
   }
   else {
