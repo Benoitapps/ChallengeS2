@@ -6,6 +6,7 @@ import Register from "../views/Connexion/Register.vue";
 import Login from "../views/Connexion/Login.vue";
 import HomeConnect from "../views/Connexion/HomeConnect.vue";
 import Admin from "../views/Admin.vue";
+import AdminHome from "../views/AdminHome.vue";
 import Profil from "../views/Profil/Profil.vue";
 import ProfilModify from "../views/Profil/ProfilModify.vue";
 import Logout from "../views/Connexion/Logout.vue";
@@ -46,6 +47,10 @@ const index = createRouter(
             {
                 path: '/admin',
                 component: Admin
+            },
+            {
+                path: '/adminHome',
+                component: AdminHome
             },
             {
                 path: '/profil',

@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const authMiddleware = require('../middleware/authMiddleware');
 const services = '../services/user'
 const User = require("../db").User;
+const Usertracker = require("../models/Usertracker")
 const generateToken = require('../utils/generateToken');
 
 
@@ -72,7 +73,7 @@ async function login(req, res) {
         console.log("lID "+ user.api_token);
 
         const token = jwt.sign(
-            { userToken: user.api_token },
+            { userToken: user.api_token, userEmail : user.email, userRole: user.role, userId : user.id },
             'RANDOM_TOKEN_SECRET',
             { expiresIn: '24h' }
         );
@@ -110,10 +111,10 @@ function getConnectedUser(req, res) {
   
     try {
       const decoded = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
-      const userToken = decoded.userToken;
+      const userEmail = decoded.userEmail;
   
       // Rechercher l'utilisateur correspondant à l'ID
-      User.findOne({ where: { api_token: userToken } })
+      User.findOne({ where: { email: userEmail } })
         .then(user => {
           if (!user) {
             return res.status(404).json({ error: 'User not found' });

@@ -5,16 +5,16 @@ const kpiBddCtrl = require('../controllers/kpiBdd');
 const auth = require('../middleware/auth');
 const authMiddleware = require('../middleware/authMiddleware');
 
-router.get('/', kpiCtrl.getKPI);
-router.post('/post/:nameCard/:resperiod', kpiCtrl.kpiChoice);
+router.get('/',authMiddleware, kpiCtrl.getKPI);
+router.post('/post/:nameCard/:resperiod',authMiddleware, kpiCtrl.kpiChoice);
 
-router.get('/bdd/:id', kpiBddCtrl.getKpiUser);
-router.get('/bddnot/:id', kpiBddCtrl.getKpiNotUser);
+router.get('/bdd/:id',authMiddleware, kpiBddCtrl.getKpiUser);
+router.get('/bddnot/:id',authMiddleware, kpiBddCtrl.getKpiNotUser);
 
-router.post('/addbdd/:userId/:kpiNameId', kpiBddCtrl.addKpiToUser);
-router.delete('/removebdd/:userId/:kpiNameId', kpiBddCtrl.removeKpiFromUser);
+router.post('/addbdd/:userId/:kpiNameId',authMiddleware, kpiBddCtrl.addKpiToUser);
+router.delete('/removebdd/:userId/:kpiNameId',authMiddleware, kpiBddCtrl.removeKpiFromUser);
 
-router.get('/bddkpi', kpiBddCtrl.getAllKpiNames);
+router.get('/bddkpi',authMiddleware, kpiBddCtrl.getAllKpiNames);
 
 
 module.exports = router;

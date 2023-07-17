@@ -27,6 +27,11 @@ module.exports = function (connection) {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      role:{
+        type: DataTypes.STRING,
+        defaultValue: "user",
+        allowNull: false,
+      },
       is_verified:{
         type : DataTypes.BOOLEAN,
         defaultValue: false,
