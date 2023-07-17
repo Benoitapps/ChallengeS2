@@ -76,7 +76,11 @@ onMounted(() => {
   getData();
 
   if(localStorage.getItem("Charts") !== null) {
-    cards.value = JSON.parse(localStorage.getItem("Charts"));
+    cards.splice(0, cards.length)
+
+    for (const card of JSON.parse(localStorage.getItem("Charts"))) {
+      cards.push(card);
+    }
 
     if(localStorage.getItem("Charts-removed") !== null) {
       cardsRemoved.value = JSON.parse(localStorage.getItem("Charts-removed"));
@@ -91,16 +95,16 @@ onMounted(() => {
 
 function removeCard(index) {
   addingIsEnabled.value = true;
-  cardsRemoved.value.push(cards.value[index]);
-  cards.value.splice(index, 1);
-  localStorage.setItem("Charts", JSON.stringify(cards.value));
+  cardsRemoved.value.push(cards[index]);
+  cards.splice(index, 1);
+  localStorage.setItem("Charts", JSON.stringify(cards));
   localStorage.setItem("Charts-removed", JSON.stringify(cardsRemoved.value));
 }
 
 function addCard() {
-  cards.value.push(cardsRemoved.value[0]);
+  cards.push(cardsRemoved.value[0]);
   cardsRemoved.value.splice(0, 1);
-  localStorage.setItem("Charts", JSON.stringify(cards.value));
+  localStorage.setItem("Charts", JSON.stringify(cards));
 
   if(cardsRemoved.value.length === 0) {
     localStorage.removeItem("Charts-removed");
