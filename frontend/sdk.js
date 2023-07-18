@@ -95,6 +95,8 @@ export default class SDK {
     }
 
     initSendData() {        
+        // ! ajouter egalement unload ?
+        // ! envoyer les données en temps réel
         window.addEventListener("visibilitychange", (event) => {
             if (event.target.visibilityState === "hidden") {
                 this.data.trackers.endTime = new Date();
