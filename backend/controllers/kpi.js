@@ -176,6 +176,24 @@ const result3 = await Usertracker.aggregate(pipeline3).exec();
         console.log("resMoyenne "+ resMoyenne);
 
 ////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+const pipeline4 = [
+  { $match: { "api_token": "ikb3yt96da5pz1d47x5wv1dn12v3voly" } },
+  {
+    $project: {
+      numberOfVisitors: {
+        $size: "$visitors"
+      }
+    }
+  }
+]
+
+const result4 = await Usertracker.aggregate(pipeline4).exec();
+      const resVisiteur = result4[0].numberOfVisitors
+
+        console.log("resVisiteur "+ resVisiteur);
+
+////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -183,6 +201,7 @@ const result3 = await Usertracker.aggregate(pipeline3).exec();
         totalClicks: totalClicks.toString(), 
         totalSessions: totalSessions.toString(),
         resMoyenne: formatDuration(resMoyenne),
+        resVisiteur: resVisiteur.toString(),
      }); // Renvoie le nombre total de clics au format JSON
   } catch (error) {
     res.status(401).json({ error: error.message }); // Gère les erreurs d'authentification ou de token et renvoie l'erreur au format JSON
@@ -389,6 +408,56 @@ const result3 = await Usertracker.aggregate(pipeline3).exec();
 
     res.status(200).json({ 
         res: resMoyenne.toString()
+     });
+
+     ////visiteur/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    }else if(req.params?.nameCard === 'visiteur') {
+      const pipeline =  [
+        {
+          $match: {
+            api_token: "ikb3yt96da5pz1d47x5wv1dn12v3voly"
+          }
+        },
+        {
+          $unwind: "$visitors"
+        },
+        {
+          $match: {
+            $expr: {
+              $gte: [
+                "$visitors.dateLastVisit",
+                {
+                  $dateSubtract: {
+                    startDate: new Date(),
+                    unit: unit,
+                    amount: amount
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          $group: {
+            _id: null,
+            totalSessions: { $sum: 1 }
+          }
+        }
+      ]
+      
+
+      const result = await Usertracker.aggregate(pipeline).exec();
+      let resVisiteur = 0;
+     if(result.length == 0){
+      resVisiteur = 0;
+     }else{
+      resVisiteur = result[0].totalSessions;
+      }
+      console.log("resVisiteur " +resVisiteur );
+      
+
+    res.status(200).json({ 
+        res: resVisiteur.toString()
      });
 
     

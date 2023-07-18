@@ -12,6 +12,7 @@ const userId = ref('');
 const clics = ref("");
 const sessions = ref("");
 const moysessions = ref("");
+const visiteur = ref("");
 const error = ref("");
 const nameCard = ref("");
 const resperiod = ref("");
@@ -95,6 +96,14 @@ watchEffect(() => {
       periods: periods,
       state: testState("a"),
     },
+    {
+      id: "visiteur",
+      title: "Visiteurs",
+      type: "keys",
+      number: visiteur,
+      periods: periods,
+      state: testState("a"),
+    },
   ]);
 
   cards.value = reactiveCards;
@@ -158,6 +167,7 @@ const getKPI = async () => {
         clics.value = data.totalClicks;
         sessions.value = data.totalSessions;
         moysessions.value = data.resMoyenne;
+        visiteur.value = data.resVisiteur
 
       console.log(response);
       }
