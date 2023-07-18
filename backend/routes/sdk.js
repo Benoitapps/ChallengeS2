@@ -5,7 +5,7 @@ const User = require("../db").User;
 
 router.post("/", async (req, res) => {
 try {
-    let data = JSON.parse(req.body);
+    let data = req.body;
 
     // find user by api_token
     const user = await User.findOne({ where: { api_token: data.api_token } });

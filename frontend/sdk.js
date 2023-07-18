@@ -1,17 +1,15 @@
+const MOUSE_DELAY = 1000;
 const EMPTY_TRACKERS = {
     mouse: [], // { x: 0, y: 0, timestamp: 0, path: string }
     clicks: [], // { x: 0, y: 0, timestamp: 0, target: HTMLElement, outerHTML: string, path: string }
     startTime: new Date(),
     endTime: null,
 };
-
 const EMPTY_DATA = {
     api_token: null,
     user_fingerprint: null,
     trackers: EMPTY_TRACKERS,
 };
-
-const MOUSE_DELAY = 1000;
 
 export default class SDK {
     constructor(api_token) {
