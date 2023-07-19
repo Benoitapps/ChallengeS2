@@ -154,12 +154,12 @@ export default class SDK {
     }
     // ? ------------------------- USER INACTIVITY ------------------------- ? //
 
-    // initTags() {
-    //     let tags = document.querySelectorAll('button[data-tag]');
-    //     tags.forEach((tag) => {
-    //         tag.addEventListener("click", (e) => {
-    //             console.table("click on this tag : ", e.target);
-    //         });
-    //     });
-    // }
+    initTags() {
+        let tags = document.querySelectorAll('button[data-tag]');
+        tags.forEach((tag) => {
+            tag.addEventListener("click", (e) => {
+                console.table("click on this tag : ", e.target);
+            });
+        });
+    }
 }

@@ -1,17 +1,14 @@
-const Tag = require('../models/Tag');
-const Usertracker = require('../models/Usertracker');
+const Tag = require('../db/models/tag');
 
-function save(req, res) {
-    // let tag = new Tag({
-    //     name: req.body.name,
-    //     tag_id: req.body.tag_id,
-    //     clicks: []
-    // });
-
-    // // add this tag to the user's tags
-    // let user = User.findById(req.body.user_id);
-};
-
-module.exports = {
-    save
-};
+function add(req, res) {
+    console.log("req.body : ", req.body);
+    const tag = Tag.create({
+        name: req.body.name,
+        user_id: req.body.user_id,
+    })
+    res.status(201).json({ 
+        message: 'Tag créé !',
+        name: tag.name,
+        user_id: tag.user_id,
+    });
+}
