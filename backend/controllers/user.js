@@ -19,17 +19,6 @@ async function signup(req, res) {
       }
 
       const apiToken = generateToken(32);
-
-      // Save api token tag in mongodb
-      const userTracker = new Usertracker({
-        api_token: apiToken,
-        visitors: [],
-       });
-
-      //await userTracker.save();
-
-       
-
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
       const user =  User.create({
           email: req.body.email,
@@ -37,8 +26,6 @@ async function signup(req, res) {
           website: req.body.website,
           api_token: apiToken,
       });
-      
-     
 
       res.status(201).json({ 
           message: 'Utilisateur créé !',

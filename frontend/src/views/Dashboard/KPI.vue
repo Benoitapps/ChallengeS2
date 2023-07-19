@@ -2,8 +2,8 @@
 import Card from "../../components/TableauDeBord/Card.vue";
 import AddCard from "../../components/TableauDeBord/AddCard.vue";
 import Modal from "../../components/Modal.vue";
-import ModalProvider from '../../providers/ModalProvider.vue';
-import { getAllKpi , afftab } from "./KPIbdd.vue";
+// import ModalProvider from '../../providers/ModalProvider.vue';
+// import { getAllKpi , afftab } from "./KPIbdd.vue";
 import { inject, onMounted, onUnmounted, ref } from "vue";
 import { reactive, watch, watchEffect  } from "vue";
 
