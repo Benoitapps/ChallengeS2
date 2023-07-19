@@ -25,7 +25,8 @@ const sequelize = require('sequelize')
 // Use to allow cross-origin requests
 app.use(cors({
   origin: "http://localhost:5173",
-  credentials : true
+  credentials : true,
+  
 }));
 //cookies
 app.use(cookieParser());

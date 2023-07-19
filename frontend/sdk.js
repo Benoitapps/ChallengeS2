@@ -1,17 +1,18 @@
+const MOUSE_DELAY = 1000;
 const EMPTY_TRACKERS = {
     mouse: [], // { x: 0, y: 0, timestamp: 0, path: string }
     clicks: [], // { x: 0, y: 0, timestamp: 0, target: HTMLElement, outerHTML: string, path: string }
     startTime: new Date(),
     endTime: null,
 };
-
 const EMPTY_DATA = {
     api_token: null,
     user_fingerprint: null,
     trackers: EMPTY_TRACKERS,
 };
+const inactivityDelay = 15 * 60 * 1000; // en millisecondes
+let inactivityTimer;
 
-const MOUSE_DELAY = 1000;
 
 export default class SDK {
     constructor(api_token) {
@@ -21,6 +22,7 @@ export default class SDK {
         this.data.api_token = api_token;
 
         console.log("SDK is running")
+        this.initUserInteractionForInactivity();
         this.initSendData();
     }
 
@@ -94,20 +96,70 @@ export default class SDK {
         return localStorage.getItem('fingerprint');
     }
 
-    initSendData() {
-        window.addEventListener("unload", (e) => {
-            this.data.trackers.endTime = new Date();
-            this.data.user_fingerprint = this.getFingerprintUser();
-            navigator.sendBeacon('http://localhost:3000/sdk', JSON.stringify(this.data));
+    initSendData() {        
+        // ! ajouter egalement unload ?
+        // ! envoyer les données en temps réel
+        window.addEventListener("visibilitychange", (event) => {
+            if (event.target.visibilityState === "hidden") {
+                this.data.trackers.endTime = new Date();
+                this.data.user_fingerprint = this.getFingerprintUser();
+                // navigator.sendBeacon('http://localhost:3000/sdk', JSON.stringify(this.data));
+                // TODO: a améliorer
+                fetch('http://localhost:3000/sdk', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(this.data),
+                })
+
+                // ! vider les data
+                console.log("send data to backend : ", this.data);
+                // let api_token = this.data.api_token;
+                // let user_fingerprint = this.data.user_fingerprint;
+
+                // this.data.trackers = {...EMPTY_TRACKERS};
+
+                // this.data.api_token = api_token;
+                // this.data.user_fingerprint = user_fingerprint;
+                console.log("data is empty : ", this.data);
+            }
         });
     }
 
-    initTags() {
-        let tags = document.querySelectorAll('button[data-tag]');
-        tags.forEach((tag) => {
-            tag.addEventListener("click", (e) => {
-                console.table("click on this tag : ", e.target);
-            });
-        });
+    // ? ------------------------- USER INACTIVITY ------------------------- ? //
+    initUserInteractionForInactivity() {
+        document.addEventListener("click", () => this.handleUserInteraction());
+        document.addEventListener("mousemove", () => this.handleUserInteraction());
+        document.addEventListener("keydown", () => this.handleUserInteraction());
+        document.addEventListener("scroll", () => this.handleUserInteraction());
+        document.addEventListener("touchstart", () => this.handleUserInteraction());
+        document.addEventListener("touchmove", () => this.handleUserInteraction());
+        document.addEventListener("touchend", () => this.handleUserInteraction());
     }
+
+    resetInactivityTimer() {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(() => this.detectInactivity(), inactivityDelay);
+    }
+
+    detectInactivity() {
+        console.log("User inactive!");
+        // TODO: Send data to backend
+        // TODO: Reset data -> Begin new user session
+    }
+
+    handleUserInteraction() {
+        this.resetInactivityTimer();
+    }
+    // ? ------------------------- USER INACTIVITY ------------------------- ? //
+
+    // initTags() {
+    //     let tags = document.querySelectorAll('button[data-tag]');
+    //     tags.forEach((tag) => {
+    //         tag.addEventListener("click", (e) => {
+    //             console.table("click on this tag : ", e.target);
+    //         });
+    //     });
+    // }
 }
