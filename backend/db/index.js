@@ -14,4 +14,10 @@ files.forEach((file) => {
 
 });
 
+const User = db.User;
+const KpiName = db.KpiName;
+
+User.belongsToMany(KpiName, { through: "UserKpiNames" });
+KpiName.belongsToMany(User, { through: "UserKpiNames" });
+
 module.exports = db;

@@ -5,10 +5,15 @@ import More from "./More.vue";
 import {onMounted, ref, watch} from "vue";
 import TimeScale from "./TimeScale.vue";
 
+
 let props = defineProps({
   index: {
     type: Number,
     default: 0
+  },
+  id: {
+    type: String,
+    default: ""
   },
   type: {
     type: String,
@@ -33,16 +38,26 @@ let props = defineProps({
   data: {
     type: Array,
     default: () => []
+  },
+  state: {
+    type: Boolean,
+    default: true
   }
 });
 
-defineEmits(["removeCard", "updatePeriod"]);
+const emits = defineEmits(["removeCard","updateSelectPeriod","updatePeriod"]);
+
+const selectedPeriod = ref('');
+//defineEmits(["removeCard", "updatePeriod","updateSelectPeriod"]);
 
 const isFavorite = ref(false);
 
 onMounted(() => {
   if(localStorage.getItem(`${props.type}-${props.title}`) !== null) {
     isFavorite.value = true;
+  }
+  if (props.periods.length > 0) {
+    selectedPeriod.value = props.periods[0].value; // Définir la première période comme sélectionnée par défaut
   }
 
   handleLocalStorage();
@@ -69,12 +84,20 @@ function toggleFavorite() {
   handleLocalStorage();
 }
 
+function removeCard() {
+  emits("removeCard", props.index);
+  
+}
+
+function updateSelectPeriod(selectedPeriod) {
+  emits("updateSelectPeriod", selectedPeriod);
+}
 </script>
 
 <template>
   <li
-      :class="['card', {favorite: isFavorite}]"
-  >
+      :class="['card', {favorite: isFavorite}]"  v-if="props.state">
+  
     <div class="card__head">
       <h2>{{ props.title }}</h2>
       <More @toggleFavorite="toggleFavorite()" @removeCard="$emit('removeCard', props.index)"/>
@@ -93,10 +116,17 @@ function toggleFavorite() {
         :data="props.data"
     />
 
-    <div
-        class="card__footer"
-        v-if="props.periods.length > 0"
+    <div class="card__footer" v-if="props.periods.length > 0">
+  <select class="card__footer__period" v-model="selectedPeriod"  @change="updateSelectPeriod(selectedPeriod)">
+    <option v-for="(period, index) in props.periods"
+        :key="index"
+        :value="period.value"
     >
+      {{ period.label }}
+    </option>
+  </select>
+
+
       <TimeScale
           :periods="props.periods"
           @updatePeriod="$emit('updatePeriod', [props.title, $event])"

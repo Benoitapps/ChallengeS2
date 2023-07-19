@@ -1,6 +1,7 @@
 
 <script>
 import { ref } from 'vue';
+import router from '../../router';
 
 export default {
   setup() {
@@ -25,7 +26,7 @@ export default {
 
 
         if (response.ok) {
-          window.location.href = '/login';
+          router.push('/login');
         } else {
           // erreur
           const data = await response.json();

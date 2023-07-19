@@ -13,7 +13,7 @@ function authMiddleware(req, res, next) {
     try {
         // Vérifier et décoder le jeton
         const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
-        req.userId = decodedToken.userId; // Ajouter l'ID de l'utilisateur à la requête
+        req.userToken = decodedToken.userToken; // Ajouter l'ID de l'utilisateur à la requête
 
         // Passer au middleware suivant
         next();

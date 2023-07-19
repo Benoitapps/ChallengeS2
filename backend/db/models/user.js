@@ -27,6 +27,11 @@ module.exports = function (connection) {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      role:{
+        type: DataTypes.STRING,
+        defaultValue: "user",
+        allowNull: false,
+      },
       is_verified:{
         type : DataTypes.BOOLEAN,
         defaultValue: false,
@@ -43,6 +48,9 @@ module.exports = function (connection) {
       //paranoid: true // soft delete
     }
   );
+
+//User.belongsToMany(KpiName, { through: "UserKpiNames" });
+  //KpiName.belongsToMany(User, { through: "UserKpiNames" });
 
   return User;
 };

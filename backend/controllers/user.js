@@ -6,30 +6,47 @@ const cookieParser = require('cookie-parser');
 const authMiddleware = require('../middleware/authMiddleware');
 const services = '../services/user'
 const User = require("../db").User;
+const Usertracker = require("../models/Usertracker")
 const generateToken = require('../utils/generateToken');
 
+
+
 async function signup(req, res) {
-    try {
-       //const t = await connection.transaction();
-        if (!req.body?.email || !req.body?.password || !req.body?.website) {
-            return res.status(400).json({ error: 'Missing parameters' });
-        }
+  try {
+     //const t = await connection.transaction();
+      if (!req.body?.email || !req.body?.password || !req.body?.website) {
+          return res.status(400).json({ error: 'Missing parameters' });
+      }
 
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        const user =  await User.create({
-            email: req.body.email,
-            password: hashedPassword,
-            website: req.body.website,
-            api_token: generateToken(32),
-        });
+      const apiToken = generateToken(32);
 
-        res.status(201).json({ 
-            message: 'Utilisateur créé !',
-            email: user.email
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+      // Save api token tag in mongodb
+      const userTracker = new Usertracker({
+        api_token: apiToken,
+        visitors: [],
+       });
+
+      //await userTracker.save();
+
+       
+
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      const user =  User.create({
+          email: req.body.email,
+          password: hashedPassword,
+          website: req.body.website,
+          api_token: apiToken,
+      });
+      
+     
+
+      res.status(201).json({ 
+          message: 'Utilisateur créé !',
+          email: user.email
+      });
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+  }
 };
 
 async function login(req, res) {
@@ -53,9 +70,10 @@ async function login(req, res) {
         if (!validPassword) {
             return res.status(401).json({ error: 'Mot de passe incorrect !' });
         }
+        console.log("lID "+ user.api_token);
 
         const token = jwt.sign(
-            { userId: user.id },
+            { userToken: user.api_token, userEmail : user.email, userRole: user.role, userId : user.id },
             'RANDOM_TOKEN_SECRET',
             { expiresIn: '24h' }
         );
@@ -93,16 +111,17 @@ function getConnectedUser(req, res) {
   
     try {
       const decoded = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
-      const userId = decoded.userId;
+      const userEmail = decoded.userEmail;
   
       // Rechercher l'utilisateur correspondant à l'ID
-      User.findOne({ where: { id: userId } })
+      User.findOne({ where: { email: userEmail } })
         .then(user => {
           if (!user) {
             return res.status(404).json({ error: 'User not found' });
           }
   
           // Renvoyer les informations de l'utilisateur connecté
+          console.log(user.id)
           res.status(200).json({
             userId: user.id,
             email: user.email,
