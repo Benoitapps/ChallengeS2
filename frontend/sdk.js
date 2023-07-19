@@ -10,6 +10,9 @@ const EMPTY_DATA = {
     user_fingerprint: null,
     trackers: EMPTY_TRACKERS,
 };
+const inactivityDelay = 15 * 60 * 1000; // en millisecondes
+let inactivityTimer;
+
 
 export default class SDK {
     constructor(api_token) {
@@ -19,6 +22,7 @@ export default class SDK {
         this.data.api_token = api_token;
 
         console.log("SDK is running")
+        this.initUserInteractionForInactivity();
         this.initSendData();
     }
 
@@ -106,13 +110,41 @@ export default class SDK {
                 // let api_token = this.data.api_token;
                 // let user_fingerprint = this.data.user_fingerprint;
 
-                this.data.trackers = EMPTY_TRACKERS;
+                // this.data.trackers = {...EMPTY_TRACKERS};
+
                 // this.data.api_token = api_token;
                 // this.data.user_fingerprint = user_fingerprint;
                 console.log("data is empty : ", this.data);
             }
         });
     }
+
+    // ? ------------------------- USER INACTIVITY ------------------------- ? //
+    initUserInteractionForInactivity() {
+        document.addEventListener("click", () => this.handleUserInteraction());
+        document.addEventListener("mousemove", () => this.handleUserInteraction());
+        document.addEventListener("keydown", () => this.handleUserInteraction());
+        document.addEventListener("scroll", () => this.handleUserInteraction());
+        document.addEventListener("touchstart", () => this.handleUserInteraction());
+        document.addEventListener("touchmove", () => this.handleUserInteraction());
+        document.addEventListener("touchend", () => this.handleUserInteraction());
+    }
+
+    resetInactivityTimer() {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(() => this.detectInactivity(), inactivityDelay);
+    }
+
+    detectInactivity() {
+        console.log("User inactive!");
+        // TODO: Send data to backend
+        // TODO: Reset data -> Begin new user session
+    }
+
+    handleUserInteraction() {
+        this.resetInactivityTimer();
+    }
+    // ? ------------------------- USER INACTIVITY ------------------------- ? //
 
     // initTags() {
     //     let tags = document.querySelectorAll('button[data-tag]');
