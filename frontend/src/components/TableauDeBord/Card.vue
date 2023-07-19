@@ -2,7 +2,8 @@
 import Keys from "./Keys.vue";
 import Chart from "./Chart.vue";
 import More from "./More.vue";
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
+import TimeScale from "./TimeScale.vue";
 
 
 let props = defineProps({
@@ -40,13 +41,14 @@ let props = defineProps({
   },
   state: {
     type: Boolean,
-    default: false
+    default: true
   }
 });
 
-const emits = defineEmits(["removeCard","updateSelectPeriod"]);
+const emits = defineEmits(["removeCard","updateSelectPeriod","updatePeriod"]);
 
 const selectedPeriod = ref('');
+//defineEmits(["removeCard", "updatePeriod","updateSelectPeriod"]);
 
 const isFavorite = ref(false);
 
@@ -79,7 +81,6 @@ function handleLocalStorage() {
 
 function toggleFavorite() {
   isFavorite.value = !isFavorite.value;
-
   handleLocalStorage();
 }
 
@@ -99,7 +100,7 @@ function updateSelectPeriod(selectedPeriod) {
   
     <div class="card__head">
       <h2>{{ props.title }}</h2>
-      <More @toggleFavorite="toggleFavorite($event)" @removeCard="removeCard($event)"/>
+      <More @toggleFavorite="toggleFavorite()" @removeCard="$emit('removeCard', props.index)"/>
     </div>
 
     <Keys
@@ -124,8 +125,13 @@ function updateSelectPeriod(selectedPeriod) {
       {{ period.label }}
     </option>
   </select>
-</div>
 
+
+      <TimeScale
+          :periods="props.periods"
+          @updatePeriod="$emit('updatePeriod', [props.title, $event])"
+      />
+    </div>
   </li>
 </template>
 
@@ -158,11 +164,6 @@ function updateSelectPeriod(selectedPeriod) {
   &__footer {
     padding-top: 1.25rem; // 20px
     width: 100%;
-
-    &__period {
-      font-size: 1rem; // 16px
-      cursor: pointer;
-    }
   }
 }
 </style>
