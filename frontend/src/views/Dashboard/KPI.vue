@@ -9,6 +9,7 @@ import { reactive, watch, watchEffect  } from "vue";
 
 
 const userId = ref('');
+const userApi = ref('');
 const clics = ref("");
 const sessions = ref("");
 const moysessions = ref("");
@@ -113,9 +114,7 @@ nameCard.value = "test";
 resperiod.value = "test2";
 
 function testState(name) {
-  console.log("je passe dans test state");
   for (const element of kpiUserData.value) {
-    console.log("le element "+ element);
     if (element === name) {
       return true;
     }
@@ -130,8 +129,11 @@ const getConnectedUser = async () => {
       const parsedData = JSON.parse(userData);
 
       userId.value = parsedData.userId;
+      userApi.value = parsedData.apiToken;
+
 
       console.log("mon id est le : "+ userId.value)
+      console.log("mon api est le : "+ userApi.value)
     }
   } catch (error) {
     error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
@@ -140,7 +142,7 @@ const getConnectedUser = async () => {
 
 
 const getKPI = async () => {
-  console.log("je passe");
+
   
   try {
     const response = await fetch(`http://localhost:3000/kpi/post/${nameCard.value}/${resperiod.value}`, {
@@ -150,26 +152,24 @@ const getKPI = async () => {
       },
       credentials: "include",
     });
-    console.log(response);
+
     if (response.ok) {
       const data = await response.json();
 
       if(nameCard.value != "test"){
-        console.log("post a ete realiser aec succes");
+
         cards.value.forEach(element => {
-          //console.log(nameCard.value+ " et "+element.id);
           if(nameCard.value == element.id){
             element.number = data.res;
           }
         });
       }else{
-        console.log("le tout ")
+
         clics.value = data.totalClicks;
         sessions.value = data.totalSessions;
         moysessions.value = data.resMoyenne;
         visiteur.value = data.resVisiteur
 
-      console.log(response);
       }
      // clics.value = data.totalClicks;
 
@@ -185,10 +185,9 @@ const getKPI = async () => {
 
 
 const getAllKPI = async () => {
-  console.log("je passe");
 
   try {
-    const response = await fetch(`http://localhost:3000/kpi/bddnot/${userId.value}`, {
+    const response = await fetch(`http://localhost:3000/kpi/bddnot/${userApi.value}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -198,9 +197,7 @@ const getAllKPI = async () => {
     if (response.ok) {
       const data = await response.json();
       kpiData.value = data; // Update the kpiData variable with the fetched data
-      console.log("les KPI :");
-      console.log( kpiData.value);
-      //console.log(data.value);
+
     } else {
       const errorData = await response.json();
       error.value = errorData.error;
@@ -211,21 +208,21 @@ const getAllKPI = async () => {
 }
 
 const getUserKPI = async () => {
-  console.log("je passe");
-
+  console.log("passage getUserKPI");
   try {
-    const response = await fetch(`http://localhost:3000/kpi/bdd/${userId.value}`, {
+    const response = await fetch(`http://localhost:3000/kpi/bdd/${userApi.value}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
       credentials: "include",
     });
+    console.log(response);
     if (response.ok) {
       const data = await response.json();
       kpiUserData.value = data.kpiNames; // Update kpiUserData with the fetched kpiNames array
-      console.log("les KPIUser :");
-      console.log(kpiUserData.value);
+      console.log(kpiUserData);
+
     } else {
       const errorData = await response.json();
       error.value = errorData.error;
@@ -236,10 +233,9 @@ const getUserKPI = async () => {
 }
 
 const getUserAddKPI = async (kpi) => {
-  console.log("je passe");
 
   try {
-    const response = await fetch(`http://localhost:3000/kpi/addbdd/${userId.value}/${kpi}`, {
+    const response = await fetch(`http://localhost:3000/kpi/addbdd/${userApi.value}/${kpi}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -250,7 +246,6 @@ const getUserAddKPI = async (kpi) => {
       await getAllKPI();
       await getUserKPI();
 
-      console.log("post kpi fonctionne  :");
     } else {
       const errorData = await response.json();
       error.value = errorData.error;
@@ -261,10 +256,9 @@ const getUserAddKPI = async (kpi) => {
 }
 
 const getUserdeleteKPI = async (kpi) => {
-  console.log("je passe");
 
   try {
-    const response = await fetch(`http://localhost:3000/kpi/removebdd/${userId.value}/${kpi}`, {
+    const response = await fetch(`http://localhost:3000/kpi/removebdd/${userApi.value}/${kpi}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -274,7 +268,6 @@ const getUserdeleteKPI = async (kpi) => {
     if (response.ok) {
       await getAllKPI();
       await getUserKPI();
-      console.log("delete kpi fonctionne  :");
     } else {
       const errorData = await response.json();
       error.value = errorData.error;
@@ -336,9 +329,6 @@ function updatePeriod(card, selectedPeriod) {
   resperiod.value = selectedPeriod;
   nameCard.value = card.id;
   getKPI();
-  console.log("la cate est : "+ card.title);
-  console.log("la peridoe est : ");
-  console.log(selectedPeriod);
 }
 
 </script>

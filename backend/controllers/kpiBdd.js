@@ -7,14 +7,14 @@ const User = require("../db").User;
 const KpiName = require("../db").KpiName;
 const generateToken = require('../utils/generateToken');
 
-async function getKpiUser(req, res) {
+async function getKpiUser(req, res) {//apiToken
     const token = req.cookies.token;
   
     try {
-        const userId = req.params.id;
+        const userToken = req.params.id;
     
         const user = await User.findOne({
-          where: { id: userId },
+          where: { api_token: userToken },
           include: [KpiName], // Inclure le modèle KpiName dans la requête
         });
     
@@ -24,7 +24,7 @@ async function getKpiUser(req, res) {
     
         const kpiNames = user.KpiNames.map((kpiName) => kpiName.name);
     
-        res.json({ userId, kpiNames });
+        res.json({ userToken, kpiNames });
       } catch (error) {
         console.error(error);
         res.status(500).json({error: error.message });
@@ -35,10 +35,10 @@ async function getKpiUser(req, res) {
       const token = req.cookies.token;
     
       try {
-        const userId = req.params.id;
+        const userToken = req.params.id;
     
         const user = await User.findOne({
-          where: { id: userId },
+          where: { api_token: userToken },
           include: [KpiName], // Inclure le modèle KpiName dans la requête
         });
     
@@ -61,7 +61,7 @@ async function getKpiUser(req, res) {
         // Récupérer uniquement les noms des KPI non liés à l'utilisateur
         const unlinkedKpiNamesOnly = unlinkedKpiNames.map((kpiName) => kpiName.name);
     
-        res.json({ userId, unlinkedKpiNames: unlinkedKpiNamesOnly });
+        res.json({ userToken, unlinkedKpiNames: unlinkedKpiNamesOnly });
       } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });
@@ -69,12 +69,12 @@ async function getKpiUser(req, res) {
     };
   
     async function addKpiToUser(req, res) {
-        const userId = req.params.userId; // Utilisez "userId" au lieu de "const { userId, kpiNameId } = req.params;"
+        const userApi = req.params.userId; // Utilisez "userId" au lieu de "const { userId, kpiNameId } = req.params;"
         const kpiNameId = req.params.kpiNameId; // Utilisez "kpiNameId" au lieu de "const { userId, kpiNameId } = req.params;"
         console.log(req.params);
       
         try {
-          const user = await User.findOne({ where: { id: userId } });
+          const user = await User.findOne({ where: { api_token: userApi } });
           const kpiName = await KpiName.findOne({ where: { name: kpiNameId } });
       
           if (!user || !kpiName) {
@@ -91,11 +91,11 @@ async function getKpiUser(req, res) {
       }
 
       async function removeKpiFromUser(req, res) {
-        const userId = req.params.userId;
+        const userApi = req.params.userId;
         const kpiNameId = req.params.kpiNameId;
       
         try {
-          const user = await User.findOne({ where: { id: userId } });
+          const user = await User.findOne({ where: { api_token: userApi } });
           const kpiName = await KpiName.findOne({ where: { name: kpiNameId } });
       
           if (!user || !kpiName) {
