@@ -133,28 +133,84 @@ export default {
 
 <template>
   <main>
-    <div>
-    <h2>Utilisateurs non verifier :</h2>
-    <ul>
-      <li v-for="user in usersNotVerified" :key="user._id">
-        {{ user.email }}
-        <button @click="verifyUser(user.id)">Vérifier</button>
-      </li>
-    </ul>
-    <p v-if="error">{{ error }}</p>
-  </div>
-  <div>
-    <h2>Utilisateurs voir :</h2>
-    <ul>
-      <li v-for="user in users" :key="user._id">
-        {{ user.email }}
-        <button @click="takeToken(user.id)">Prendre le controlle</button>
-      </li>
-    </ul>
-    <p v-if="error">{{ error }}</p>
-  </div>
+    <div class="content">
+      <div class="notverified">
+        <div class="title">
+          <h2>Utilisateurs non vérifiés :</h2>
+        </div>
+        <ul>
+          <li v-for="user in usersNotVerified" :key="user._id">
+            <div class="line" :class="{ 'selected': user.selected }">
+              <div class="email">
+                {{ user.email }}
+              </div>
+              <div class="boutton">
+                <button @click="verifyUser(user.id)">Vérifier</button>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <p v-if="error">{{ error }}</p>
+      </div>
+      <div class="verified">
+        <div class="title">
+          <h2>Utilisateurs vérifiés :</h2>
+        </div>
+        <div>
+          <ul>
+            <li v-for="user in users" :key="user._id">
+              <div class="line" :class="{ 'selected': user.selected }">
+                <div class="email">
+                  {{ user.email }}
+                </div>
+                <div class="boutton">
+                  <button @click="takeToken(user.id)">Prendre le contrôle</button>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <p v-if="error">{{ error }}</p>
+        </div>
+      </div>
+    </div>
   </main>
-  </template>
-<style lang="scss">
+</template>
 
+<style lang="scss">
+.content {
+  display: flex;
+  justify-content: space-around;
+}
+
+.notverified {
+  background-color: white;
+  padding: 2em;
+  width: 40%;
+}
+
+.verified {
+  background-color: white;
+  padding: 2em;
+  width: 40%;
+}
+
+.line {
+  display: flex;
+  padding: 5px;
+  border-radius: 10px;
+  justify-content: space-between;
+}
+
+.title {
+  margin-bottom: 15px;
+}
+
+.boutton {}
+
+.email {}
+
+.selected {
+  /* Ajoutez le style de surlignage ici */
+  background-color: yellow;
+}
 </style>
