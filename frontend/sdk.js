@@ -104,6 +104,14 @@ export default class SDK {
                 this.data.trackers.endTime = new Date();
                 this.data.user_fingerprint = this.getFingerprintUser();
                 // navigator.sendBeacon('http://localhost:3000/sdk', JSON.stringify(this.data));
+                // TODO: a améliorer
+                fetch('http://localhost:3000/sdk', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(this.data),
+                })
 
                 // ! vider les data
                 console.log("send data to backend : ", this.data);
