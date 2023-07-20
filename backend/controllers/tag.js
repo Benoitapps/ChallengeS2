@@ -12,3 +12,5 @@ function add(req, res) {
         user_id: tag.user_id,
     });
 }
+
+module.exports = { add };

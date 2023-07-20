@@ -134,4 +134,4 @@ function getConnectedUser(req, res) {
     }
   }
   
-  module.exports = { signup, login, getUser, getConnectedUser, logout };
+module.exports = { signup, login, getUser, getConnectedUser, logout };

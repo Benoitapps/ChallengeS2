@@ -2,6 +2,7 @@ const MOUSE_DELAY = 1000;
 const EMPTY_TRACKERS = {
     mouse: [], // { x: 0, y: 0, timestamp: 0, path: string }
     clicks: [], // { x: 0, y: 0, timestamp: 0, target: HTMLElement, outerHTML: string, path: string }
+    paths: [], // { path: string, timestamp: 0 }
     startTime: new Date(),
     endTime: null,
 };
@@ -29,11 +30,13 @@ export default class SDK {
     initTracker() {
         this.trackMouseMovement();
         this.trackMouseClick();
+        this.trackNavigation();
     }
 
     stopTracker() {
         this.stopTrackingMouseMovement();
         this.stopTrackingMouseClick();
+        this.stopTrackingNavigation();
     }
 
     trackMouseMovement() {
@@ -87,6 +90,31 @@ export default class SDK {
     stopTrackingMouseClick() {
         console.log("stop tracking mouse click")
         document.body.removeEventListener("click", this.trackerFunction);
+    }
+
+    trackNavigation() {
+        console.log("start tracking navigation");
+        this.navigationFunction = (e) => {
+            // N'ajoute pas le meme path 2 fois
+            if (this.data.trackers.paths.length > 0) {
+                let lastPath = this.data.trackers.paths[this.data.trackers.paths.length - 1].path;
+                if (lastPath === window.location.pathname) {
+                    return;
+                }
+            }
+            this.data.trackers.paths.push({
+                path: window.location.pathname,
+                timestamp: Date.now(),
+            });
+            console.log("navigation : ", window.location.pathname)
+        };
+
+        window.addEventListener("click", this.navigationFunction);
+    }
+
+    stopTrackingNavigation() {
+        console.log("stop tracking navigation");
+        window.removeEventListener("click", this.navigationFunction);
     }
 
     getFingerprintUser() {

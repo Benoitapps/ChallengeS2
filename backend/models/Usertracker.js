@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const trackerSchema = new Schema({
   mouse: [],
   clicks: [],
+  paths: [],
   startTime: Date,
   endTime: Date
 });
