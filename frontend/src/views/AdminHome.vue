@@ -24,6 +24,30 @@ export default {
   }
 };
 
+const getConnectedUserAfter = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/connecter', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          console.log("stocke donne");
+          const data = await response.json();
+          
+          localStorage.setItem('myUser', JSON.stringify(data));
+        } else {
+          const data = await response.json();
+          error.value = data.error;
+        }
+      } catch (e) {
+        error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
+      }
+    };
+
 
     const getUsersNotVerified = async () => {
       try {
@@ -106,6 +130,11 @@ export default {
         if (response.ok) {
           const data = await response.json();
             console.log(data) // Mettre à jour la liste des utilisateurs après la vérification
+            getConnectedUserAfter();
+            
+            localStorage.setItem('myUser', JSON.stringify());
+
+
         } else {
           const data = await response.json();
           error.value = data.error;
@@ -205,9 +234,6 @@ export default {
   margin-bottom: 15px;
 }
 
-.boutton {}
-
-.email {}
 
 .selected {
   /* Ajoutez le style de surlignage ici */

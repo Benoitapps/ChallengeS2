@@ -194,7 +194,94 @@ const result4 = await Usertracker.aggregate(pipeline4).exec();
         console.log("resVisiteur "+ resVisiteur);
 
 ////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+const pipeline5 = [
+  { $match: { "api_token": "ikb3yt96da5pz1d47x5wv1dn12v3voly" } },
+  {
+    $project: {
+      totalClicks: {
+        $sum: {
+          $map: {
+            input: "$visitors",
+            as: "visitor",
+            in: {
+              $sum: {
+                $map: {
+                  input: "$$visitor.trackers",
+                  as: "tracker",
+                  in: { $size: "$$tracker.clicks" }
+                }
+              }
+            }
+          }
+        }
+      },
+      clickPaths: {
+        $reduce: {
+          input: "$visitors",
+          initialValue: [],
+          in: {
+            $concatArrays: [
+              "$$value",
+              {
+                $reduce: {
+                  input: "$$this.trackers",
+                  initialValue: [],
+                  in: { $concatArrays: ["$$value", "$$this.clicks.path"] }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  {
+    $unwind: "$clickPaths"
+  },
+  {
+    $group: {
+      _id: "$clickPaths",
+      count: { $sum: 1 }
+    }
+  },
+  {
+    $group: {
+      _id: null, // Utiliser null pour regrouper tous les résultats en un seul groupe
+      results: {
+        $push: {
+          path: "$_id",
+          count: "$count"
+        }
+      }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      result: { $arrayToObject: [[{ k: "results", v: "$results" }]] } // Convertir le tableau de résultats en un objet avec la clé "results"
+    }
+  }
+]
 
+
+const result5 = await Usertracker.aggregate(pipeline5).exec();
+      const resPages = result5[0]
+
+        console.log("resPages "+ resPages);
+        console.log(resPages);
+
+
+////////////////////////////////////////////////////////////////////////////////
+let timeStamp = 1688999649562
+var dateformat = new Date(timeStamp);  
+var dateformattoday = new Date()
+
+console.log("dateformat" + dateformat);
+console.log("dateformattoday1= " + dateformattoday.setHours(dateformattoday.getHours() + 24));
+console.log("dateformattoday2= " + dateformattoday.setDate(dateformattoday.getDate() + 7));
+console.log("dateformattoday3= " + dateformattoday.setDate(dateformattoday.getDate() + 30));
+console.log("dateformattoday4= " + dateformattoday.setMonth(dateformattoday.getMonth() + 12));
 
 
     res.status(200).json({ 
@@ -202,6 +289,7 @@ const result4 = await Usertracker.aggregate(pipeline4).exec();
         totalSessions: totalSessions.toString(),
         resMoyenne: formatDuration(resMoyenne),
         resVisiteur: resVisiteur.toString(),
+        resPage : resPages
      }); // Renvoie le nombre total de clics au format JSON
   } catch (error) {
     res.status(401).json({ error: error.message }); // Gère les erreurs d'authentification ou de token et renvoie l'erreur au format JSON
@@ -218,6 +306,7 @@ const result4 = await Usertracker.aggregate(pipeline4).exec();
       const title = req.params.nameCard;
       console.log("KpiChoice : "+ periods + ","+ title);
 
+      let dateformattoday = new Date()
 
       if(!req.params?.nameCard || !req.params?.resperiod) {
         return res.status(400).json({ error: 'Missing parameters' });
@@ -225,15 +314,20 @@ const result4 = await Usertracker.aggregate(pipeline4).exec();
         if(req.params?.resperiod === '24h') {
             unit = 'hour';
             amount = 24;
+            dateformattoday.setHours(dateformattoday.getHours() + 24);
+            
         } else if(req.params?.resperiod === '7d') {
             unit = 'day';
             amount = 7;
+            dateformattoday.setDate(dateformattoday.getDate() + 7);
         } else if(req.params?.resperiod === '30d') {
             unit = 'day';
             amount = 30;
+            dateformattoday.setDate(dateformattoday.getDate() + 30);
         } else if(req.params?.resperiod === '12m') {
             unit = 'month';
             amount = 12;
+            dateformattoday.setMonth(dateformattoday.getMonth() + 12);
         }else{
           unit = 'year';
           amount = 10;
@@ -460,7 +554,91 @@ const result4 = await Usertracker.aggregate(pipeline4).exec();
         res: resVisiteur.toString()
      });
 
+    //////page///////////////////////////////////////////////////////////////////////////////////////////
+  }else if(req.params?.nameCard === 'page') {
+    const pipeline =  [
+      { $match: { "api_token": "ikb3yt96da5pz1d47x5wv1dn12v3voly" } },
+      {
+        $project: {
+          totalClicks: {
+            $sum: {
+              $map: {
+                input: "$visitors",
+                as: "visitor",
+                in: {
+                  $sum: {
+                    $map: {
+                      input: "$$visitor.trackers",
+                      as: "tracker",
+                      in: { $size: "$$tracker.clicks" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          clickPaths: {
+            $reduce: {
+              input: "$visitors",
+              initialValue: [],
+              in: {
+                $concatArrays: [
+                  "$$value",
+                  {
+                    $reduce: {
+                      input: "$$this.trackers",
+                      initialValue: [],
+                      in: { $concatArrays: ["$$value", "$$this.clicks.path"] }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      {
+        $unwind: "$clickPaths"
+      },
+      {
+        $group: {
+          _id: "$clickPaths",
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $group: {
+          _id: null, // Utiliser null pour regrouper tous les résultats en un seul groupe
+          results: {
+            $push: {
+              path: "$_id",
+              count: "$count"
+            }
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          result: { $arrayToObject: [[{ k: "results", v: "$results" }]] } // Convertir le tableau de résultats en un objet avec la clé "results"
+        }
+      }
+    ]
     
+
+    const result = await Usertracker.aggregate(pipeline).exec();
+    let resVisiteur = 0;
+   if(result.length == 0){
+    resVisiteur = 0;
+   }else{
+    resVisiteur = result[0].totalSessions;
+    }
+    console.log("resVisiteur " +resVisiteur );
+    
+
+  res.status(200).json({ 
+      res: resVisiteur.toString()
+   });
 
 
 

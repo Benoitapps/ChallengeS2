@@ -48,7 +48,7 @@ export default {
   <ul>
     <li v-for="user in users" :key="user">{{ user }}</li>
   </ul>
-  <p v-if="error">{{ error }}</p>
+  <p v-if="error">{{ error.value }}</p>
 </main>
 </template>
 

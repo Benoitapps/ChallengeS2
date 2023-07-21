@@ -13,6 +13,8 @@ const userApi = ref('');
 const clics = ref("");
 const sessions = ref("");
 const moysessions = ref("");
+const moySessionVisiteur = ref("");
+const page = ref([]);
 const visiteur = ref("");
 const error = ref("");
 const nameCard = ref("");
@@ -42,24 +44,36 @@ const periods = [
   },
 ];
 
-const visitedPages = ref([
-  {
-    label: "Accueil",
-    value: "50",
-  },
-  {
-    label: "Contact",
-    value: "30",
-  },
-  {
-    label: "A propos",
-    value: "20",
-  },
-  {
-    label: "Blog",
-    value: "10",
-  },
-]);
+// const visitedPages = ref([
+//   {
+//     label: "Accueil",
+//     value: "50",
+//   },
+//   {
+//     label: "Contact",
+//     value: "30",
+//   },
+//   {
+//     label: "A propos",
+//     value: "20",
+//   },
+//   {
+//     label: "Blog",
+//     value: "10",
+//   },
+// ]);
+// const visitedPages = ref(
+//   page.value.result.results.map((item) => ({
+//     label: item.path,
+//     value: String(item.count) // Convertir en chaîne pour s'assurer que "value" est une chaîne
+//   }))
+// );
+const visitedPages = reactive({
+  data: []
+});
+
+
+
 
 const cards = ref([]);
 
@@ -82,10 +96,10 @@ watchEffect(() => {
       state: testState("Clics"),
     },
     {
-      title: "Pages visitées",
+      id: "page",
+      title: "Clics par page",
       type: "keys",
-      number: "100",
-      list: visitedPages.value,
+      list: visitedPages.data,
       periods: periods,
       state: testState("e"),
     },
@@ -104,6 +118,14 @@ watchEffect(() => {
       number: visiteur,
       periods: periods,
       state: testState("a"),
+    },
+    {
+      id: "moyennesessionparvisiteur",
+      title: "Moyenne session par visiteur",
+      type: "keys",
+      number: moySessionVisiteur,
+      periods: periods,
+      state: testState("d"),
     },
   ]);
 
@@ -168,7 +190,16 @@ const getKPI = async () => {
         clics.value = data.totalClicks;
         sessions.value = data.totalSessions;
         moysessions.value = data.resMoyenne;
-        visiteur.value = data.resVisiteur
+        visiteur.value = data.resVisiteur;
+        moySessionVisiteur.value = 0;
+        page.value = data.resPage
+        console.log(page.value);
+        console.log(page.value.result.results);
+        visitedPages.data = page.value.result.results.map((item) => ({
+        label: item.path,
+        value: String(item.count) // Convertir en chaîne pour s'assurer que "value" est une chaîne
+      }));
+      console.log(visitedPages.data);
 
       }
      // clics.value = data.totalClicks;
@@ -208,7 +239,7 @@ const getAllKPI = async () => {
 }
 
 const getUserKPI = async () => {
-  console.log("passage getUserKPI");
+  //console.log("passage getUserKPI");
   try {
     const response = await fetch(`http://localhost:3000/kpi/bdd/${userApi.value}`, {
       method: "GET",
@@ -217,11 +248,11 @@ const getUserKPI = async () => {
       },
       credentials: "include",
     });
-    console.log(response);
+    //console.log(response);
     if (response.ok) {
       const data = await response.json();
       kpiUserData.value = data.kpiNames; // Update kpiUserData with the fetched kpiNames array
-      console.log(kpiUserData);
+     // console.log(kpiUserData);
 
     } else {
       const errorData = await response.json();
