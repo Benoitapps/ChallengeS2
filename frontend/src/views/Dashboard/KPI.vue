@@ -15,6 +15,7 @@ const sessions = ref("");
 const moysessions = ref("");
 const moySessionVisiteur = ref("");
 const page = ref([]);
+const pagevisite = ref([]);
 const visiteur = ref("");
 const error = ref("");
 const nameCard = ref("");
@@ -120,10 +121,10 @@ watchEffect(() => {
       state: testState("a"),
     },
     {
-      id: "moyennesessionparvisiteur",
-      title: "Moyenne session par visiteur",
+      id: "visitepage",
+      title: "Page les plus visitée",
       type: "keys",
-      number: moySessionVisiteur,
+      number: pagevisite,
       periods: periods,
       state: testState("d"),
     },

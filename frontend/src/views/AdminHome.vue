@@ -116,10 +116,10 @@ const getConnectedUserAfter = async () => {
       }
     };
 
-    const takeToken = async (tokenid) => {
+    const takeToken = async (tokenid,website) => {
         console.log(tokenid);
       try {
-        const response = await fetch(`http://localhost:3000/admin/taketoken/${userId.value}/${tokenid}`, {
+        const response = await fetch(`http://localhost:3000/admin/taketoken/${userId.value}/${tokenid}/${website}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -193,7 +193,7 @@ const getConnectedUserAfter = async () => {
                   {{ user.email }}
                 </div>
                 <div class="boutton">
-                  <button @click="takeToken(user.id)">Prendre le contrôle</button>
+                  <button @click="takeToken(user.id, user.website)">Prendre le contrôle</button>
                 </div>
               </div>
             </li>

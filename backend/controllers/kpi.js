@@ -104,7 +104,7 @@ function getConnectedUserId(req) {
       const result = await Usertracker.aggregate(pipeline).exec();
       const totalSessions = result[0].totalSessions;
       console.log("session " + totalSessions);
-      ////////////////////////////////////////////////////////////
+      ////////////////////clics////////////////////////////////////////
       const pipeline2 = [
         { $match: { "api_token": "ikb3yt96da5pz1d47x5wv1dn12v3voly" } },
         {
@@ -136,7 +136,7 @@ function getConnectedUserId(req) {
         console.log("clic "+ totalClicks);
 
 
-/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////mtemps des session////////////////////////////////////////
 const pipeline3 = [
   {
     $match: {
@@ -176,7 +176,7 @@ const result3 = await Usertracker.aggregate(pipeline3).exec();
         console.log("resMoyenne "+ resMoyenne);
 
 ////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////nombre de visiteur//////////////////////////////////////////
 const pipeline4 = [
   { $match: { "api_token": "ikb3yt96da5pz1d47x5wv1dn12v3voly" } },
   {
@@ -194,7 +194,7 @@ const result4 = await Usertracker.aggregate(pipeline4).exec();
         console.log("resVisiteur "+ resVisiteur);
 
 ////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
+////////////////////////////clics par page ///////////////////////////////////////
 const pipeline5 = [
   { $match: { "api_token": "ikb3yt96da5pz1d47x5wv1dn12v3voly" } },
   {
@@ -267,6 +267,16 @@ const pipeline5 = [
 
 const result5 = await Usertracker.aggregate(pipeline5).exec();
       const resPages = result5[0]
+
+        console.log("resPages "+ resPages);
+        console.log(resPages);
+
+////////////////////////////////////////////////////////////////////////////////
+const pipeline6 = [];
+
+
+const result6 = await Usertracker.aggregate(pipeline5).exec();
+      const resPagesVisite = result5[0]
 
         console.log("resPages "+ resPages);
         console.log(resPages);

@@ -59,10 +59,11 @@ async function updateToken(req, res) {
     const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
     req.userId = decodedToken.userId; 
     const tokenUser = await getTokenUserbyId(req,res);
-    const userId = req.params.userId
+    const userId = req.params.userId;
+    const website = req.params.website
     
     const updatedUser = await User.update(
-      { api_token: tokenUser },
+      { api_token: tokenUser , website: website},
       { where: { id: userId } }
     );
 
