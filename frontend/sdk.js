@@ -112,26 +112,21 @@ export default class SDK {
 
     getFingerprintUser() {
         let fingerprint = localStorage.getItem('fingerprint');
-        if (!fingerprint && fingerprint.trim() !== "") {
-            localStorage.setItem('fingerprint', self.crypto.randomUUID());
-        }
-        return fingerprint;
+        if (fingerprint && fingerprint.trim() !== "") return fingerprint;
+        return localStorage.setItem('fingerprint', self.crypto.randomUUID());
     }
 
     initSendData() {
         window.addEventListener("visibilitychange", (event) => {
             if (event.target.visibilityState === "hidden") {
-                this.endTime = new Date();
-                this.user_fingerprint = this.getFingerprintUser();
-
                 let data = {
                     api_token: this.api_token,
-                    user_fingerprint: this.user_fingerprint,
+                    user_fingerprint: this.getFingerprintUser(),
                     mouse: this.mouse,
                     clicks: this.clicks,
                     paths: this.paths,
                     startTime: this.startTime,
-                    endTime: this.endTime,
+                    endTime: new Date(),
                 }
 
                 navigator.sendBeacon('http://localhost:3000/sdk', JSON.stringify(data));

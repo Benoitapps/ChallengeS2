@@ -35,7 +35,7 @@ try {
             user_fingerprint: user_fingerprint,
             dateFirstVisit: new Date(),
             dateLastVisit: new Date(),
-            trackers: [
+            sessions: [
                 {
                     mouse: data.mouse,
                     clicks: data.clicks,
@@ -50,7 +50,7 @@ try {
         // update existing visitor
         const visitor = userTracker.visitors[visitorIndex];
         visitor.dateLastVisit = new Date();
-        visitor.trackers.push({
+        visitor.sessions.push({
             mouse: data.mouse,
             clicks: data.clicks,
             paths: data.paths,

@@ -13,7 +13,7 @@ const visitorSchema = new Schema({
   user_fingerprint: String,
   dateFirstVisit: Date,
   dateLastVisit: Date,
-  trackers: [trackerSchema]
+  sessions: [trackerSchema]
 });
 
 const userTrackerSchema = new Schema({
