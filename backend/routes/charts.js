@@ -63,6 +63,11 @@ router.post('/', (req, res) => {
                             date: "$visitors.trackers.endTime",
                         },
                     },
+                    {
+                        $sort: {
+                            date: 1,
+                        }
+                    }
                 ]
             )
                 .then(clicks => res.json(clicks))
@@ -109,6 +114,11 @@ router.post('/', (req, res) => {
                             date: "$visitors.trackers.endTime",
                         },
                     },
+                    {
+                        $sort: {
+                            date: 1,
+                        }
+                    }
                 ]
             )
                 .then(sessions => res.json(sessions))
