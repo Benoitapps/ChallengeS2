@@ -20,16 +20,20 @@ Coté back (sdk):
     récupérer les données des tags
     dans la fonction save ajouter la sauvegarde des clics sur le tag
     si le tag est existant alors il faut sauvegarder dans mongodb le tag
+    "user_fingerprint": "6ij5fi4jI3Ej2fi",
     tags: [
         {
-            token: "jH75eZa",
-            clics: [
-                {
-                    visitor_token: "6ij5fi4jI3Ej2fi",
-                    count: 43
-                }
-            ]
-        }
+            token: "jH75eZa"
+            timestamp: 100000000
+        },
+        {
+            token: "45dedee"
+            timestamp: 100000000
+        },
+        {
+            token: "8a6jdjP"
+            timestamp: 100000000
+        },
     ]
     
 

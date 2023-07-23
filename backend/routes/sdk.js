@@ -5,7 +5,7 @@ const User = require("../db").User;
 
 router.post("/", async (req, res) => {
 try {
-    let data = req.body;
+    let data = JSON.parse(req.body);
 
     // find user by api_token
     const user = await User.findOne({ where: { api_token: data.api_token } });
@@ -35,14 +35,28 @@ try {
             user_fingerprint: user_fingerprint,
             dateFirstVisit: new Date(),
             dateLastVisit: new Date(),
-            trackers: [data.trackers],
+            trackers: [
+                {
+                    mouse: data.mouse,
+                    clicks: data.clicks,
+                    paths: data.paths,
+                    startTime: data.startTime,
+                    endTime: data.endTime,
+                }
+            ],
         };
         userTracker.visitors.push(newVisitor);
     } else {
         // update existing visitor
         const visitor = userTracker.visitors[visitorIndex];
         visitor.dateLastVisit = new Date();
-        visitor.trackers.push(data.trackers);
+        visitor.trackers.push({
+            mouse: data.mouse,
+            clicks: data.clicks,
+            paths: data.paths,
+            startTime: data.startTime,
+            endTime: data.endTime,
+        });
     }
 
     // save user tracker
