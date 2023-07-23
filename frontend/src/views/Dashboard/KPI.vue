@@ -358,7 +358,7 @@ function addCard() {
 
 function updatePeriod(card, selectedPeriod) {
   
-  resperiod.value = selectedPeriod;
+  resperiod.value = selectedPeriod[1];
   nameCard.value = card.id;
   getKPI();
 }
@@ -379,7 +379,7 @@ function updatePeriod(card, selectedPeriod) {
         :periods="card.periods" 
         :state="card.state"
         
-        @updateSelectPeriod="(selectedPeriod) => updatePeriod(card, selectedPeriod)"
+        @updatePeriod="updatePeriod(card, $event)"
         @removeCard="removeCard($event)"
       ></Card>
       <AddCard v-show="addingIsEnabled" @addCard="addCard($event)" />
@@ -390,14 +390,14 @@ function updatePeriod(card, selectedPeriod) {
       </template>
     
       <template #default>
-        Seslectioner
+        Selectioner
         <ul>
           <li v-for="kpiUser in kpiUserData" :key="kpiUser.id">
             {{ kpiUser }}:
             <button @click="getUserdeleteKPI(kpiUser)">{{ kpiUser.value }}suprimmer</button>
           </li>
         </ul>
-        Non Seslectioner
+        Non Selectioner
         <ul>
           <li v-for="kpi in kpiData.unlinkedKpiNames" :key="kpi.id">
             {{ kpi }}:

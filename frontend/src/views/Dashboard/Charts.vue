@@ -129,6 +129,7 @@ const updateChart = async (values) => {
         })
       });
       const data = await response.json();
+      console.log(data);
 
       cards.forEach(card => {
         if(card.title.toLowerCase() === title.value.toLowerCase()) {

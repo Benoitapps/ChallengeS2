@@ -1,5 +1,5 @@
 <script setup>
-import {ref, watch} from "vue";
+import {ref} from "vue";
 
 const props = defineProps({
   periods: {
@@ -8,17 +8,13 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(["updatePeriod"]);
+defineEmits(["updatePeriod"]);
 
 const periodSelected = ref(props.periods[0].value);
-
-watch(periodSelected, (newValue) => {
-  emit("updatePeriod", newValue);
-});
 </script>
 
 <template>
-  <select class="card__footer__period" v-model="periodSelected">
+  <select class="card__footer__period" v-model="periodSelected" @change="$emit('updatePeriod', periodSelected)">
     <option
         v-for="period in props.periods"
         :key="period"
