@@ -30,7 +30,8 @@ export default {
         } else {
           // erreur
           const data = await response.json();
-          error.value = data.message;
+          error.value = data.error;
+          console.log(error.value)
         }
       } catch (e) {
         // Gestion des erreurs de connexion
