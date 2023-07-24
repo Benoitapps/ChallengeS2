@@ -11,6 +11,7 @@ const chartRoutes = require('./routes/charts');
 const GenericController = require("./controllers/generic");
 const UserService = require("./services/user.js");
 const kpiroutes = require("./routes/kpi");
+const downloadsdkroutes = require("./routes/downloadsdk");
 const errorsHandler = require("./middleware/errorsHandler");
 
 
@@ -41,6 +42,7 @@ app.use("/sdk", sdkRoutes)
 app.use( "/users", trueUserRoutes)
 app.use("/tags", tagRoutes)
 app.use("/kpi", kpiroutes)
+app.use("/downloadsdk", downloadsdkroutes)
 
 app.use("/charts", chartRoutes)
 

@@ -1,8 +1,6 @@
-<script>
+<script setup>
 import { ref } from 'vue';
 
-export default {
-  setup() {
     const users = ref([]);
     const error = ref('');
     const updatedEmail = ref('');
@@ -58,16 +56,6 @@ export default {
     };
 
     getConnectedUser();
-
-    return {
-      users,
-      error,
-      updatedEmail,
-      updatedWebsite,
-      updateUser
-    };
-  }
-};
 </script>
 
 <template>
