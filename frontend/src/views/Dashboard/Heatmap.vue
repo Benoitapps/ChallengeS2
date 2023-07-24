@@ -137,7 +137,7 @@ console.log("chamin :", src.value)
       <div class="type2">
         <h4>Heatmap Clics page :</h4>
          <div class="interieur">
-          <div class="titre" v-for="item in map.resPage" >
+          <div class="titre" v-for="item in map.resPage" :key="item.id" >
             <button class="bouton" v-on:click="changePath(item.path, 'clic' )">{{ item.path }}</button>
 
           </div>
@@ -146,7 +146,7 @@ console.log("chamin :", src.value)
       <div class="type2">
         <h4>Heatmap Suivis page :</h4>
         <div class="interieur">
-          <div class="titre" v-for="item in mapmouse.resPageMouse" >
+          <div class="titre" v-for="item in mapmouse.resPageMouse" :key="item.id" >
             <button class="bouton" v-on:click="changePath(item.path,'mouse' )">{{ item.path }}</button>
           </div>
         </div>
@@ -158,15 +158,15 @@ console.log("chamin :", src.value)
       <iframe :src="src" width="95%" height="95%"></iframe>
 
       <div v-if="choiceType == 'clic'">
-        <div v-for="item in map.resPage">
-          <div v-if="item.path == chemin" v-for="item in item.coordinates">
+        <div v-for="item in map.resPage" :key="item.id">
+          <div v-if="item.path == chemin" v-for="item in item.coordinates" :key="item.id">
             <span class="heatmap-point" :style="{ top: item.x/2 + 'px', left: item.y/2 + 'px', backgroundColor: item.color }"></span>
           </div>
         </div>
       </div>
       <div v-if="choiceType == 'mouse'">
-        <div v-for="item in mapmouse.resPageMouse">
-          <div v-if="item.path == chemin" v-for="item in item.coordinates">
+        <div v-for="item in mapmouse.resPageMouse" :key="item.id">
+          <div v-if="item.path == chemin" v-for="item in item.coordinates" :key="item.id">
             <span class="heatmap-point" :style="{ top: item.x/2 + 'px', left: item.y/2 + 'px', backgroundColor: item.color }"></span>
           </div>
         </div>

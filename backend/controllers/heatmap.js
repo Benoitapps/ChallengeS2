@@ -58,7 +58,7 @@ function getConnectedUserId(req) {
                     "$$value",
                     {
                       $reduce: {
-                        input: "$$this.trackers",
+                        input: "$$this.sessions",
                         initialValue: [],
                         in: "$$this.clicks"
                       }
@@ -165,7 +165,7 @@ const result = await Usertracker.aggregate(pipeline).exec();
                     "$$value",
                     {
                       $reduce: {
-                        input: "$$this.trackers",
+                        input: "$$this.sessions",
                         initialValue: [],
                         in: "$$this.mouse"
                       }
