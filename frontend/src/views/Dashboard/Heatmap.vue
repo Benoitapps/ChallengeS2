@@ -2,6 +2,8 @@
 
 import { inject, onMounted, onUnmounted, ref } from "vue";
 import { reactive, watch, watchEffect  } from "vue";
+const env = import.meta.env
+
 const userId = ref('');
 const userApi = ref('');
 const clics = ref("");
@@ -53,7 +55,7 @@ const getHeatmapClick = async () => {
 
   console.log("je passe ");
 try {
-  const response = await fetch(`http://localhost:3000/heatmap/`, {
+  const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/heatmap/`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -85,7 +87,7 @@ const getHeatmapMouse = async () => {
 
 console.log("je passe ");
 try {
-const response = await fetch(`http://localhost:3000/heatmap/mouse`, {
+const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/heatmap/mouse`, {
   method: "GET",
   headers: {
     "Content-Type": "application/json",

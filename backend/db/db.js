@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 
 //const connection = new Sequelize(process.env.DATABASE_URL);
 const connection = new Sequelize('app', 'root', 'password', {
-  host: 'localhost',
+  host: process.env.DOMAIN_NAME,
   dialect: 'postgres',
 });
 

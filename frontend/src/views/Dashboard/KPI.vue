@@ -6,7 +6,7 @@ import Modal from "../../components/Modal.vue";
 // import { getAllKpi , afftab } from "./KPIbdd.vue";
 import { inject, onMounted, onUnmounted, ref } from "vue";
 import { reactive, watch, watchEffect  } from "vue";
-
+const env = import.meta.env
 
 const userId = ref('');
 const userApi = ref('');
@@ -168,7 +168,7 @@ const getKPI = async () => {
 
   
   try {
-    const response = await fetch(`http://localhost:3000/kpi/post/${nameCard.value}/${resperiod.value}`, {
+    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/kpi/post/${nameCard.value}/${resperiod.value}`, {
       method: "Post",
       headers: {
         "Content-Type": "application/json",
@@ -219,7 +219,7 @@ const getKPI = async () => {
 const getAllKPI = async () => {
 
   try {
-    const response = await fetch(`http://localhost:3000/kpi/bddnot/${userApi.value}`, {
+    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/kpi/bddnot/${userApi.value}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -242,7 +242,7 @@ const getAllKPI = async () => {
 const getUserKPI = async () => {
   //console.log("passage getUserKPI");
   try {
-    const response = await fetch(`http://localhost:3000/kpi/bdd/${userApi.value}`, {
+    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/kpi/bdd/${userApi.value}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -267,7 +267,7 @@ const getUserKPI = async () => {
 const getUserAddKPI = async (kpi) => {
 
   try {
-    const response = await fetch(`http://localhost:3000/kpi/addbdd/${userApi.value}/${kpi}`, {
+    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/kpi/addbdd/${userApi.value}/${kpi}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -290,7 +290,7 @@ const getUserAddKPI = async (kpi) => {
 const getUserdeleteKPI = async (kpi) => {
 
   try {
-    const response = await fetch(`http://localhost:3000/kpi/removebdd/${userApi.value}/${kpi}`, {
+    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/kpi/removebdd/${userApi.value}/${kpi}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

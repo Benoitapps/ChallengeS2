@@ -1,6 +1,7 @@
 <script>
 import { ref } from 'vue';
 import router from '../../router';
+const env = import.meta.env
 
 export default {
   setup() {
@@ -9,7 +10,7 @@ export default {
 
     const getDecoonnectedUser = async () => {
       try {
-        const response = await fetch('http://localhost:3000/logout', {
+        const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/logout`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
