@@ -74,13 +74,13 @@ function getConnectedUserId(req) {
           $unwind: "$visitors"
         },
         {
-          $unwind: "$visitors.trackers"
+          $unwind: "$visitors.sessions"
         },
         {
           $match: {
             $expr: {
               $gte: [
-                "$visitors.trackers.endTime",
+                "$visitors.sessions.endTime",
                 {
                   $dateSubtract: {
                     startDate: new Date(),
@@ -117,7 +117,7 @@ function getConnectedUserId(req) {
                   in: {
                     $sum: {
                       $map: {
-                        input: "$$visitor.trackers",
+                        input: "$$visitor.sessions",
                         as: "tracker",
                         in: { $size: "$$tracker.clicks" }
                       }
@@ -147,12 +147,12 @@ const pipeline3 = [
     $unwind: "$visitors"
   },
   {
-    $unwind: "$visitors.trackers"
+    $unwind: "$visitors.sessions"
   },
   {
     $addFields: {
       duration: {
-        $subtract: ["$visitors.trackers.endTime", "$visitors.trackers.startTime"]
+        $subtract: ["$visitors.sessions.endTime", "$visitors.sessions.startTime"]
       }
     }
   },
@@ -207,7 +207,7 @@ const pipeline5 = [
             in: {
               $sum: {
                 $map: {
-                  input: "$$visitor.trackers",
+                  input: "$$visitor.sessions",
                   as: "tracker",
                   in: { $size: "$$tracker.clicks" }
                 }
@@ -225,7 +225,7 @@ const pipeline5 = [
               "$$value",
               {
                 $reduce: {
-                  input: "$$this.trackers",
+                  input: "$$this.sessions",
                   initialValue: [],
                   in: { $concatArrays: ["$$value", "$$this.clicks.path"] }
                 }
@@ -356,13 +356,13 @@ console.log("dateformattoday4= " + dateformattoday.setMonth(dateformattoday.getM
           $unwind: "$visitors"
         },
         {
-          $unwind: "$visitors.trackers"
+          $unwind: "$visitors.sessions"
         },
         {
           $match: {
             $expr: {
               $gte: [
-                "$visitors.trackers.endTime",
+                "$visitors.sessions.endTime",
                 {
                   $dateSubtract: {
                     startDate: new Date(),
@@ -409,13 +409,13 @@ console.log("dateformattoday4= " + dateformattoday.setMonth(dateformattoday.getM
             $unwind: "$visitors"
           },
           {
-            $unwind: "$visitors.trackers"
+            $unwind: "$visitors.sessions"
           },
           {
             $match: {
               $expr: {
                 $gte: [
-                  "$visitors.trackers.endTime",
+                  "$visitors.sessions.endTime",
                   {
                     $dateSubtract: {
                       startDate: new Date(),
@@ -430,7 +430,7 @@ console.log("dateformattoday4= " + dateformattoday.setMonth(dateformattoday.getM
           {
             $group: {
               _id: null,
-              totalClicks: { $sum: { $size: "$visitors.trackers.clicks" } }
+              totalClicks: { $sum: { $size: "$visitors.sessions.clicks" } }
             }
           }
         ]
@@ -462,13 +462,13 @@ console.log("dateformattoday4= " + dateformattoday.setMonth(dateformattoday.getM
           $unwind: "$visitors"
         },
         {
-          $unwind: "$visitors.trackers"
+          $unwind: "$visitors.sessions"
         },
         {
           $match: {
             $expr: {
               $gte: [
-                "$visitors.trackers.endTime",
+                "$visitors.sessions.endTime",
                 {
                   $dateSubtract: {
                     startDate: new Date(),
@@ -483,7 +483,7 @@ console.log("dateformattoday4= " + dateformattoday.setMonth(dateformattoday.getM
         {
           $addFields: {
             duration: {
-              $subtract: ["$visitors.trackers.endTime", "$visitors.trackers.startTime"]
+              $subtract: ["$visitors.sessions.endTime", "$visitors.sessions.startTime"]
             }
           }
         },
@@ -578,7 +578,7 @@ console.log("dateformattoday4= " + dateformattoday.setMonth(dateformattoday.getM
                 in: {
                   $sum: {
                     $map: {
-                      input: "$$visitor.trackers",
+                      input: "$$visitor.sessions",
                       as: "tracker",
                       in: { $size: "$$tracker.clicks" }
                     }
@@ -596,7 +596,7 @@ console.log("dateformattoday4= " + dateformattoday.setMonth(dateformattoday.getM
                   "$$value",
                   {
                     $reduce: {
-                      input: "$$this.trackers",
+                      input: "$$this.sessions",
                       initialValue: [],
                       in: { $concatArrays: ["$$value", "$$this.clicks.path"] }
                     }
