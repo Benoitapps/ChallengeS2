@@ -152,10 +152,6 @@ const getConnectedUser = async () => {
 
       userId.value = parsedData.userId;
       userApi.value = parsedData.apiToken;
-
-
-      console.log("mon id est le : "+ userId.value)
-      console.log("mon api est le : "+ userApi.value)
     }
   } catch (error) {
     error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
@@ -193,14 +189,10 @@ const getKPI = async () => {
         visiteur.value = data.resVisiteur;
         moySessionVisiteur.value = 0;
         page.value = data.resPage
-        console.log(page.value);
-        console.log(page.value.result.results);
         visitedPages.data = page.value.result.results.map((item) => ({
         label: item.path,
         value: String(item.count) // Convertir en chaîne pour s'assurer que "value" est une chaîne
       }));
-      console.log(visitedPages.data);
-
       }
      // clics.value = data.totalClicks;
 
@@ -239,7 +231,6 @@ const getAllKPI = async () => {
 }
 
 const getUserKPI = async () => {
-  //console.log("passage getUserKPI");
   try {
     const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/kpi/bdd/${userApi.value}`, {
       method: "GET",
@@ -248,12 +239,9 @@ const getUserKPI = async () => {
       },
       credentials: "include",
     });
-    //console.log(response);
     if (response.ok) {
       const data = await response.json();
       kpiUserData.value = data.kpiNames; // Update kpiUserData with the fetched kpiNames array
-     // console.log(kpiUserData);
-
     } else {
       const errorData = await response.json();
       error.value = errorData.error;
