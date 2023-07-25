@@ -50,6 +50,7 @@ onMounted(async () => {
       </tbody>
     </table>
 
+    <button data-tag="6c4t71zz">Click me (tag example)</button>
   </main>
 </template>
 

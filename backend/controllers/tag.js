@@ -22,6 +22,7 @@ function create(req, res) {
 
 function all(req, res) {
     const token = req.cookies["token"];
+    if (!token) return res.status(401).json({ error: "Unauthorized" });
     const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET'); // ! RANDOM_TOKEN_SECRET dans env
     const userId = decodedToken.userId; 
 
@@ -30,6 +31,7 @@ function all(req, res) {
             userId: userId
         }
     }).then((tags) => {
+        console.log(tags)
         tags = tags.map((tag) => {
             tag = tag.dataValues;
             delete tag.userId;
@@ -48,7 +50,6 @@ function deleteItem(req, res) {
     const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
     const userId = decodedToken.userId; 
     const tagId = req.params.id;
-    console.log("test----------------------", tagId, userId)
 
     Tag.destroy({
         where: {

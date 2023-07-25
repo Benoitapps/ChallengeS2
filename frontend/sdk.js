@@ -1,7 +1,8 @@
+const env = import.meta.env
 const MOUSE_DELAY = 1000;
 const inactivityDelay = 15 * 60 * 1000; // en millisecondes
 let inactivityTimer;
-const env = import.meta.env
+let loadBalancing;
 
 export default class SDK {
     constructor(api_token) {
@@ -181,7 +182,11 @@ export default class SDK {
         let tags = document.querySelectorAll('button[data-tag]');
         tags.forEach((tag) => {
             tag.addEventListener("click", (e) => {
-                console.table("click on this tag : ", e.target);
+                // load balancing
+                clearTimeout(loadBalancing)
+                loadBalancing = setTimeout(() => {
+                    console.table("click on this tag : ", e.target);
+                }, 800);
             });
         });
     }
