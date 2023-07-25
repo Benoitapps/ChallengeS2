@@ -31,13 +31,13 @@ User.hasMany(Tag, {
   foreignKey: "userId",
 });
 
-Image.belongsTo(User, {
-  foreignKey: "userId",
-});
+// Image.belongsTo(User, {
+//   foreignKey: "userId",
+// });
 
-User.hasMany(Image, {
-  foreignKey: "userId",
-});
+// User.hasMany(Image, {
+//   foreignKey: "userId",
+// });
 
 
 

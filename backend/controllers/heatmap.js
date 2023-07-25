@@ -14,7 +14,7 @@ function getConnectedUserId(req) {
   const token = req.cookies.token;
 
   if (!token) {
-    new Error('Token not found');
+    console.log('Token not found');
   }
 
   try {
@@ -138,7 +138,7 @@ const result = await Usertracker.aggregate(pipeline).exec();
 
   async function getHeatmapMouse(req, res) {
     try {
-      console.log("GetAPI");
+      //console.log("GetAPI");
       const periods = req.param.resperiod;
       const title = req.param.nameCard;
 
@@ -223,7 +223,7 @@ const result = await Usertracker.aggregate(pipeline).exec();
     // });
 
        // console.log("resPages "+ resPages);
-        console.log(resPages);
+        //console.log(resPages);
 
     res.status(200).json({ 
         resPageMouse : resPages
@@ -236,34 +236,64 @@ const result = await Usertracker.aggregate(pipeline).exec();
 
 
   async function uploadImage(req, res) {
+    console.log("leBodyest : ",req.body)
     try {
       const { image } = req.body;
-      console.log('image', image);
-  
-      // Save the image in the database for the connected user
-      // Assuming you have a User model with a field to store the base64 image data
-      const connectedUserId = await getConnectedUserId(req); // You can use the existing function to get the connected user's ID
-      const usertest = await User.findOne({ 
-        where: {api_token: connectedUserId },});
-  
-      // Save the image data in the user model
-
-      const imagecree = await Image.create({
-        name : "test",
-        src : image,
-        userId: usertest.id,
-        api_token: usertest.api_token 
+      const { token } = req.body;
+      const { name } = req.body;
+ 
+      let imagecree ="";
+      const testimage =await Image.findOne({
+        where: { api_token: token , name : name},
       });
+      console.log("la value de test image est :",testimage);
 
+      if(!testimage){
+        console.log("je cree");
+         imagecree = Image.create({
+          name : name,
+          src : image,
+          api_token: token
+      });
+      
+      }else{
+        console.log("je update");
+         imagecree = Image.update(
+          {src : image},
+          { where: { api_token: token, name:name} }
+        );
+      }
+
+      console.log("image remplacer");
+      console.log("image ajouter");
       res.status(200).json({ 
-        message: 'Utilisateur créé !',
+        message: 'Image remplacer ou cree !',
         email: imagecree
-    });
+          });
     } catch (error) {
       res.status(500).json({ error: "Image upload failed" });
     }
   }
 
+  async function getImageSrc(req, res) {
+    try {
+      //const ttoken =req.param.api_token;
+      const {apiToken} = req.body; // Assuming the API token is passed as a URL parameter
+      console.log("imagetokenmtn",apiToken);
+  
+      const image = await Image.findAll({
+        where: { api_token: apiToken },
+      });
+  
+      if (!image) {
+        return res.status(404).json({ error: "Image not found for this user" });
+      }
+  
+      res.status(200).json({  image });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to retrieve image source" });
+    }
+  }
 
 
-  module.exports = { getHeatmapClic,getHeatmapMouse,uploadImage };
+  module.exports = { getHeatmapClic,getHeatmapMouse,uploadImage,getImageSrc };
