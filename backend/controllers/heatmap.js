@@ -117,12 +117,12 @@ const result = await Usertracker.aggregate(pipeline).exec();
             })          
         });
      });
-     resPages.forEach(element => {
-        element.coordinates.forEach(coord => {
-            coord.color = getColor(coord.value);
-            //console.log(coord.color);
-     });
-    });
+    //  resPages.forEach(element => {
+    //     element.coordinates.forEach(coord => {
+    //         coord.color = getColor(coord.value);
+    //         //console.log(coord.color);
+    //  });
+    // });
 
        // console.log("resPages "+ resPages);
         //console.log(resPages);
@@ -224,12 +224,12 @@ const result = await Usertracker.aggregate(pipeline).exec();
             })          
         });
      });
-     resPages.forEach(element => {
-        element.coordinates.forEach(coord => {
-            coord.color = getColor(coord.value);
-            //console.log(coord.color);
-     });
-    });
+    //  resPages.forEach(element => {
+    //     element.coordinates.forEach(coord => {
+    //         coord.color = getColor(coord.value);
+    //         //console.log(coord.color);
+    //  });
+    // });
 
        // console.log("resPages "+ resPages);
         console.log(resPages);
