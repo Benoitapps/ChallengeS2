@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 require('dotenv').config({ path: '.env.local', override: true });
 
 const BDD_URI = process.env.BDD;
+console.log(BDD_URI);
 
 async function connect() {
     console.log('Connecting to MongoDB...')

@@ -8,5 +8,7 @@ router.get('/', HeatmapCtrl.getHeatmapClic);
 
 router.get('/mouse', HeatmapCtrl.getHeatmapMouse);
 
+router.post('/upload', HeatmapCtrl.uploadImage);
+
 
 module.exports = router;

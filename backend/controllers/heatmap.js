@@ -6,26 +6,27 @@ const cookieParser = require('cookie-parser');
 const authMiddleware = require('../middleware/authMiddleware');
 const services = '../services/user'
 const User = require("../db").User;
+const Image = require("../db").Image;
+
 const Usertracker = require('../models/Usertracker');
 
 function getConnectedUserId(req) {
-    return new Promise((resolve, reject) => {
-      const token = req.cookies.token;
-  
-      if (!token) {
-        reject(new Error('Token not found'));
-      }
-  
-      try {
-        const decoded = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
-        const userToken = decoded.userToken;
-  
-        resolve(userToken);
-      } catch (error) {
-        reject(new Error('Invalid token'));
-      }
-    });
+  const token = req.cookies.token;
+
+  if (!token) {
+    new Error('Token not found');
   }
+
+  try {
+    const decoded = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+    const userToken = decoded.userToken;
+
+    return userToken;
+  } catch (error) {
+   new Error('Invalid token');
+  }
+
+}
 
   function getColor(value){
     if(value <= 2){
@@ -135,16 +136,6 @@ const result = await Usertracker.aggregate(pipeline).exec();
   }
   }
 
-
-
-
-
-
-
-
-
-
-
   async function getHeatmapMouse(req, res) {
     try {
       console.log("GetAPI");
@@ -243,4 +234,36 @@ const result = await Usertracker.aggregate(pipeline).exec();
   }
 
 
-  module.exports = { getHeatmapClic,getHeatmapMouse };
+
+  async function uploadImage(req, res) {
+    try {
+      const { image } = req.body;
+      console.log('image', image);
+  
+      // Save the image in the database for the connected user
+      // Assuming you have a User model with a field to store the base64 image data
+      const connectedUserId = await getConnectedUserId(req); // You can use the existing function to get the connected user's ID
+      const usertest = await User.findOne({ 
+        where: {api_token: connectedUserId },});
+  
+      // Save the image data in the user model
+
+      const imagecree = await Image.create({
+        name : "test",
+        src : image,
+        userId: usertest.id,
+        api_token: usertest.api_token 
+      });
+
+      res.status(200).json({ 
+        message: 'Utilisateur créé !',
+        email: imagecree
+    });
+    } catch (error) {
+      res.status(500).json({ error: "Image upload failed" });
+    }
+  }
+
+
+
+  module.exports = { getHeatmapClic,getHeatmapMouse,uploadImage };

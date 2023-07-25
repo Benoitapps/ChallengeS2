@@ -18,6 +18,7 @@ files.forEach((file) => {
 const User = db.User;
 const KpiName = db.KpiName;
 const Tag = db.Tag;
+const Image = db.Image;
 
 User.belongsToMany(KpiName, { through: "UserKpiNames" });
 KpiName.belongsToMany(User, { through: "UserKpiNames" });
@@ -29,5 +30,16 @@ Tag.belongsTo(User, {
 User.hasMany(Tag, {
   foreignKey: "userId",
 });
+
+Image.belongsTo(User, {
+  foreignKey: "userId",
+});
+
+User.hasMany(Image, {
+  foreignKey: "userId",
+});
+
+
+
 
 module.exports = db;
