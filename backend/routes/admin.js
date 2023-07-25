@@ -10,7 +10,7 @@ router.get('/notverified', /*adminMiddleware, */adminCtrl.getUserNotVerified);
 router.put('/verified/:id',/*adminMiddleware,*/ adminCtrl.UserVerified);
 
 router.get('/alluser', adminCtrl.getAllUser);
-router.put('/taketoken/:userId/:tokenid', adminCtrl.updateToken);
+router.put('/taketoken/:userId/:tokenid/:website', adminCtrl.updateToken);
 
 router.get('/token/:userId', adminCtrl.getTokenUserbyId);
 

@@ -6,12 +6,16 @@ import Modal from "../../components/Modal.vue";
 // import { getAllKpi , afftab } from "./KPIbdd.vue";
 import { inject, onMounted, onUnmounted, ref } from "vue";
 import { reactive, watch, watchEffect  } from "vue";
-
+const env = import.meta.env
 
 const userId = ref('');
+const userApi = ref('');
 const clics = ref("");
 const sessions = ref("");
 const moysessions = ref("");
+const moySessionVisiteur = ref("");
+const page = ref([]);
+const pagevisite = ref([]);
 const visiteur = ref("");
 const error = ref("");
 const nameCard = ref("");
@@ -41,24 +45,36 @@ const periods = [
   },
 ];
 
-const visitedPages = ref([
-  {
-    label: "Accueil",
-    value: "50",
-  },
-  {
-    label: "Contact",
-    value: "30",
-  },
-  {
-    label: "A propos",
-    value: "20",
-  },
-  {
-    label: "Blog",
-    value: "10",
-  },
-]);
+// const visitedPages = ref([
+//   {
+//     label: "Accueil",
+//     value: "50",
+//   },
+//   {
+//     label: "Contact",
+//     value: "30",
+//   },
+//   {
+//     label: "A propos",
+//     value: "20",
+//   },
+//   {
+//     label: "Blog",
+//     value: "10",
+//   },
+// ]);
+// const visitedPages = ref(
+//   page.value.result.results.map((item) => ({
+//     label: item.path,
+//     value: String(item.count) // Convertir en chaîne pour s'assurer que "value" est une chaîne
+//   }))
+// );
+const visitedPages = reactive({
+  data: []
+});
+
+
+
 
 const cards = ref([]);
 
@@ -81,10 +97,10 @@ watchEffect(() => {
       state: testState("Clics"),
     },
     {
-      title: "Pages visitées",
+      id: "page",
+      title: "Clics par page",
       type: "keys",
-      number: "100",
-      list: visitedPages.value,
+      list: visitedPages.data,
       periods: periods,
       state: testState("e"),
     },
@@ -104,6 +120,14 @@ watchEffect(() => {
       periods: periods,
       state: testState("a"),
     },
+    {
+      id: "visitepage",
+      title: "Page les plus visitée",
+      type: "keys",
+      number: pagevisite,
+      periods: periods,
+      state: testState("d"),
+    },
   ]);
 
   cards.value = reactiveCards;
@@ -113,9 +137,7 @@ nameCard.value = "test";
 resperiod.value = "test2";
 
 function testState(name) {
-  console.log("je passe dans test state");
   for (const element of kpiUserData.value) {
-    console.log("le element "+ element);
     if (element === name) {
       return true;
     }
@@ -130,8 +152,11 @@ const getConnectedUser = async () => {
       const parsedData = JSON.parse(userData);
 
       userId.value = parsedData.userId;
+      userApi.value = parsedData.apiToken;
+
 
       console.log("mon id est le : "+ userId.value)
+      console.log("mon api est le : "+ userApi.value)
     }
   } catch (error) {
     error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
@@ -140,36 +165,43 @@ const getConnectedUser = async () => {
 
 
 const getKPI = async () => {
-  console.log("je passe");
+
   
   try {
-    const response = await fetch(`http://localhost:3000/kpi/post/${nameCard.value}/${resperiod.value}`, {
+    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/kpi/post/${nameCard.value}/${resperiod.value}`, {
       method: "Post",
       headers: {
         "Content-Type": "application/json",
       },
       credentials: "include",
     });
-    console.log(response);
+
     if (response.ok) {
       const data = await response.json();
 
       if(nameCard.value != "test"){
-        console.log("post a ete realiser aec succes");
+
         cards.value.forEach(element => {
-          //console.log(nameCard.value+ " et "+element.id);
           if(nameCard.value == element.id){
             element.number = data.res;
           }
         });
       }else{
-        console.log("le tout ")
+
         clics.value = data.totalClicks;
         sessions.value = data.totalSessions;
         moysessions.value = data.resMoyenne;
-        visiteur.value = data.resVisiteur
+        visiteur.value = data.resVisiteur;
+        moySessionVisiteur.value = 0;
+        page.value = data.resPage
+        console.log(page.value);
+        console.log(page.value.result.results);
+        visitedPages.data = page.value.result.results.map((item) => ({
+        label: item.path,
+        value: String(item.count) // Convertir en chaîne pour s'assurer que "value" est une chaîne
+      }));
+      console.log(visitedPages.data);
 
-      console.log(response);
       }
      // clics.value = data.totalClicks;
 
@@ -185,10 +217,9 @@ const getKPI = async () => {
 
 
 const getAllKPI = async () => {
-  console.log("je passe");
 
   try {
-    const response = await fetch(`http://localhost:3000/kpi/bddnot/${userId.value}`, {
+    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/kpi/bddnot/${userApi.value}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -198,9 +229,7 @@ const getAllKPI = async () => {
     if (response.ok) {
       const data = await response.json();
       kpiData.value = data; // Update the kpiData variable with the fetched data
-      console.log("les KPI :");
-      console.log( kpiData.value);
-      //console.log(data.value);
+
     } else {
       const errorData = await response.json();
       error.value = errorData.error;
@@ -211,21 +240,21 @@ const getAllKPI = async () => {
 }
 
 const getUserKPI = async () => {
-  console.log("je passe");
-
+  //console.log("passage getUserKPI");
   try {
-    const response = await fetch(`http://localhost:3000/kpi/bdd/${userId.value}`, {
+    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/kpi/bdd/${userApi.value}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
       credentials: "include",
     });
+    //console.log(response);
     if (response.ok) {
       const data = await response.json();
       kpiUserData.value = data.kpiNames; // Update kpiUserData with the fetched kpiNames array
-      console.log("les KPIUser :");
-      console.log(kpiUserData.value);
+     // console.log(kpiUserData);
+
     } else {
       const errorData = await response.json();
       error.value = errorData.error;
@@ -236,10 +265,9 @@ const getUserKPI = async () => {
 }
 
 const getUserAddKPI = async (kpi) => {
-  console.log("je passe");
 
   try {
-    const response = await fetch(`http://localhost:3000/kpi/addbdd/${userId.value}/${kpi}`, {
+    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/kpi/addbdd/${userApi.value}/${kpi}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -250,7 +278,6 @@ const getUserAddKPI = async (kpi) => {
       await getAllKPI();
       await getUserKPI();
 
-      console.log("post kpi fonctionne  :");
     } else {
       const errorData = await response.json();
       error.value = errorData.error;
@@ -261,10 +288,9 @@ const getUserAddKPI = async (kpi) => {
 }
 
 const getUserdeleteKPI = async (kpi) => {
-  console.log("je passe");
 
   try {
-    const response = await fetch(`http://localhost:3000/kpi/removebdd/${userId.value}/${kpi}`, {
+    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/kpi/removebdd/${userApi.value}/${kpi}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -274,7 +300,6 @@ const getUserdeleteKPI = async (kpi) => {
     if (response.ok) {
       await getAllKPI();
       await getUserKPI();
-      console.log("delete kpi fonctionne  :");
     } else {
       const errorData = await response.json();
       error.value = errorData.error;
@@ -333,12 +358,9 @@ function addCard() {
 
 function updatePeriod(card, selectedPeriod) {
   
-  resperiod.value = selectedPeriod;
+  resperiod.value = selectedPeriod[1];
   nameCard.value = card.id;
   getKPI();
-  console.log("la cate est : "+ card.title);
-  console.log("la peridoe est : ");
-  console.log(selectedPeriod);
 }
 
 </script>
@@ -357,7 +379,7 @@ function updatePeriod(card, selectedPeriod) {
         :periods="card.periods" 
         :state="card.state"
         
-        @updateSelectPeriod="(selectedPeriod) => updatePeriod(card, selectedPeriod)"
+        @updatePeriod="updatePeriod(card, $event)"
         @removeCard="removeCard($event)"
       ></Card>
       <AddCard v-show="addingIsEnabled" @addCard="addCard($event)" />
@@ -368,14 +390,14 @@ function updatePeriod(card, selectedPeriod) {
       </template>
     
       <template #default>
-        Seslectioner
+        Selectioner
         <ul>
           <li v-for="kpiUser in kpiUserData" :key="kpiUser.id">
             {{ kpiUser }}:
             <button @click="getUserdeleteKPI(kpiUser)">{{ kpiUser.value }}suprimmer</button>
           </li>
         </ul>
-        Non Seslectioner
+        Non Selectioner
         <ul>
           <li v-for="kpi in kpiData.unlinkedKpiNames" :key="kpi.id">
             {{ kpi }}:

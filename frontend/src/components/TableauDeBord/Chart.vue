@@ -16,15 +16,15 @@ const props = defineProps({
 onMounted(() => {
   if(props.data.length > 0) {
     generateChart();
-
-    window.addEventListener("resize", function () {
-      d3.select(`#chart-${props.index} svg`).selectAll("path").remove();
-      generateChart();
-    });
   }
   else {
     d3.select(`#chart-${props.index} [data-heading]`).text('Aucunes données enregistrées dans cette période');
   }
+});
+
+window.addEventListener("resize", function () {
+  d3.select(`#chart-${props.index} svg`).selectAll("path").remove();
+  generateChart();
 });
 
 watch(props, () => {
@@ -87,7 +87,6 @@ function generateChart() {
       .x((d) => xScale(xAccessor(d)))
       .y1((d) => yScale(yAccessor(d)))
       .y0(dimensions.height)
-      .curve(d3.curveBumpX)
 
   const area = svg
       .insert('path', 'line')
@@ -99,7 +98,6 @@ function generateChart() {
   const lineGenerator = d3.line()
       .x((d) => xScale(xAccessor(d)))
       .y((d) => yScale(yAccessor(d)))
-      .curve(d3.curveBumpX)
 
   const line = svg
       .insert('path', 'line')

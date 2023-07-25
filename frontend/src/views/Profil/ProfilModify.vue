@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+const env = import.meta.env
 
     const users = ref([]);
     const error = ref('');
@@ -32,7 +33,7 @@ import { ref } from 'vue';
           website: updatedWebsite.value
         };
 
-        const response = await fetch(`http://localhost:3000/users/${userId.value}`, {
+        const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/users/${userId.value}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json'

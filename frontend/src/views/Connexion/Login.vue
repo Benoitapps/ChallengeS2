@@ -2,7 +2,7 @@
 <script>
 import { ref } from 'vue';
 import router from '../../router';
-
+const env = import.meta.env
 export default {
   setup() {
     const email = ref('');
@@ -11,7 +11,7 @@ export default {
 
     const signup = async () => {
       try {
-        const response = await fetch('http://localhost:3000/login', {
+        const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -29,7 +29,8 @@ export default {
         } else {
           // erreur
           const data = await response.json();
-          error.value = data.message;
+          error.value = data.error;
+          console.log(error.value);
         }
       } catch (e) {
         // Gestion des erreurs de connexion

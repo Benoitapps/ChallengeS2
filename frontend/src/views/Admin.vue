@@ -1,6 +1,6 @@
 <script>
 import { ref } from 'vue';
-
+const env = import.meta.env
 export default {
   setup() {
     const users = ref([]);
@@ -24,7 +24,7 @@ export default {
 
     const getUsers = async () => {
       try {
-        const response = await fetch('http://localhost:3000/admin/notverified', {
+        const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/admin/notverified`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ export default {
     const verifyUser = async (userId) => {
         console.log(userId);
       try {
-        const response = await fetch(`http://localhost:3000/admin/verified/${userId}`, {
+        const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/admin/verified/${userId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

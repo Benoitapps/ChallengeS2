@@ -1,12 +1,12 @@
 <script setup>
 import { ref, computed } from 'vue';
-
+const env = import.meta.env
 const users = ref([]);
 const error = ref('');
 
 const getConnectedUser = async () => {
   try {
-    const response = await fetch('http://localhost:3000/connecter', {
+    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/connecter`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'

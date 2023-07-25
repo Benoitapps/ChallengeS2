@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const usertrackers = require('../models/Usertracker');
+const usersessions = require('../models/Usertracker');
 
 router.post('/', (req, res) => {
     let unit = '';
@@ -24,7 +24,7 @@ router.post('/', (req, res) => {
         }
 
         if(req.body?.title === 'clics') {
-            usertrackers.aggregate(
+            usersessions.aggregate(
                 [
                     {
                         $match: {
@@ -36,13 +36,13 @@ router.post('/', (req, res) => {
                         $unwind: "$visitors",
                     },
                     {
-                        $unwind: "$visitors.trackers",
+                        $unwind: "$visitors.sessions",
                     },
                     {
                         $match: {
                             $expr: {
                                 $gte: [
-                                    "$visitors.trackers.endTime",
+                                    "$visitors.sessions.endTime",
                                     {
                                         $dateSubtract: {
                                             startDate: "$$NOW",
@@ -58,11 +58,16 @@ router.post('/', (req, res) => {
                         $project: {
                             _id: "$_id",
                             amount: {
-                                $size: "$visitors.trackers.clicks",
+                                $size: "$visitors.sessions.clicks",
                             },
-                            date: "$visitors.trackers.endTime",
+                            date: "$visitors.sessions.endTime",
                         },
                     },
+                    {
+                        $sort: {
+                            date: 1,
+                        }
+                    }
                 ]
             )
                 .then(clicks => res.json(clicks))
@@ -70,7 +75,7 @@ router.post('/', (req, res) => {
         }
 
         if(req.body?.title === 'sessions') {
-            usertrackers.aggregate(
+            usersessions.aggregate(
                 [
                     {
                         $match: {
@@ -82,13 +87,13 @@ router.post('/', (req, res) => {
                         $unwind: "$visitors",
                     },
                     {
-                        $unwind: "$visitors.trackers",
+                        $unwind: "$visitors.sessions",
                     },
                     {
                         $match: {
                             $expr: {
                                 $gte: [
-                                    "$visitors.trackers.endTime",
+                                    "$visitors.sessions.endTime",
                                     {
                                         $dateSubtract: {
                                             startDate: "$$NOW",
@@ -106,9 +111,14 @@ router.post('/', (req, res) => {
                             amount: {
                                 $sum: 1
                             },
-                            date: "$visitors.trackers.endTime",
+                            date: "$visitors.sessions.endTime",
                         },
                     },
+                    {
+                        $sort: {
+                            date: 1,
+                        }
+                    }
                 ]
             )
                 .then(sessions => res.json(sessions))

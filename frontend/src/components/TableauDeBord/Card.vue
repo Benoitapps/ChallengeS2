@@ -45,19 +45,13 @@ let props = defineProps({
   }
 });
 
-const emits = defineEmits(["removeCard","updateSelectPeriod","updatePeriod"]);
-
-const selectedPeriod = ref('');
-//defineEmits(["removeCard", "updatePeriod","updateSelectPeriod"]);
+defineEmits(["removeCard", "updatePeriod","updateSelectPeriod"]);
 
 const isFavorite = ref(false);
 
 onMounted(() => {
   if(localStorage.getItem(`${props.type}-${props.title}`) !== null) {
     isFavorite.value = true;
-  }
-  if (props.periods.length > 0) {
-    selectedPeriod.value = props.periods[0].value; // Définir la première période comme sélectionnée par défaut
   }
 
   handleLocalStorage();
@@ -82,15 +76,6 @@ function handleLocalStorage() {
 function toggleFavorite() {
   isFavorite.value = !isFavorite.value;
   handleLocalStorage();
-}
-
-function removeCard() {
-  emits("removeCard", props.index);
-  
-}
-
-function updateSelectPeriod(selectedPeriod) {
-  emits("updateSelectPeriod", selectedPeriod);
 }
 </script>
 
@@ -117,16 +102,6 @@ function updateSelectPeriod(selectedPeriod) {
     />
 
     <div class="card__footer" v-if="props.periods.length > 0">
-  <select class="card__footer__period" v-model="selectedPeriod"  @change="updateSelectPeriod(selectedPeriod)">
-    <option v-for="(period, index) in props.periods"
-        :key="index"
-        :value="period.value"
-    >
-      {{ period.label }}
-    </option>
-  </select>
-
-
       <TimeScale
           :periods="props.periods"
           @updatePeriod="$emit('updatePeriod', [props.title, $event])"
