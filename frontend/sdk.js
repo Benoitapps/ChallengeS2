@@ -11,6 +11,7 @@ export default class SDK {
         this.mouse = [];
         this.clicks = [];
         this.paths = [];
+        this.tags = [];
         this.startTime = new Date();
         this.endTime = null;
         this.api_token = api_token;
@@ -132,6 +133,7 @@ export default class SDK {
             mouse: this.mouse,
             clicks: this.clicks,
             paths: this.paths,
+            tags: this.tags,
             startTime: this.startTime,
             endTime: new Date(),
         }
@@ -147,6 +149,7 @@ export default class SDK {
         this.mouse = [];
         this.clicks = [];
         this.paths = [];
+        this.tags = [];
         this.startTime = new Date();
         this.endTime = null;
     }
@@ -186,7 +189,12 @@ export default class SDK {
                 clearTimeout(loadBalancing)
                 loadBalancing = setTimeout(() => {
                     console.table("click on this tag : ", e.target);
-                }, 800);
+                    this.tags.push({
+                        token: e.target.dataset.tag,
+                        path: window.location.pathname,
+                        timestamp: Date.now(),
+                    });
+                }, 400);
             });
         });
     }

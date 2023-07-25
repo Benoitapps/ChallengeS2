@@ -5,6 +5,7 @@ const trackerSchema = new Schema({
   mouse: [],
   clicks: [],
   paths: [],
+  tags: [],
   startTime: Date,
   endTime: Date
 });
