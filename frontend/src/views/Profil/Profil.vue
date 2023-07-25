@@ -27,17 +27,86 @@ const getConnectedUser = async () => {
   }
 };
 
-const userToken = ref('your-user-token'); // Remplacez cette valeur par le token réel de l'utilisateur
+const userToken = ref('');
 const showToken = ref(false);
 
 const maskedToken = computed(() => {
-  // Masquer le token par des points
   return userToken.value.replace(/./g, '*');
 });
 
+let remainingTime = ref(35);
+
 function toggleTokenDisplay() {
   showToken.value = !showToken.value;
+  if (showToken.value) {
+    remainingTime.value = 35;
+    countdown();
+  }
 }
+
+function generateToken(length) {
+  return [...Array(length)].map(() => Math.random().toString(36)[2]).join('');
+}
+
+function countdown() {
+  if (remainingTime.value > 0 && showToken.value) {
+    setTimeout(() => {
+      remainingTime.value--;
+      countdown();
+    }, 1000);
+  } else {
+    showToken.value = false;
+    userToken.value = "";
+  }
+}
+
+function copyToClipboard() {
+  if (userToken.value) {
+    navigator.clipboard.writeText(userToken.value).then(() => {
+      alert("Clé API copiée en presse-papiers !");
+    }).catch(() => {
+      alert("Impossible de copier la clé API.");
+    });
+  }
+}
+
+const userId = ref('');
+
+const regenerateToken = async () => {
+  try {
+    const userData = localStorage.getItem('myUser');
+    if (userData) {
+      const parsedData = JSON.parse(userData);
+      userId.value = parsedData.userId;
+    }
+    const updatedUserToken = {
+          api_token: generateToken(32)
+        };
+
+    console.log("updatedUserToken "+updatedUserToken);
+
+    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/users/${userId.value}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include',
+      body: JSON.stringify(updatedUserToken)
+    });
+    if (response.ok) {
+      userToken.value = updatedUserToken.api_token;
+      const data = await response.json();
+      users.value = [data];
+      localStorage.setItem('myUser', JSON.stringify(data));
+        } else {
+          //const data = await response.json();
+          error.value = data.error;
+        }
+  } catch (e) {
+    error.value = "Une erreur s'est produite lors de la mise à jour de l'utilisateur";
+    console.log("erreur" + e)
+  }
+};
 
 getConnectedUser();
 </script>
@@ -65,9 +134,24 @@ getConnectedUser();
           {{ userToken=ligne.api_token }}
         </div>
       </li>
+      <button v-if="showToken" @click="copyToClipboard" :disabled="!userToken">
+        Copier la clé API
+      </button>
+      <div v-show="showToken && remainingTime > 0">
+        {{ remainingTime }} secondes avant le masquage automatique
+      </div>
+      <p v-show="!showToken && remainingTime <= 0">
+        La clé a été masquée automatiquement.
+      </p>
 
       <button @click="toggleTokenDisplay">
-        {{ showToken ? 'Masquer le token' : 'Afficher le token' }}
+        {{ showToken ? 'Masquer la clé' : 'Afficher la clé' }}
+      </button>
+      <br><br>
+      <p>Si vous pensez que votre clé API a été divulguée et n'est donc plus sécurisée, merci de générer une nouvelle clé.
+      </p>
+      <button @click="regenerateToken">
+        Générer une nouvelle clé API
       </button>
     </div>
 
