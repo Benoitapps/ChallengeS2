@@ -27,6 +27,7 @@ onMounted(() => {
   --text-color: #0f000d;
   --background: #fff0fc;
   --primary: #67fe80;
+  --primary-hover: #88fd9b;
   --secondary: #ffffff;
   --accent: #b8ffc3;
   --error: #f23030;
@@ -90,6 +91,8 @@ p,
 label,
 a,
 input,
+table,
+span,
 button {
   font-family: Roboto, sans-serif;
   color: var(--text-color);

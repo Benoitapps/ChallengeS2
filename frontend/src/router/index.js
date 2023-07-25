@@ -12,6 +12,7 @@ import ProfilModify from "../views/Profil/ProfilModify.vue";
 import Logout from "../views/Connexion/Logout.vue";
 import Tags from "../views/Tags.vue";
 import Test from "../views/Test.vue";
+import TagsCreate from "../views/TagsCreate.vue";
 
 const index = createRouter(
     {
@@ -72,7 +73,10 @@ const index = createRouter(
                 path: '/test',
                 component: Test
             },
-
+            {
+                path: '/tags/create',
+                component: TagsCreate
+            }
         ]
     });
 

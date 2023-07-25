@@ -1,7 +1,8 @@
+const env = import.meta.env
 const MOUSE_DELAY = 1000;
 const inactivityDelay = 15 * 60 * 1000; // en millisecondes
 let inactivityTimer;
-const env = import.meta.env
+let loadBalancing;
 
 export default class SDK {
     constructor(api_token) {
@@ -10,6 +11,7 @@ export default class SDK {
         this.mouse = [];
         this.clicks = [];
         this.paths = [];
+        this.tags = [];
         this.startTime = new Date();
         this.endTime = null;
         this.api_token = api_token;
@@ -131,6 +133,7 @@ export default class SDK {
             mouse: this.mouse,
             clicks: this.clicks,
             paths: this.paths,
+            tags: this.tags,
             startTime: this.startTime,
             endTime: new Date(),
         }
@@ -146,6 +149,7 @@ export default class SDK {
         this.mouse = [];
         this.clicks = [];
         this.paths = [];
+        this.tags = [];
         this.startTime = new Date();
         this.endTime = null;
     }
@@ -181,7 +185,16 @@ export default class SDK {
         let tags = document.querySelectorAll('button[data-tag]');
         tags.forEach((tag) => {
             tag.addEventListener("click", (e) => {
-                console.table("click on this tag : ", e.target);
+                // load balancing
+                clearTimeout(loadBalancing)
+                loadBalancing = setTimeout(() => {
+                    console.table("click on this tag : ", e.target);
+                    this.tags.push({
+                        token: e.target.dataset.tag,
+                        path: window.location.pathname,
+                        timestamp: Date.now(),
+                    });
+                }, 400);
             });
         });
     }
