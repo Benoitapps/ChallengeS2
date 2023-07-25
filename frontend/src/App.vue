@@ -95,6 +95,10 @@ button {
   color: var(--text-color);
 }
 
+button {
+  cursor: pointer;
+}
+
 select {
   border: none;
   font-weight: 600;
