@@ -119,21 +119,25 @@ export default class SDK {
     initSendData() {
         window.addEventListener("visibilitychange", (event) => {
             if (event.target.visibilityState === "hidden") {
-                let data = {
-                    api_token: this.api_token,
-                    user_fingerprint: this.getFingerprintUser(),
-                    mouse: this.mouse,
-                    clicks: this.clicks,
-                    paths: this.paths,
-                    startTime: this.startTime,
-                    endTime: new Date(),
-                }
-
-                navigator.sendBeacon(`${env.VITE_URL_SITE_CLIENT}/sdk`, JSON.stringify(data));
-
-                this.resetData();
+                this.sendData();
             }
         });
+    }
+
+    sendData() {
+        let data = {
+            api_token: this.api_token,
+            user_fingerprint: this.getFingerprintUser(),
+            mouse: this.mouse,
+            clicks: this.clicks,
+            paths: this.paths,
+            startTime: this.startTime,
+            endTime: new Date(),
+        }
+
+        navigator.sendBeacon(`${env.VITE_URL_SITE_CLIENT}/sdk`, JSON.stringify(data));
+
+        this.resetData();
     }
 
     resetData() {
@@ -164,20 +168,7 @@ export default class SDK {
 
     detectInactivity() {
         console.log("User inactive!");
-
-        let data = {
-            api_token: this.api_token,
-            user_fingerprint: this.user_fingerprint,
-            mouse: this.mouse,
-            clicks: this.clicks,
-            paths: this.paths,
-            startTime: this.startTime,
-            endTime: this.endTime,
-        };
-
-        navigator.sendBeacon(`${env.VITE_URL_SITE_CLIENT}/sdk`, JSON.stringify(data));
-        
-        this.resetData();
+        this.sendData();
     }
 
     handleUserInteraction() {
@@ -185,6 +176,7 @@ export default class SDK {
     }
     // ? ------------------------- USER INACTIVITY ------------------------- ? //
 
+    // ? ------------------------- TAGS ------------------------- ? //
     initTags() {
         let tags = document.querySelectorAll('button[data-tag]');
         tags.forEach((tag) => {
@@ -193,4 +185,5 @@ export default class SDK {
             });
         });
     }
+    // ? ------------------------- TAGS ------------------------- ? //
 }
