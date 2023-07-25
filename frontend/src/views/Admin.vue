@@ -86,9 +86,11 @@ export default {
         <button @click="verifyUser(user.id)">Vérifier</button>
       </li>
     </ul>
-    <p v-if="error">{{ error }}</p>
+    <p v-if="error" class="error">{{ error }}</p>
   </main>
   </template>
-<style lang="scss">
-
+<style scoped lang="scss">
+.error {
+  color: var(--error);
+}
 </style>

@@ -179,7 +179,7 @@ const getConnectedUserAfter = async () => {
             </div>
           </li>
         </ul>
-        <p v-if="error">{{ error }}</p>
+        <p v-if="error" class="error">{{ error }}</p>
       </div>
       <div class="verified">
         <div class="title">
@@ -198,7 +198,7 @@ const getConnectedUserAfter = async () => {
               </div>
             </li>
           </ul>
-          <p v-if="error">{{ error }}</p>
+          <p v-if="error" class="error">{{ error }}</p>
         </div>
       </div>
     </div>
@@ -238,5 +238,9 @@ const getConnectedUserAfter = async () => {
 .selected {
   /* Ajoutez le style de surlignage ici */
   background-color: yellow;
+}
+
+.error {
+  color: var(--error);
 }
 </style>
