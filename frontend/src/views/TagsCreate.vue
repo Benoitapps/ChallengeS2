@@ -1,4 +1,5 @@
 <script setup>
+import { onMounted } from 'vue';
 import router from '../router';
 
 const env = import.meta.env;
@@ -20,6 +21,22 @@ const createTag = async () => {
         router.push({ path: '/tags' })
     }
 }
+
+onMounted(() => {
+    document.querySelectorAll(".navbar__links").forEach(link => {
+        const path = link.querySelector("a").href.split("/").slice(3, 4).join("/");
+        if(link.querySelector("a").href === path) {
+            link.classList.add("selected");
+        }
+
+        link.addEventListener("click", () => {
+            if(document.querySelector(".selected")) {
+                document.querySelector(".selected").classList.remove("selected");
+            }
+            link.classList.add("selected");
+        });
+    });
+});
 
 </script>
 
