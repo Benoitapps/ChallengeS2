@@ -1,6 +1,5 @@
 <script setup>
 import Card from "../../components/TableauDeBord/Card.vue";
-import AddCard from "../../components/TableauDeBord/AddCard.vue";
 import Modal from "../../components/Modal.vue";
 // import ModalProvider from '../../providers/ModalProvider.vue';
 // import { getAllKpi , afftab } from "./KPIbdd.vue";
@@ -315,20 +314,7 @@ getKPI();
 getAllKPI();
 getUserKPI();
 
-
-const addingIsEnabled = ref(false);
-const cardsRemoved = ref([]);
-
 onMounted(() => {
-  if (localStorage.getItem("KPI") !== null) {
-    cards.value = JSON.parse(localStorage.getItem("KPI"));
-
-    if (localStorage.getItem("KPI-removed") !== null) {
-      cardsRemoved.value = JSON.parse(localStorage.getItem("KPI-removed"));
-      addingIsEnabled.value = true;
-    }
-  }
-
   const sdk = inject("sdk");
   sdk.initTracker();
 
@@ -336,25 +322,6 @@ onMounted(() => {
     sdk.stopTracker();
   });
 });
-
-function removeCard(index) {
-  addingIsEnabled.value = true;
-  cardsRemoved.value.push(cards.value[index]);
-  cards.value.splice(index, 1);
-  localStorage.setItem("KPI", JSON.stringify(cards.value));
-  localStorage.setItem("KPI-removed", JSON.stringify(cardsRemoved.value));
-}
-
-function addCard() {
-  cards.value.push(cardsRemoved.value[0]);
-  cardsRemoved.value.splice(0, 1);
-  localStorage.setItem("KPI", JSON.stringify(cards.value));
-
-  if (cardsRemoved.value.length === 0) {
-    localStorage.removeItem("KPI-removed");
-    addingIsEnabled.value = false;
-  }
-}
 
 function updatePeriod(card, selectedPeriod) {
   
@@ -380,9 +347,8 @@ function updatePeriod(card, selectedPeriod) {
         :state="card.state"
         
         @updatePeriod="updatePeriod(card, $event)"
-        @removeCard="removeCard($event)"
+        @removeCard="getUserdeleteKPI($event)"
       ></Card>
-      <AddCard v-show="addingIsEnabled" @addCard="addCard($event)" />
     </ul>
     <Modal>
       <template #activator="{ openModal }">

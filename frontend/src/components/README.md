@@ -57,9 +57,6 @@ Options:
 ### @removeCard
 Description : Evenement qui permet de supprimer la card.
 
-### @addCard
-Description : Evenement qui permet d'ajouter la card.
-
 ### @updatePeriod
 Description : Evenement qui permet de mettre à jour la période.
 

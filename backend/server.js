@@ -43,7 +43,6 @@ app.use( "/users", trueUserRoutes)
 app.use("/tags", tagRoutes)
 app.use("/kpi", kpiroutes)
 app.use("/heatmap", Heatmaproutes)
-
 app.use("/charts", chartRoutes)
 
 app.use(errorsHandler);
