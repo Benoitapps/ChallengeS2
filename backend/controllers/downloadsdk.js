@@ -7,14 +7,22 @@
 // const services = '../services/user'
 // const User = require("../db").User;
 // const Usertracker = require('../models/Usertracker');
- 
-  function getSDK(req, res) {
-    // renvoyer le sdk stocké dans le dossier utils
-    try {
-      res.status(200).sendFile('utils/sdk.js', { root: './' });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  }
 
-  module.exports = { getSDK };
+require('dotenv').config({ path: '../.env.local', override: true });
+const fs = require('fs');
+const ejs = require('ejs');
+
+function getSDK(req, res) {
+  try {
+    const originalSDK = fs.readFileSync('./utils/sdk.js', 'utf8');
+    const compiledSDK = ejs.render(originalSDK, process.env);
+    res.setHeader('Content-disposition', 'attachment; filename=sdk.js');
+    res.setHeader('Content-type', 'application/javascript');
+    res.send(compiledSDK);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+
+module.exports = { getSDK };

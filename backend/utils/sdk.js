@@ -1,26 +1,19 @@
 const MOUSE_DELAY = 1000;
-const EMPTY_TRACKERS = {
-    mouse: [], // { x: 0, y: 0, timestamp: 0, path: string }
-    clicks: [], // { x: 0, y: 0, timestamp: 0, target: HTMLElement, outerHTML: string, path: string }
-    paths: [], // { path: string, timestamp: 0 }
-    startTime: new Date(),
-    endTime: null,
-};
-const EMPTY_DATA = {
-    api_token: null,
-    user_fingerprint: null,
-    trackers: EMPTY_TRACKERS,
-};
 const inactivityDelay = 15 * 60 * 1000; // en millisecondes
 let inactivityTimer;
-
+const env = import.meta.env
 
 export default class SDK {
     constructor(api_token) {
         this.mouseX = 0;
         this.mouseY = 0;
-        this.data = EMPTY_DATA;
-        this.data.api_token = api_token;
+        this.mouse = [];
+        this.clicks = [];
+        this.paths = [];
+        this.startTime = new Date();
+        this.endTime = null;
+        this.api_token = api_token;
+        this.user_fingerprint = null;
 
         console.log("SDK is running")
         this.initUserInteractionForInactivity();
@@ -57,7 +50,7 @@ export default class SDK {
 
     getMousePosition() {
         this.mousePositionInterval = setInterval(() => {
-            this.data.trackers.mouse.push({
+            this.mouse.push({
                 x: this.mouseX,
                 y: this.mouseY,
                 timestamp: Date.now(),
@@ -74,7 +67,7 @@ export default class SDK {
     trackMouseClick() {
         console.log('start tracking mouse click');
         this.trackerFunction = (e) => {
-            this.data.trackers.clicks.push({
+            this.clicks.push({
                 x: e.clientX,
                 y: e.clientY,
                 timestamp: Date.now(),
@@ -96,13 +89,13 @@ export default class SDK {
         console.log("start tracking navigation");
         this.navigationFunction = (e) => {
             // N'ajoute pas le meme path 2 fois
-            if (this.data.trackers.paths.length > 0) {
-                let lastPath = this.data.trackers.paths[this.data.trackers.paths.length - 1].path;
+            if (this.paths.length > 0) {
+                let lastPath = this.paths[this.paths.length - 1].path;
                 if (lastPath === window.location.pathname) {
                     return;
                 }
             }
-            this.data.trackers.paths.push({
+            this.paths.push({
                 path: window.location.pathname,
                 timestamp: Date.now(),
             });
@@ -118,41 +111,39 @@ export default class SDK {
     }
 
     getFingerprintUser() {
-        if (!localStorage.getItem('fingerprint')) {
-            localStorage.setItem('fingerprint', self.crypto.randomUUID());
-        }
-        return localStorage.getItem('fingerprint');
+        let fingerprint = localStorage.getItem('fingerprint');
+        if (fingerprint && fingerprint.trim() !== "") return fingerprint;
+        return localStorage.setItem('fingerprint', self.crypto.randomUUID());
     }
 
-    initSendData() {        
-        // ! ajouter egalement unload ?
-        // ! envoyer les données en temps réel
+    initSendData() {
         window.addEventListener("visibilitychange", (event) => {
             if (event.target.visibilityState === "hidden") {
-                this.data.trackers.endTime = new Date();
-                this.data.user_fingerprint = this.getFingerprintUser();
-                // navigator.sendBeacon('http://localhost:3000/sdk', JSON.stringify(this.data));
-                // TODO: a améliorer
-                fetch('http://localhost:3000/sdk', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(this.data),
-                })
+                let data = {
+                    api_token: this.api_token,
+                    user_fingerprint: this.getFingerprintUser(),
+                    mouse: this.mouse,
+                    clicks: this.clicks,
+                    paths: this.paths,
+                    startTime: this.startTime,
+                    endTime: new Date(),
+                }
 
-                // ! vider les data
-                console.log("send data to backend : ", this.data);
-                // let api_token = this.data.api_token;
-                // let user_fingerprint = this.data.user_fingerprint;
+                navigator.sendBeacon('<%= URL_SITE_CLIENT %>/sdk', JSON.stringify(data));
 
-                // this.data.trackers = {...EMPTY_TRACKERS};
-
-                // this.data.api_token = api_token;
-                // this.data.user_fingerprint = user_fingerprint;
-                console.log("data is empty : ", this.data);
+                this.resetData();
             }
         });
+    }
+
+    resetData() {
+        this.mouseX = 0;
+        this.mouseY = 0;
+        this.mouse = [];
+        this.clicks = [];
+        this.paths = [];
+        this.startTime = new Date();
+        this.endTime = null;
     }
 
     // ? ------------------------- USER INACTIVITY ------------------------- ? //
@@ -173,8 +164,20 @@ export default class SDK {
 
     detectInactivity() {
         console.log("User inactive!");
-        // TODO: Send data to backend
-        // TODO: Reset data -> Begin new user session
+
+        let data = {
+            api_token: this.api_token,
+            user_fingerprint: this.user_fingerprint,
+            mouse: this.mouse,
+            clicks: this.clicks,
+            paths: this.paths,
+            startTime: this.startTime,
+            endTime: this.endTime,
+        };
+
+        navigator.sendBeacon('<%= URL_SITE_CLIENT %>/sdk', JSON.stringify(data));
+        
+        this.resetData();
     }
 
     handleUserInteraction() {

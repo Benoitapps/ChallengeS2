@@ -3,11 +3,12 @@ import { ref } from 'vue';
 import 'prismjs';
 import 'prismjs/themes/prism.css';
 
+const env = import.meta.env
 let step = ref(1);
 
 const downloadSDK = () => {
   try {
-    const response = fetch('http://localhost:3000/downloadsdk', {
+    const response = fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/downloadsdk`, {
       // la méthode permet de demander la récupération d'un fichier js
       method: 'GET',
       // le header permet de préciser le type de fichier attendu
