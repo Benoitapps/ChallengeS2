@@ -2,6 +2,7 @@
 import Card from "../../components/TableauDeBord/Card.vue";
 import AddCard from "../../components/TableauDeBord/AddCard.vue";
 import {onMounted, ref, reactive, onUnmounted, inject} from "vue";
+const env = import.meta.env
 
 const periods = [
   {
@@ -53,7 +54,7 @@ onMounted(() => {
   async function getData() {
     try {
       for (const card of cards) {
-        const response = await fetch('http://localhost:3000/charts', {
+        const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/charts`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -117,7 +118,7 @@ const updateChart = async (values) => {
   period.value = values[1];
 
   try {
-      const response = await fetch('http://localhost:3000/charts', {
+      const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/charts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

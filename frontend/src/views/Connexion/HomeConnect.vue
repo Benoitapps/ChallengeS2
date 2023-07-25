@@ -1,7 +1,7 @@
 <script>
 import { ref } from 'vue';
 import router from '../../router';
-
+const env = import.meta.env
 export default {
   setup() {
     const users = ref([]);
@@ -9,7 +9,7 @@ export default {
 
     const getConnectedUser = async () => {
       try {
-        const response = await fetch('http://localhost:3000/connecter', {
+        const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/connecter`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'

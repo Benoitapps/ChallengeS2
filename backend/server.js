@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+require('dotenv').config({ path: '.env.local', override: true });
 
 const userRoutes = require('./routes/user');
 const sdkRoutes = require('./routes/sdk');
@@ -22,13 +23,12 @@ const { connectpg } = require('./db/');
 const app = express();
 const sequelize = require('sequelize')
 
-
 // Use to allow cross-origin requests
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: `${process.env.URL}:${process.env.PORT_FRONT}`,
   credentials : true,
-  
 }));
+
 //cookies
 app.use(cookieParser());
 // Use to parse JSON body
@@ -48,8 +48,11 @@ app.use("/charts", chartRoutes)
 
 app.use(errorsHandler);
 
-app.listen(3000, () => {
-  console.log('Server listening on port 3000');
+const port = process.env.PORT_BACK;
+const hostname = process.env.DOMAIN_NAME;
+
+app.listen(port, hostname, () => {
+   console.log(`Server running at ${hostname}:${port}/`);
   if (process.env.NODE_ENV !== 'test')
   connect();
 });

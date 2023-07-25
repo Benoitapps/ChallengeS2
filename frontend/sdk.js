@@ -1,7 +1,7 @@
 const MOUSE_DELAY = 1000;
 const inactivityDelay = 15 * 60 * 1000; // en millisecondes
 let inactivityTimer;
-
+const env = import.meta.env
 
 export default class SDK {
     constructor(api_token) {
@@ -129,7 +129,7 @@ export default class SDK {
                     endTime: new Date(),
                 }
 
-                navigator.sendBeacon('http://localhost:3000/sdk', JSON.stringify(data));
+                navigator.sendBeacon(`${env.VITE_URL_SITE_CLIENT}/sdk`, JSON.stringify(data));
 
                 this.resetData();
             }
@@ -175,7 +175,7 @@ export default class SDK {
             endTime: this.endTime,
         };
 
-        navigator.sendBeacon('http://localhost:3000/sdk', JSON.stringify(data));
+        navigator.sendBeacon(`${env.VITE_URL_SITE_CLIENT}/sdk`, JSON.stringify(data));
         
         this.resetData();
     }

@@ -1,6 +1,6 @@
 <script>
 import { ref } from 'vue';
-
+const env = import.meta.env
 export default {
   setup() {
     const usersNotVerified = ref([]);
@@ -26,7 +26,7 @@ export default {
 
 const getConnectedUserAfter = async () => {
       try {
-        const response = await fetch('http://localhost:3000/connecter', {
+        const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/connecter`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
@@ -51,7 +51,7 @@ const getConnectedUserAfter = async () => {
 
     const getUsersNotVerified = async () => {
       try {
-        const response = await fetch('http://localhost:3000/admin/notverified', {
+        const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/admin/notverified`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ const getConnectedUserAfter = async () => {
 
     const getUsers = async () => {
       try {
-        const response = await fetch('http://localhost:3000/admin/alluser', {
+        const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/admin/alluser`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ const getConnectedUserAfter = async () => {
     const verifyUser = async (theuserId) => {
         console.log(theuserId);
       try {
-        const response = await fetch(`http://localhost:3000/admin/verified/${theuserId}`, {
+        const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/admin/verified/${theuserId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -119,7 +119,7 @@ const getConnectedUserAfter = async () => {
     const takeToken = async (tokenid,website) => {
         console.log(tokenid);
       try {
-        const response = await fetch(`http://localhost:3000/admin/taketoken/${userId.value}/${tokenid}/${website}`, {
+        const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/admin/taketoken/${userId.value}/${tokenid}/${website}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
