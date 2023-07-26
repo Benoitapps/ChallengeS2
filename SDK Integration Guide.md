@@ -31,7 +31,7 @@ Ce guide vous explique comment intégrer le SDK de suivi d'analytiques dans votr
     app.mount('#app');
     ```
 
-- Veuillez à remplacer `apiToken` par votre token qui doit être récupéré sur le site.
+- Veillez à remplacer `apiToken` par votre token qui doit être récupéré sur le site.
 
 4. Pour utiliser le plugin dans un composant, vous devez l'importer et l'injecter dans le composant :
 
@@ -62,7 +62,7 @@ Maintenant que le suivi est initialisé, vous pouvez utiliser les fonctionnalit�
     sdk.trackMouseClick();
     ```
 
-- Sinon vous voulez tracker les mouvements de souris et les clics de souris en même temps :
+- Si vous voulez tracker les mouvements de souris et les clics de souris en même temps :
     
     ```javascript
     sdk.initTracker();

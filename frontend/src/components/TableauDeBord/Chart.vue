@@ -57,7 +57,7 @@ function generateChart() {
 
   const xAccessor = (d) => d.date = new Date(d.date)
   const yAccessor = (d) => d.amount
-  const formatDate = d3.timeFormat('%d-%m-%Y')
+  const formatDate = d3.timeFormat('%d-%m-%Y %H:%M')
 
   const getText = (data, d) => {
     const to = xAccessor(d);

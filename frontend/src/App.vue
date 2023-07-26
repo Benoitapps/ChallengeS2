@@ -1,11 +1,11 @@
 <script setup>
 import Navbar from "./components/Navbar.vue";
-import {inject, onMounted, onUnmounted} from "vue";
+import {inject, onMounted, onUnmounted, ref} from "vue";
 
 onMounted(() => {
   const sdk = inject('sdk');
   sdk.trackNavigation();
-  
+
   onUnmounted(() => {
     sdk.stopTrackingNavigation();
   });
@@ -13,7 +13,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Navbar />
+  <Navbar/>
 
   <router-view v-slot="{ Component }">
     <component :is="Component" />
@@ -98,6 +98,10 @@ button {
   color: var(--text-color);
 }
 
+button {
+  cursor: pointer;
+}
+
 select {
   border: none;
   font-weight: 600;
@@ -121,5 +125,14 @@ main {
   margin-left: 200px;
   padding: 3.125rem; // 50px
   background: var(--background);
+}
+
+.basic-link {
+  color: var(--primary);
+  font-weight: 500;
+
+  &:hover {
+    color: var(--accent);
+  }
 }
 </style>

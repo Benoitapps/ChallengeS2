@@ -17,12 +17,17 @@ files.forEach((file) => {
 
 const User = db.User;
 const KpiName = db.KpiName;
+const ChartsName = db.ChartsName;
 const Tag = db.Tag;
 const Tunnel = db.Tunnel;
 const TunnelTag = db.TunnelTag;
+const Image = db.Image;
 
 User.belongsToMany(KpiName, { through: "UserKpiNames" });
 KpiName.belongsToMany(User, { through: "UserKpiNames" });
+
+User.belongsToMany(ChartsName, { through: "UserChartsNames" });
+ChartsName.belongsToMany(User, { through: "UserChartsNames" });
 
 Tag.belongsTo(User, {
   foreignKey: "userId",
@@ -51,5 +56,15 @@ Tunnel.hasMany(TunnelTag, {
   foreignKey: "tunnelId",
   alias: "tunnel_tags",
 });
+// Image.belongsTo(User, {
+//   foreignKey: "userId",
+// });
+
+// User.hasMany(Image, {
+//   foreignKey: "userId",
+// });
+
+
+
 
 module.exports = db;

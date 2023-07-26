@@ -161,8 +161,8 @@ const getConnectedUserAfter = async () => {
 
 
 <template>
-  <main>
-    <div class="content">
+  <main class="admin">
+    <div class="admin__container">
       <div class="notverified">
         <div class="title">
           <h2>Utilisateurs non vérifiés :</h2>
@@ -170,16 +170,16 @@ const getConnectedUserAfter = async () => {
         <ul>
           <li v-for="user in usersNotVerified" :key="user._id">
             <div class="line" :class="{ 'selected': user.selected }">
-              <div class="email">
+              <p class="email">
                 {{ user.email }}
-              </div>
-              <div class="boutton">
+              </p>
+              <div class="buttons">
                 <button @click="verifyUser(user.id)">Vérifier</button>
               </div>
             </div>
           </li>
         </ul>
-        <p v-if="error">{{ error }}</p>
+        <p v-if="error" class="error">{{ error }}</p>
       </div>
       <div class="verified">
         <div class="title">
@@ -189,54 +189,77 @@ const getConnectedUserAfter = async () => {
           <ul>
             <li v-for="user in users" :key="user._id">
               <div class="line" :class="{ 'selected': user.selected }">
-                <div class="email">
+                <p class="email">
                   {{ user.email }}
-                </div>
-                <div class="boutton">
+                </p>
+                <div class="buttons">
                   <button @click="takeToken(user.id, user.website)">Prendre le contrôle</button>
                 </div>
               </div>
             </li>
           </ul>
-          <p v-if="error">{{ error }}</p>
+          <p v-if="error" class="error">{{ error }}</p>
         </div>
       </div>
     </div>
   </main>
 </template>
 
-<style lang="scss">
-.content {
-  display: flex;
-  justify-content: space-around;
-}
+<style scoped lang="scss">
+.admin {
+  &__container {
+    display: flex;
+    justify-content: space-around;
 
-.notverified {
-  background-color: white;
-  padding: 2em;
-  width: 40%;
-}
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
 
-.verified {
-  background-color: white;
-  padding: 2em;
-  width: 40%;
-}
+      button {
+        background: var(--primary);
+        border: none;
+        padding: 0.5rem 1rem; // 8px 16px
+        border-radius: 4px;
 
-.line {
-  display: flex;
-  padding: 5px;
-  border-radius: 10px;
-  justify-content: space-between;
-}
+        &:hover {
+          background: var(--accent);
+        }
+      }
+    }
 
-.title {
-  margin-bottom: 15px;
-}
+    .notverified {
+      background-color: white;
+      padding: 2em;
+      width: 40%;
+    }
+
+    .verified {
+      background-color: white;
+      padding: 2em;
+      width: 45%;
+    }
+
+    .line {
+      display: flex;
+      padding: 5px;
+      border-radius: 10px;
+      justify-content: space-between;
+    }
+
+    .title {
+      margin-bottom: 15px;
+    }
 
 
-.selected {
-  /* Ajoutez le style de surlignage ici */
-  background-color: yellow;
+    .selected {
+      /* Ajoutez le style de surlignage ici */
+      background-color: yellow;
+    }
+
+    .error {
+      color: var(--error);
+    }
+  }
 }
 </style>

@@ -1,130 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const usersessions = require('../models/Usertracker');
+const chartsCtrl = require('../controllers/charts');
+const chartsBddCtrl = require('../controllers/chartsBdd');
+const auth = require('../middleware/auth');
+const authMiddleware = require('../middleware/authMiddleware');
 
-router.post('/', (req, res) => {
-    let unit = '';
-    let amount = 0;
+router.get('/',authMiddleware, chartsCtrl.getCharts);
+router.post('/post/:nameCard/:resperiod',authMiddleware, chartsCtrl.getCharts);
 
-    if(!req.body?.title || !req.body?.periods) {
-        return res.status(400).json({ error: 'Missing parameters' });
-    } else {
-        if(req.body?.periods === '24h') {
-            unit = 'hour';
-            amount = 24;
-        } else if(req.body?.periods === '7d') {
-            unit = 'day';
-            amount = 7;
-        } else if(req.body?.periods === '30d') {
-            unit = 'day';
-            amount = 30;
-        } else if(req.body?.periods === '12m') {
-            unit = 'month';
-            amount = 12;
-        }
+router.get('/bdd/:id',authMiddleware, chartsBddCtrl.getChartsUser);
+router.get('/bddnot/:id',authMiddleware, chartsBddCtrl.getChartsNotUser);
 
-        if(req.body?.title === 'clics') {
-            usersessions.aggregate(
-                [
-                    {
-                        $match: {
-                            api_token:
-                                "ikb3yt96da5pz1d47x5wv1dn12v3voly",
-                        },
-                    },
-                    {
-                        $unwind: "$visitors",
-                    },
-                    {
-                        $unwind: "$visitors.sessions",
-                    },
-                    {
-                        $match: {
-                            $expr: {
-                                $gte: [
-                                    "$visitors.sessions.endTime",
-                                    {
-                                        $dateSubtract: {
-                                            startDate: "$$NOW",
-                                            unit: unit,
-                                            amount: amount,
-                                        },
-                                    },
-                                ],
-                            },
-                        },
-                    },
-                    {
-                        $project: {
-                            _id: "$_id",
-                            amount: {
-                                $size: "$visitors.sessions.clicks",
-                            },
-                            date: "$visitors.sessions.endTime",
-                        },
-                    },
-                    {
-                        $sort: {
-                            date: 1,
-                        }
-                    }
-                ]
-            )
-                .then(clicks => res.json(clicks))
-                .catch(err => res.status(400).json('Error: ' + err));
-        }
+router.post('/addbdd/:userId/:chartsNameId',authMiddleware, chartsBddCtrl.addChartsToUser);
+router.delete('/removebdd/:userId/:chartsNameId',authMiddleware, chartsBddCtrl.removeChartsFromUser);
 
-        if(req.body?.title === 'sessions') {
-            usersessions.aggregate(
-                [
-                    {
-                        $match: {
-                            api_token:
-                                "ikb3yt96da5pz1d47x5wv1dn12v3voly",
-                        },
-                    },
-                    {
-                        $unwind: "$visitors",
-                    },
-                    {
-                        $unwind: "$visitors.sessions",
-                    },
-                    {
-                        $match: {
-                            $expr: {
-                                $gte: [
-                                    "$visitors.sessions.endTime",
-                                    {
-                                        $dateSubtract: {
-                                            startDate: "$$NOW",
-                                            unit: unit,
-                                            amount: amount,
-                                        },
-                                    },
-                                ],
-                            },
-                        },
-                    },
-                    {
-                        $project: {
-                            _id: "$_id",
-                            amount: {
-                                $sum: 1
-                            },
-                            date: "$visitors.sessions.endTime",
-                        },
-                    },
-                    {
-                        $sort: {
-                            date: 1,
-                        }
-                    }
-                ]
-            )
-                .then(sessions => res.json(sessions))
-                .catch(err => res.status(400).json('Error: ' + err));
-        }
-    }
-});
+router.get('/bddcharts',authMiddleware, chartsBddCtrl.getAllChartsNames);
+
 
 module.exports = router;

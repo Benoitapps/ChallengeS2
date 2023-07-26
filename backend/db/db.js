@@ -9,7 +9,7 @@ const connection = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proce
 connection
   .authenticate()
   .then(() => {
-    console.log("Connection a Postgres OK.");
+    console.log("Connexion à PostgreSQL OK.");
   })
   .catch((error) => {
     console.error("Unable to connect to the database:", error);
