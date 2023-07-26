@@ -18,6 +18,8 @@ files.forEach((file) => {
 const User = db.User;
 const KpiName = db.KpiName;
 const Tag = db.Tag;
+const Tunnel = db.Tunnel;
+const TunnelTag = db.TunnelTag;
 
 User.belongsToMany(KpiName, { through: "UserKpiNames" });
 KpiName.belongsToMany(User, { through: "UserKpiNames" });
@@ -28,6 +30,26 @@ Tag.belongsTo(User, {
 
 User.hasMany(Tag, {
   foreignKey: "userId",
+});
+
+Tag.hasMany(TunnelTag, {
+  foreignKey: "tagId",
+  alias: "tunnel_tags",
+});
+TunnelTag.belongsTo(Tag, {
+  foreignKey: "tagId",
+  through: "TunnelTag",
+  alias: "tag",
+});
+
+TunnelTag.belongsTo(Tunnel, {
+  foreignKey: "tunnelId",
+  through: "TunnelTag",
+  alias: "tunnel",
+});
+Tunnel.hasMany(TunnelTag, {
+  foreignKey: "tunnelId",
+  alias: "tunnel_tags",
 });
 
 module.exports = db;

@@ -14,11 +14,12 @@ const UserService = require("./services/user.js");
 const kpiroutes = require("./routes/kpi");
 const Heatmaproutes = require("./routes/heatmap");
 const errorsHandler = require("./middleware/errorsHandler");
-
-
+const tunnelRoutes = require('./routes/tunnel');
 const tagRoutes = require('./routes/tag');
 const { connect } = require('./services/mongoose');
 const { connectpg } = require('./db/');
+
+
 
 const app = express();
 const sequelize = require('sequelize')
@@ -41,6 +42,7 @@ app.use("/admin", adminRoutes)
 app.use("/sdk", sdkRoutes)
 app.use( "/users", trueUserRoutes)
 app.use("/tags", tagRoutes)
+app.use("/tunnels", tunnelRoutes)
 app.use("/kpi", kpiroutes)
 app.use("/heatmap", Heatmaproutes)
 

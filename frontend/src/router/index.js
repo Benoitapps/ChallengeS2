@@ -13,6 +13,7 @@ import Logout from "../views/Connexion/Logout.vue";
 import Tags from "../views/Tags.vue";
 import Test from "../views/Test.vue";
 import TagsCreate from "../views/TagsCreate.vue";
+import TunnelCreate from "../views/TunnelCreate.vue";
 
 const index = createRouter(
     {
@@ -76,7 +77,11 @@ const index = createRouter(
             {
                 path: '/tags/create',
                 component: TagsCreate
-            }
+            },
+            {
+                path: '/tunnels/create',
+                component: TunnelCreate
+            },
         ]
     });
 

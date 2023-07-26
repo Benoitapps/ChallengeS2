@@ -1,27 +1,44 @@
 <script setup>
 import { onMounted, inject,ref } from 'vue';
 import TabLine from '../components/Tags/TabLine.vue';
+import TabLineTunnel from '../components/Tunnels/TabLineTunnel.vue';
 const env = import.meta.env;
 
 let tags = ref([]);
-let defaultMessage = ref('Chargement des tags...');
+let tunnels = ref([]);
+let defaultMessageTag = ref('Chargement des tags...');
+let defaultMessageTunnel = ref('Chargement des tunnels...');
 
 onMounted(async () => {
   const sdk = inject('sdk');
   sdk.initTags();
-  console.log('Tags.vue is mounted');
 
-  const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/tags`, {
+  // ? Get tags
+  const responseTag = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/tags`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
     },
     credentials: 'include'
   });
-  let res = await response.json();
-  tags.value = res;
-  if (res.length == 0) {
-    defaultMessage.value = 'Aucun tag trouvé';
+  let resTag = await responseTag.json();
+  tags.value = resTag;
+  if (resTag.length == 0) {
+    defaultMessageTag.value = 'Aucun tag trouvé';
+  }
+
+  // ? Get tunnels
+  const responseTunnel = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/tunnels`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include'
+  });
+  let resTunnel = await responseTunnel.json();
+  tunnels.value = resTunnel;
+  if (resTunnel.length == 0) {
+    defaultMessageTunnel.value = 'Aucun tunnel trouvé';
   }
 });
 </script>
@@ -29,6 +46,9 @@ onMounted(async () => {
 <template>
   <main>
     <div class="container-btn">
+      <h3>
+        Tags
+      </h3>
       <RouterLink to="/tags/create" class="add-tag">
         Ajouter
       </RouterLink>
@@ -44,13 +64,37 @@ onMounted(async () => {
       </thead>
       <tbody>
         <tr v-if="tags.length == 0">
-          <td colspan="3" class="loading">{{ defaultMessage }}</td>
+          <td colspan="3" class="loading">{{ defaultMessageTag }}</td>
         </tr>
         <TabLine v-for="(tag, index) in tags" :key="index" :tag="tag" />
       </tbody>
     </table>
 
     <button data-tag="6c4t71zz">Click me (tag example)</button>
+
+
+    <div class="container-btn">
+      <h3>
+        Tunnels de conversion
+      </h3>
+      <RouterLink to="/tunnels/create" class="add-tunnel">
+        Ajouter
+      </RouterLink>
+    </div>
+    <table style="width: 100%;">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-if="tunnels.length == 0">
+          <td colspan="3" class="loading">{{ defaultMessageTunnel }}</td>
+        </tr>
+        <TabLineTunnel v-for="(tunnel, index) in tunnels" :key="index" :tunnel="tunnel" />
+      </tbody>
+    </table>
   </main>
 </template>
 
@@ -77,7 +121,7 @@ thead tr th {
 
 .container-btn {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -94,6 +138,22 @@ thead tr th {
 }
 
 .add-tag:hover {
+  background-color: var(--primary-hover);
+}
+
+.add-tunnel {
+  display: block;
+  text-align: center;
+  padding: 10px 20px;
+  border-radius: 7px;
+  background-color: var(--primary);
+  color: var(--secondary);
+  text-decoration: none;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.add-tunnel:hover {
   background-color: var(--primary-hover);
 }
 
