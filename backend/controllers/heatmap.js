@@ -295,5 +295,27 @@ const result = await Usertracker.aggregate(pipeline).exec();
     }
   }
 
+  async function getOneImageSrc(req, res) {
+    try {
+      //const ttoken =req.param.api_token;
+      const {apiToken} = req.body; // Assuming the API token is passed as a URL parameter
+      const {name} = req.body;
+      console.log("imagetokenmtn",apiToken);
+  
+      const image = await Image.findOne({
+        where: { api_token: apiToken, name: name },
+      });
+  
+      if (!image) {
+        return res.status(404).json({ error: "Image not found for this user" });
+      }
+  
+      res.status(200).json(  image );
+    } catch (error) {
+      res.status(500).json({ error: "Failed to retrieve image source" });
+    }
+  }
 
-  module.exports = { getHeatmapClic,getHeatmapMouse,uploadImage,getImageSrc };
+
+
+  module.exports = { getHeatmapClic,getHeatmapMouse,uploadImage,getImageSrc,getOneImageSrc };

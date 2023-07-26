@@ -9,6 +9,7 @@ const heatmapRef = ref(null);
 const heatmapContainerRef = ref(null);
 const imageInput = ref(null);
 const tabimage = ref([]);
+const nameImage = ref("");
 
 const userApi = ref("");
 
@@ -23,6 +24,7 @@ const error = ref("");
 const chemin = ref("");
 const srcbase = ref("");
 const src = ref("");
+const srcImage = ref("");
 const choiceType = ref("");
 const res = ref([]);
 const testres = ref([]);
@@ -107,7 +109,34 @@ error.value ="Une erreur s'est produite lors de la récupération de l'utilisate
 }
 });
 
+const getUrl = async (name) => {
+  console.log("get>UlOK")
+try {
+  const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/heatmap/upload/getOne`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({
+        name: name ,
+        apiToken: userApi.value,
+      }),
+  });
+  if (response.ok) {
+    const data = await response.json();
+    console.log(data);
+    srcImage.value = data; // Update the kpiData variable with the fetched data
+    console.log(srcImage)
 
+  } else {
+    const errorData = await response.json();
+    error.value = errorData.error;
+  }
+} catch (e) {
+  error.value = "Une erreur s'est produite lors de la récupération des KPI";
+}
+}
 
 onMounted(() => {
   heatmapRef.value = h337.create({
@@ -121,7 +150,9 @@ onUnmounted(() => {
 });
 
 function changePath(key,coordinates, type) {
+  getUrl(key);
   src.value = key;
+  srcImage.value = "testimage;" 
   console.log(type);
   if (type == "clic") {
     console.log("coordinate",coordinates)
@@ -134,20 +165,6 @@ function changePath(key,coordinates, type) {
   console.log("chemin :", key);
 }
 
-// const getConnectedUser = async () => {
-//   try {
-//     const userData = localStorage.getItem('myUser');;
-//     if (userData) {
-//       const parsedData = JSON.parse(userData);
-
-//       userApi.value = parsedData.apiToken;
-
-//       console.log("mon api est le : "+ userApi.value)
-//     }
-//   } catch (error) {
-//     error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
-//   }
-// };
 
 
 function handleImageUpload(path) {
@@ -200,6 +217,8 @@ function handleImageUpload(path) {
    
     console.log("imagechemin",response);
     if (response.ok) {
+      getImage();
+
       // Image uploaded successfully
       // You may show a success message or refresh the heatmap, etc.
       console.log("Image uploaded successfully");
@@ -260,6 +279,7 @@ getImage();
 
 <template>
   <main>
+    <div class="bodypage">
     <div class="type">
       <div class="type2">
         <h4>Heatmap Clics page :</h4>
@@ -277,23 +297,30 @@ getImage();
           </div>
         </div>
       </div>
+    </div>  
+    <div ref="heatmapContainerRef" id="heatmapContainer">
+      <div v-if="image != ''">
+      <img class="image" :src="srcImage.src" alt="Image décodée" />
     </div>
-    <div ref="heatmapContainerRef" id="heatmapContainer"></div>
+    <div v-else>
+      <div >Ajouter les images de votre site </div>
+    </div>
+    </div>
 
     <div v-for="item in mapmouse.resPageMouse" :key="item.id" >
       <p>Ajouter une image pour la page : {{ item.path }}</p>
     <input type="file" ref="imageInput" @change="handleImageUpload(item.path)" />
   </div>
 
-    
+<!--     
     <div v-if="tabimage && tabimage.image && tabimage.image.length > 0">
       <h4>Images depuis la base de données :</h4>
       <div v-for="(image, index) in tabimage.image" :key="index">
         <div v-if="src == image.name"></div>
         <img :src="image.src" alt="Image décodée" />
       </div>
-    </div>
-
+    </div> -->
+  </div>
   </main>
 </template>
   
@@ -303,11 +330,22 @@ getImage();
   // height: 20em;
   border: black solid 5px;
   background: rgba(0, 0, 0, .4);
-  width: 10%;
-  height: 10%;
-  margin-top: 10px;
+  width: 60em;
+  height: 40em;
+  margin-top: 2px;
 }
 
+.image{
+  object-fit: contain;
+  opacity: 50%;
+
+}
+
+.bodypage{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
 .bouton{
   padding: 2px;
