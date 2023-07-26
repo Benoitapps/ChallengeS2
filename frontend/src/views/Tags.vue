@@ -63,10 +63,10 @@ onMounted(async () => {
         </tr>
       </thead>
       <tbody>
-        <tr v-if="tags.length == 0">
+        <tr v-if="tags.value == undefined || tags.value.length == 0">
           <td colspan="3" class="loading">{{ defaultMessageTag }}</td>
         </tr>
-        <TabLine v-for="(tag, index) in tags" :key="index" :tag="tag" />
+        <TabLine v-for="(tag, index) in tags" :key="index" :tag="tag" v-else/>
       </tbody>
     </table>
 
@@ -89,10 +89,10 @@ onMounted(async () => {
         </tr>
       </thead>
       <tbody>
-        <tr v-if="tunnels.length == 0">
+        <tr v-if="tunnels.value == undefined || tunnels.value.length == 0">
           <td colspan="3" class="loading">{{ defaultMessageTunnel }}</td>
         </tr>
-        <TabLineTunnel v-for="(tunnel, index) in tunnels" :key="index" :tunnel="tunnel" />
+        <TabLineTunnel v-for="(tunnel, index) in tunnels" :key="index" :tunnel="tunnel" v-else/>
       </tbody>
     </table>
   </main>
