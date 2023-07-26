@@ -15,40 +15,15 @@ const getDecoonnectedUser = async () => {
       credentials: 'include'
     });
 
-    const getDecoonnectedUser = async () => {
-      try {
-        const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/logout`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          credentials: 'include'
-        });
-
-        if (response.ok) {
-            localStorage.clear();
-            router.push('/login');
-        } else {
-          const data = await response.json();
-          error.value = data.error;
-        }
-      } catch (e) {
-        error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
-      }
-    };
-
-    const login = () => {
-      // Redirection vers la page de connexion ou une autre page appropriée
-      router.push('/login');
-    };
-
-    getDecoonnectedUser();
-
-    return {
-      users,
-      error,
-      login
-    };
+    if (response.ok) {
+        localStorage.clear();
+        router.push('/login');
+    } else {
+      const data = await response.json();
+      error.value = data.error;
+    }
+  } catch (e) {
+    error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
   }
 };
 
