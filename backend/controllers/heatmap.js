@@ -42,7 +42,12 @@ function getConnectedUserId(req) {
 
   async function getHeatmapClic(req, res) {
     try {
-      const api_tokenUsder =getConnectedUserId(req);
+      const {apiToken} = req.body
+      console.log("body",apiToken);
+      //const api_tokenUsder =getConnectedUserId(req);
+      const api_tokenUsder =apiToken;
+
+      console.log("body2",api_tokenUsder);
       console.log("GetAPI");
       const periods = req.param.resperiod;
       const title = req.param.nameCard;
@@ -115,6 +120,8 @@ const result = await Usertracker.aggregate(pipeline).exec();
                //console.log( coord2.x-10,"<=",coord.x,"<=",coord2.x+10);
                 if( ((coord2.x-10 <= coord.x) && (coord.x <= coord2.x+10))&& (coord2.y-10 <= coord.y) && (coord.y <= coord2.y+10) ){
                     //console.log("res= ",((coord2.x-10 <= coord.x) && (coord.x <= coord2.x+10))&& (coord2.y-10 <= coord.y) && (coord.y <= coord2.y+10))
+                   
+
                     coord.value++
                 }
             })          
@@ -141,7 +148,10 @@ const result = await Usertracker.aggregate(pipeline).exec();
   async function getHeatmapMouse(req, res) {
     try {
       //console.log("GetAPI");
-      const api_tokenUsder =getConnectedUserId(req);
+      const {apiToken} = req.body
+      console.log("body",apiToken);
+      //const api_tokenUsder =getConnectedUserId(req);
+      const api_tokenUsder =apiToken;
       const periods = req.param.resperiod;
       const title = req.param.nameCard;
 
@@ -213,7 +223,8 @@ const result = await Usertracker.aggregate(pipeline).exec();
                //console.log( coord2.x-10,"<=",coord.x,"<=",coord2.x+10);
                 if( ((coord2.x-10 <= coord.x) && (coord.x <= coord2.x+10))&& (coord2.y-10 <= coord.y) && (coord.y <= coord2.y+10) ){
                     //console.log("res= ",((coord2.x-10 <= coord.x) && (coord.x <= coord2.x+10))&& (coord2.y-10 <= coord.y) && (coord.y <= coord2.y+10))
-                    coord.value++
+                    coord.value++;
+                    
                 }
             })          
         });

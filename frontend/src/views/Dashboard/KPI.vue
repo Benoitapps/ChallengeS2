@@ -134,6 +134,15 @@ const getConnectedUser = async () => {
   }
 };
 
+const getReload = async () => {
+ 
+    if ( !document.querySelector("#monElement")) {
+      //window.location.reload();
+      console.log("querySelector");
+
+    }
+};
+getReload();
 
 const getKPI = async () => {
 

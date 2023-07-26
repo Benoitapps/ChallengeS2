@@ -4,9 +4,9 @@ const HeatmapCtrl = require('../controllers/heatmap');
 const auth = require('../middleware/auth');
 const authMiddleware = require('../middleware/authMiddleware');
 
-router.get('/', HeatmapCtrl.getHeatmapClic);
+router.post('/', HeatmapCtrl.getHeatmapClic);
 
-router.get('/mouse', HeatmapCtrl.getHeatmapMouse);
+router.post('/mouse', HeatmapCtrl.getHeatmapMouse);
 
 router.post('/upload', HeatmapCtrl.uploadImage);
 router.post('/upload/get', HeatmapCtrl.getImageSrc);

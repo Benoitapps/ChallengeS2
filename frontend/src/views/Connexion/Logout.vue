@@ -1,9 +1,11 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import router from '../../router';
 const env = import.meta.env
 const users = ref([]);
 const error = ref('');
+
+
 
 const getDecoonnectedUser = async () => {
   try {
@@ -17,7 +19,8 @@ const getDecoonnectedUser = async () => {
 
     if (response.ok) {
         localStorage.clear();
-        router.push('/login');
+        
+        
     } else {
       const data = await response.json();
       error.value = data.error;

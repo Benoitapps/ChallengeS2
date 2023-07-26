@@ -17,7 +17,7 @@ export default class SDK {
         this.api_token = api_token;
         this.user_fingerprint = null;
 
-        console.log("SDK is running")
+        ////console.log("SDK is running")
         this.initUserInteractionForInactivity();
         this.initSendData();
     }
@@ -35,7 +35,7 @@ export default class SDK {
     }
 
     trackMouseMovement() {
-        console.log("start tracking mouse movement");
+        ////console.log("start tracking mouse movement");
         this.mouseMoveHandler = (e) => {
             this.mouseX = e.clientX;
             this.mouseY = e.clientY;
@@ -45,7 +45,7 @@ export default class SDK {
     }
 
     stopTrackingMouseMovement() {
-        console.log("stop tracking mouse movement");
+        //console.log("stop tracking mouse movement");
         document.removeEventListener("mousemove", this.mouseMoveHandler);
         this.stopUpdatingMousePosition();
     }
@@ -58,7 +58,7 @@ export default class SDK {
                 timestamp: Date.now(),
                 path: window.location.pathname,
             });
-            console.log("mouse position : ", this.mouseX, this.mouseY)
+            //console.log("mouse position : ", this.mouseX, this.mouseY)
         }, MOUSE_DELAY);
     }
 
@@ -67,7 +67,7 @@ export default class SDK {
     }
 
     trackMouseClick() {
-        console.log('start tracking mouse click');
+        //console.log('start tracking mouse click');
         this.trackerFunction = (e) => {
             this.clicks.push({
                 x: e.clientX,
@@ -76,19 +76,19 @@ export default class SDK {
                 target: e.target.outerHTML,
                 path: window.location.pathname,
             });
-            console.table("click on this element : ", e.target)
+            //console.table("click on this element : ", e.target)
         };
 
         document.body.addEventListener("click", this.trackerFunction);
     }
 
     stopTrackingMouseClick() {
-        console.log("stop tracking mouse click")
+        //console.log("stop tracking mouse click")
         document.body.removeEventListener("click", this.trackerFunction);
     }
 
     trackNavigation() {
-        console.log("start tracking navigation");
+        //console.log("start tracking navigation");
         this.navigationFunction = (e) => {
             // N'ajoute pas le meme path 2 fois
             if (this.paths.length > 0) {
@@ -101,14 +101,14 @@ export default class SDK {
                 path: window.location.pathname,
                 timestamp: Date.now(),
             });
-            console.log("navigation : ", window.location.pathname)
+            //console.log("navigation : ", window.location.pathname)
         };
 
         window.addEventListener("click", this.navigationFunction);
     }
 
     stopTrackingNavigation() {
-        console.log("stop tracking navigation");
+        //console.log("stop tracking navigation");
         window.removeEventListener("click", this.navigationFunction);
     }
 
@@ -171,7 +171,7 @@ export default class SDK {
     }
 
     detectInactivity() {
-        console.log("User inactive!");
+        //console.log("User inactive!");
         this.sendData();
     }
 
@@ -188,7 +188,7 @@ export default class SDK {
                 // load balancing
                 clearTimeout(loadBalancing)
                 loadBalancing = setTimeout(() => {
-                    console.table("click on this tag : ", e.target);
+                    //console.table("click on this tag : ", e.target);
                     this.tags.push({
                         token: e.target.dataset.tag,
                         path: window.location.pathname,

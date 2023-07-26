@@ -29,6 +29,20 @@ const choiceType = ref("");
 const res = ref([]);
 const testres = ref([]);
 
+const getConnectedUser = async () => {
+  try {
+    const userData = localStorage.getItem('myUser');;
+    if (userData) {
+      const parsedData = JSON.parse(userData);
+
+      userId.value = parsedData.userId;
+      userApi.value = parsedData.apiToken;
+    }
+  } catch (error) {
+    error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
+  }
+};
+getConnectedUser();
 
 watch(map1, async (newRes) => {
   console.log("watchclic", newRes);
@@ -58,11 +72,14 @@ watchEffect(async () => {
   console.log("je passe ");
   try {
     const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/heatmap/`, {
-      method: "GET",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       credentials: "include",
+      body: JSON.stringify({apiToken : userApi.value})
+
+      
     });
     if (response.ok) {
       const data = await response.json();
@@ -87,11 +104,13 @@ watchEffect(async () => {
 console.log("je passe mouse");
 try {
 const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/heatmap/mouse`, {
-  method: "GET",
+  method: "POST",
   headers: {
     "Content-Type": "application/json",
   },
   credentials: "include",
+  body: JSON.stringify({apiToken : userApi.value})
+
 });
 
 if (response.ok) {
@@ -329,9 +348,10 @@ getImage();
   // height: 20em;
   border: black solid 5px;
   background: rgba(0, 0, 0, .4);
-  width: 60em;
-  height: 40em;
+  width: 100em;
+  height: 50em;
   margin-top: 2px;
+  overflow: hidden;
 }
 
 .image{

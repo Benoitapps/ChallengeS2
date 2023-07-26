@@ -23,6 +23,7 @@ const signup = async () => {
 
     if (response.ok) {
       router.push('/connecter');
+     
     } else {
       // erreur
       const data = await response.json();
