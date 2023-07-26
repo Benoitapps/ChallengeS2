@@ -6,6 +6,8 @@ const error = ref('');
 
 const userToken = ref('');
 
+let countdownTimer;
+
 const getConnectedUser = async () => {
   try {
     const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/connecter`, {
@@ -45,6 +47,9 @@ function toggleTokenDisplay() {
     remainingTime.value = 35;
     countdown();
   }
+  else {
+    clearTimeout(countdownTimer);
+  }
 }
 
 function generateToken(length) {
@@ -53,13 +58,12 @@ function generateToken(length) {
 
 function countdown() {
   if (remainingTime.value > 0 && showToken.value) {
-    setTimeout(() => {
+    countdownTimer = setTimeout(() => {
       remainingTime.value--;
       countdown();
     }, 1000);
   } else {
     showToken.value = false;
-    userToken.value = "";
   }
 }
 

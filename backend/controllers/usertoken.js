@@ -46,7 +46,7 @@ async function updateToken(req, res) {
     }
 
     console.log('Mise à jour (Mongo) réussie');
-    console.log('Mise à jour (Postgres) en cours');
+    console.log('Mise à jour (PostgreSQL) en cours');
 
     const [nbUpdated, users] = await User.update({ api_token: newToken }, {
       where: { id: id },
@@ -62,7 +62,7 @@ async function updateToken(req, res) {
       return res.status(404).json({ error: 'Aucune modification apportée' });
     }
 
-    console.log('Mis à jour (Postgres) réussie');
+    console.log('Mise à jour (PostgreSQL) réussie');
     return res.status(200).json({ message: 'Mise à jour réussie' });
   } catch (error) {
     if (error instanceof Sequelize.ValidationError) {
