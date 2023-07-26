@@ -19,7 +19,7 @@ module.exports = function (connection) {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          len: [8, 32]
+          // len: [8, 32]
           // is: /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+$/i,
         },
       },
