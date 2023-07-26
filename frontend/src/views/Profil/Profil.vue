@@ -22,8 +22,8 @@ const getConnectedUser = async () => {
       const data = await response.json();
       users.value = [data];
       localStorage.setItem('myUser', JSON.stringify(data));
-      console.log("data.api_token " + data.api_token);
-      userToken.value = data.api_token;
+      console.log("data.apiToken " + data.apiToken);
+      userToken.value = data.apiToken;
     } else {
       const data = await response.json();
       error.value = data.error;
@@ -111,6 +111,7 @@ const regenerateToken = async () => {
       const data = await response.json();
       users.value = [data];
       localStorage.setItem('myUser', JSON.stringify(data));
+      getConnectedUser();
     } else {
       //const data = await response.json();
       error.value = data.error;
