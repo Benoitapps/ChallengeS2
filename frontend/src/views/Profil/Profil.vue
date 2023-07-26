@@ -4,6 +4,8 @@ const env = import.meta.env
 const users = ref([]);
 const error = ref('');
 
+const userToken = ref('');
+
 const getConnectedUser = async () => {
   try {
     const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/connecter`, {
@@ -18,6 +20,8 @@ const getConnectedUser = async () => {
       const data = await response.json();
       users.value = [data];
       localStorage.setItem('myUser', JSON.stringify(data));
+      console.log("data.api_token " + data.api_token);
+      userToken.value = data.api_token;
     } else {
       const data = await response.json();
       error.value = data.error;
@@ -27,7 +31,6 @@ const getConnectedUser = async () => {
   }
 };
 
-const userToken = ref('');
 const showToken = ref(false);
 
 const maskedToken = computed(() => {
@@ -80,12 +83,13 @@ const regenerateToken = async () => {
       userId.value = parsedData.userId;
     }
     const updatedUserToken = {
-          api_token: generateToken(32)
-        };
+      oldToken: userToken.value,
+      newToken: generateToken(32)
+    };
 
-    console.log("updatedUserToken "+updatedUserToken);
+    console.log("updatedUserToken " + updatedUserToken);
 
-    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/users/${userId.value}`, {
+    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/userstoken/${userId.value}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'
@@ -94,14 +98,19 @@ const regenerateToken = async () => {
       body: JSON.stringify(updatedUserToken)
     });
     if (response.ok) {
-      userToken.value = updatedUserToken.api_token;
+      console.log("updatedUserToken.newToken " + updatedUserToken.newToken);
+      console.log(userToken);
+      console.log(updatedUserToken.newToken);
+      userToken.value = updatedUserToken.newToken;
+      console.log(userToken.value);
+
       const data = await response.json();
       users.value = [data];
       localStorage.setItem('myUser', JSON.stringify(data));
-        } else {
-          //const data = await response.json();
-          error.value = data.error;
-        }
+    } else {
+      //const data = await response.json();
+      error.value = data.error;
+    }
   } catch (e) {
     error.value = "Une erreur s'est produite lors de la mise à jour de l'utilisateur";
     console.log("erreur" + e)
@@ -131,7 +140,7 @@ getConnectedUser();
           {{ maskedToken }}
         </div>
         <div v-show="showToken">
-          {{ userToken=ligne.api_token }}
+          {{ userToken }}
         </div>
       </li>
       <button v-if="showToken" @click="copyToClipboard" :disabled="!userToken">

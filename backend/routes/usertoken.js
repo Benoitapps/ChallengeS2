@@ -4,6 +4,6 @@ const userTokenCtrl = require('../controllers/usertoken');
 const auth = require('../middleware/auth');
 const authMiddleware = require('../middleware/authMiddleware');
 
-router.get('/',authMiddleware, userTokenCtrl.updateToken);
+router.patch('/:id',authMiddleware, userTokenCtrl.updateToken);
 
 module.exports = router;
