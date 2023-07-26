@@ -5,6 +5,6 @@ import router from './router';
 import trackingPlugin from './plugins/trackingPlugin';
 
 const app = createApp(App);
-app.use(trackingPlugin, "3tspucnwtebczm7eaenyqmmybsllam9m");
+app.use(trackingPlugin, "mn6so1btd2fzw7g8fbhyjepuhpgr1cet");
 app.use(router)
 app.mount('#app');

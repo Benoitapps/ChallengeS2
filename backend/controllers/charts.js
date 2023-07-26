@@ -7,28 +7,26 @@ const User = require("../db").User;
 const usersessions = require('../models/Usertracker');
 
 function getConnectedUserId(req) {
-    return new Promise((resolve, reject) => {
-        const token = req.cookies.token;
+    const token = req.cookies.token;
 
-        if (!token) {
-            reject(new Error('Token not found'));
-        }
+    if (!token) {
+        new Error('Token not found');
+    }
 
-        try {
-            const decoded = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
-            const userToken = decoded.userToken;
+    try {
+        const decoded = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+        const userToken = decoded.userToken;
 
-            resolve(userToken);
-        } catch (error) {
-            reject(new Error('Invalid token'));
-        }
-    });
+        return userToken;
+    } catch (error) {
+        new Error('Invalid token');
+    }
 }
-
 
 async function getCharts(req, res) {
     let unit = '';
     let amount = 0;
+    const api_tokenUsder = getConnectedUserId(req);
 
     if(!req.params?.nameCard || !req.params?.resperiod) {
         return res.status(400).json({ error: 'Missing parameters' });
@@ -53,7 +51,7 @@ async function getCharts(req, res) {
                     {
                         $match: {
                             api_token:
-                                "ikb3yt96da5pz1d47x5wv1dn12v3voly",
+                            api_tokenUsder,
                         },
                     },
                     {
@@ -103,8 +101,7 @@ async function getCharts(req, res) {
                 [
                     {
                         $match: {
-                            api_token:
-                                "ikb3yt96da5pz1d47x5wv1dn12v3voly",
+                            api_token: api_tokenUsder,
                         },
                     },
                     {
@@ -114,38 +111,92 @@ async function getCharts(req, res) {
                         $unwind: "$visitors.sessions",
                     },
                     {
-                        $match: {
-                            $expr: {
-                                $gte: [
-                                    "$visitors.sessions.endTime",
-                                    {
-                                        $dateSubtract: {
-                                            startDate: "$$NOW",
-                                            unit: unit,
-                                            amount: amount,
-                                        },
+                        $addFields: {
+                            startInterval: {
+                                $dateFromParts: {
+                                    year: { $year: "$visitors.sessions.startTime" },
+                                    month: { $month: "$visitors.sessions.startTime" },
+                                    day: { $dayOfMonth: "$visitors.sessions.startTime" },
+                                    hour: { $hour: "$visitors.sessions.startTime" },
+                                    minute: {
+                                        $subtract: [
+                                            { $minute: "$visitors.sessions.startTime" },
+                                            { $mod: [{ $minute: "$visitors.sessions.startTime" }, 1] },
+                                        ],
                                     },
-                                ],
+                                    second: 0,
+                                    millisecond: 0,
+                                },
+                            },
+                            endInterval: {
+                                $dateFromParts: {
+                                    year: { $year: "$visitors.sessions.endTime" },
+                                    month: { $month: "$visitors.sessions.endTime" },
+                                    day: { $dayOfMonth: "$visitors.sessions.endTime" },
+                                    hour: { $hour: "$visitors.sessions.endTime" },
+                                    minute: {
+                                        $subtract: [
+                                            { $minute: "$visitors.sessions.endTime" },
+                                            { $mod: [{ $minute: "$visitors.sessions.endTime" }, 1] },
+                                        ],
+                                    },
+                                    second: 0,
+                                    millisecond: 0,
+                                },
                             },
                         },
                     },
                     {
-                        $project: {
-                            _id: "$_id",
-                            amount: {
-                                $sum: 1
+                        $match: {
+                            $expr: {
+                                $gte: ["$endInterval", { $dateSubtract: { startDate: "$$NOW", unit: unit, amount: amount } }],
                             },
-                            date: "$visitors.sessions.endTime",
+                        },
+                    },
+                    {
+                        $group: {
+                            _id: {
+                                startInterval: "$startInterval",
+                            },
+                            amount: { $sum: 1 },
+                        },
+                    },
+                    {
+                        $project: {
+                            _id: 0,
+                            date: "$_id.startInterval",
+                            amount: 1,
                         },
                     },
                     {
                         $sort: {
                             date: 1,
-                        }
-                    }
+                        },
+                    },
                 ]
             )
-                .then(sessions => res.json(sessions))
+                .then(
+                    sessions => {
+                        let dataSessions = sessions;
+
+                        dataSessions.forEach((session, index) => {
+                            const sessionDate = new Date(session.date);
+                            const sessionDateEnd = new Date(sessionDate); // Create a new Date object
+
+                            // Add 1 minute to the sessionDateEnd
+                            sessionDateEnd.setMinutes(sessionDateEnd.getMinutes() + 1);
+
+                            if (dataSessions[index + 1] && dataSessions[index + 1].date.getTime() !== sessionDateEnd.getTime()) {
+                                dataSessions.splice(index + 1, 0, {
+                                    date: sessionDateEnd,
+                                    amount: 0
+                                });
+                            }
+                        });
+
+                        res.json(dataSessions);
+                    }
+                )
                 .catch(err => res.status(400).json('Error: ' + err));
         }
     }
