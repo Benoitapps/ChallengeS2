@@ -26,7 +26,11 @@ function getConnectedUserId(req) {
 async function getCharts(req, res) {
     let unit = '';
     let amount = 0;
-    const api_tokenUsder = getConnectedUserId(req);
+   // const api_tokenUsder = getConnectedUserId(req);
+   const {apiToken} = req.body
+      console.log("body",apiToken)
+     // const api_tokenUsder =getConnectedUserId(req);
+     const api_tokenUsder =apiToken;
 
     if(!req.params?.nameCard || !req.params?.resperiod) {
         return res.status(400).json({ error: 'Missing parameters' });
