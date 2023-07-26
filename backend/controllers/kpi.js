@@ -9,22 +9,21 @@ const User = require("../db").User;
 const Usertracker = require('../models/Usertracker');
 
 function getConnectedUserId(req) {
-    return new Promise((resolve, reject) => {
       const token = req.cookies.token;
   
       if (!token) {
-        reject(new Error('Token not found'));
+        new Error('Token not found');
       }
   
       try {
         const decoded = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
         const userToken = decoded.userToken;
   
-        resolve(userToken);
+        return userToken;
       } catch (error) {
-        reject(new Error('Invalid token'));
+       new Error('Invalid token');
       }
-    });
+    
   }
 
   function formatDuration(duration) {
@@ -60,6 +59,8 @@ function getConnectedUserId(req) {
   async function getKPI(req, res) {
     try {
       console.log("GetAPI");
+      const api_tokenUsder =getConnectedUserId(req);
+      console.log("api_tokenUsder", api_tokenUsder);
       const periods = req.param.resperiod;
       const title = req.param.nameCard;
 
@@ -67,7 +68,7 @@ function getConnectedUserId(req) {
       const pipeline = [
         {
           $match: {
-            api_token: "ikb3yt96da5pz1d47x5wv1dn12v3voly"
+            api_token: api_tokenUsder
           }
         },
         {
@@ -106,7 +107,7 @@ function getConnectedUserId(req) {
       console.log("session " + totalSessions);
       ////////////////////clics////////////////////////////////////////
       const pipeline2 = [
-        { $match: { "api_token": "ikb3yt96da5pz1d47x5wv1dn12v3voly" } },
+        { $match: { "api_token": api_tokenUsder } },
         {
           $project: {
             totalClicks: {
@@ -140,7 +141,7 @@ function getConnectedUserId(req) {
 const pipeline3 = [
   {
     $match: {
-      api_token: "ikb3yt96da5pz1d47x5wv1dn12v3voly"
+      api_token: api_tokenUsder
     }
   },
   {
@@ -178,7 +179,7 @@ const result3 = await Usertracker.aggregate(pipeline3).exec();
 ////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////nombre de visiteur//////////////////////////////////////////
 const pipeline4 = [
-  { $match: { "api_token": "ikb3yt96da5pz1d47x5wv1dn12v3voly" } },
+  { $match: { "api_token": api_tokenUsder } },
   {
     $project: {
       numberOfVisitors: {
@@ -196,7 +197,7 @@ const result4 = await Usertracker.aggregate(pipeline4).exec();
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////clics par page ///////////////////////////////////////
 const pipeline5 = [
-  { $match: { "api_token": "ikb3yt96da5pz1d47x5wv1dn12v3voly" } },
+  { $match: { "api_token": api_tokenUsder } },
   {
     $project: {
       totalClicks: {
@@ -311,7 +312,7 @@ console.log("dateformattoday4= " + dateformattoday.setMonth(dateformattoday.getM
 
   async function kpiChoice(req, res) {
     try {
-
+      const api_tokenUsder =getConnectedUserId(req);
       const periods = req.params.resperiod;
       const title = req.params.nameCard;
       console.log("KpiChoice : "+ periods + ","+ title);
@@ -349,7 +350,7 @@ console.log("dateformattoday4= " + dateformattoday.setMonth(dateformattoday.getM
       const pipeline = [
         {
           $match: {
-            api_token: "ikb3yt96da5pz1d47x5wv1dn12v3voly"
+            api_token: api_tokenUsder
           }
         },
         {
@@ -402,7 +403,7 @@ console.log("dateformattoday4= " + dateformattoday.setMonth(dateformattoday.getM
         [
           {
             $match: {
-              api_token: "ikb3yt96da5pz1d47x5wv1dn12v3voly"
+              api_token: api_tokenUsder
             }
           },
           {
@@ -455,7 +456,7 @@ console.log("dateformattoday4= " + dateformattoday.setMonth(dateformattoday.getM
       const pipeline = [
         {
           $match: {
-            api_token: "ikb3yt96da5pz1d47x5wv1dn12v3voly"
+            api_token: api_tokenUsder
           }
         },
         {
@@ -519,7 +520,7 @@ console.log("dateformattoday4= " + dateformattoday.setMonth(dateformattoday.getM
       const pipeline =  [
         {
           $match: {
-            api_token: "ikb3yt96da5pz1d47x5wv1dn12v3voly"
+            api_token: api_tokenUsder
           }
         },
         {
@@ -567,7 +568,7 @@ console.log("dateformattoday4= " + dateformattoday.setMonth(dateformattoday.getM
     //////page///////////////////////////////////////////////////////////////////////////////////////////
   }else if(req.params?.nameCard === 'page') {
     const pipeline =  [
-      { $match: { "api_token": "ikb3yt96da5pz1d47x5wv1dn12v3voly" } },
+      { $match: { "api_token": api_tokenUsder } },
       {
         $project: {
           totalClicks: {

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import KPI from '../views/Dashboard/KPI.vue';
 import Charts from "../views/Dashboard/Charts.vue";
 import Heatmap from "../views/Dashboard/Heatmap.vue";
+import Heatmap2 from "../views/Dashboard/Heatmap2.vue";
 import Register from "../views/Connexion/Register.vue";
 import Login from "../views/Connexion/Login.vue";
 import HomeConnect from "../views/Connexion/HomeConnect.vue";
@@ -13,6 +14,7 @@ import Logout from "../views/Connexion/Logout.vue";
 import Tags from "../views/Tags.vue";
 import Test from "../views/Test.vue";
 import Download from "../views/Download.vue";
+import TagsCreate from "../views/TagsCreate.vue";
 
 const index = createRouter(
     {
@@ -29,6 +31,10 @@ const index = createRouter(
             {
                 path: '/heatmap',
                 component: Heatmap
+            },
+            {
+                path: '/heatmap2',
+                component: Heatmap2
             },
             {
                 path: '/register',
@@ -77,7 +83,10 @@ const index = createRouter(
                 path: '/test',
                 component: Test
             },
-
+            {
+                path: '/tags/create',
+                component: TagsCreate
+            }
         ]
     });
 
