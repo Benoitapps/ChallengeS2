@@ -10,11 +10,12 @@ const Image = require("../db").Image;
 
 const Usertracker = require('../models/Usertracker');
 
+
 function getConnectedUserId(req) {
   const token = req.cookies.token;
 
   if (!token) {
-    console.log('Token not found');
+    new Error('Token not found');
   }
 
   try {
@@ -41,13 +42,14 @@ function getConnectedUserId(req) {
 
   async function getHeatmapClic(req, res) {
     try {
+      const api_tokenUsder =getConnectedUserId(req);
       console.log("GetAPI");
       const periods = req.param.resperiod;
       const title = req.param.nameCard;
 
       //session 
       const pipeline = [
-        { $match: { "api_token": "ikb3yt96da5pz1d47x5wv1dn12v3voly" } },
+        { $match: { "api_token": api_tokenUsder } },
         {
           $project: {
             clickPaths: {
@@ -139,12 +141,13 @@ const result = await Usertracker.aggregate(pipeline).exec();
   async function getHeatmapMouse(req, res) {
     try {
       //console.log("GetAPI");
+      const api_tokenUsder =getConnectedUserId(req);
       const periods = req.param.resperiod;
       const title = req.param.nameCard;
 
       //session 
       const pipeline = [
-        { $match: { "api_token": "ikb3yt96da5pz1d47x5wv1dn12v3voly" } },
+        { $match: { "api_token": api_tokenUsder } },
         {
           $project: {
             clickPaths: {
