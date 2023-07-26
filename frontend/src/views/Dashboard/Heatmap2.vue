@@ -168,12 +168,12 @@ function changePath(key,coordinates, type) {
 
 
 
-function handleImageUpload(path) {
+function handleImageUpload(files, path) {
+  console.log("Le files est passé et est :", files);
   console.log("Le path est passé et est :", path);
-  const file = document.querySelector('input[type=file]').files[0];
 
   // Créer un objet Blob à partir du fichier
-  const imageBlob = new Blob([file], { type: file.type });
+  const imageBlob = new Blob(files, { type: files[0].type });
 
   const reader = new FileReader();
   reader.onloadend = () => {
@@ -219,6 +219,7 @@ function handleImageUpload(path) {
     console.log("imagechemin",response);
     if (response.ok) {
       getImage();
+      document.getElementById('input[type=file]').value = '';
 
       // Image uploaded successfully
       // You may show a success message or refresh the heatmap, etc.
@@ -262,7 +263,8 @@ async function getImage() {
     if (response.ok) {
       const data = await response.json();
       console.log("imagerecuperer en bdd",data);
-      tabimage.value =data
+      tabimage.value =data;
+      imageInput.value ="";
 
     } else {
       const data = await response.json();
@@ -300,17 +302,13 @@ getImage();
       </div>
     </div>  
     <div ref="heatmapContainerRef" id="heatmapContainer">
-      <div v-if="image != ''">
+    
       <img class="image" :src="srcImage.src" alt="Image décodée" />
-    </div>
-    <div v-else>
-      <div >Ajouter les images de votre site </div>
-    </div>
     </div>
 
     <div v-for="item in mapmouse.resPageMouse" :key="item.id" >
       <p>Ajouter une image pour la page : {{ item.path }}</p>
-    <input type="file" ref="imageInput" @change="handleImageUpload(item.path)" />
+    <input type="file" @change="(e) => handleImageUpload(e.target.files, item.path)" />
   </div>
 
 <!--     
