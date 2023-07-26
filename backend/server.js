@@ -16,11 +16,12 @@ const downloadsdkroutes = require("./routes/downloadsdk");
 const Heatmaproutes = require("./routes/heatmap");
 const usertokenroutes = require("./routes/usertoken");
 const errorsHandler = require("./middleware/errorsHandler");
-
-
+const tunnelRoutes = require('./routes/tunnel');
 const tagRoutes = require('./routes/tag');
 const { connect } = require('./services/mongoose');
 const { connectpg } = require('./db/');
+
+
 
 const app = express();
 const sequelize = require('sequelize')
@@ -43,6 +44,7 @@ app.use("/admin", adminRoutes)
 app.use("/sdk", sdkRoutes)
 app.use( "/users", trueUserRoutes)
 app.use("/tags", tagRoutes)
+app.use("/tunnels", tunnelRoutes)
 app.use("/kpi", kpiroutes)
 app.use("/downloadsdk", downloadsdkroutes)
 app.use("/heatmap", Heatmaproutes)

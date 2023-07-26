@@ -17,7 +17,7 @@ const getDecoonnectedUser = async () => {
 
     if (response.ok) {
         localStorage.clear();
-        //router.push('/login');
+        router.push('/login');
     } else {
       const data = await response.json();
       error.value = data.error;

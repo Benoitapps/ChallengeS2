@@ -15,6 +15,7 @@ import Tags from "../views/Tags.vue";
 import Test from "../views/Test.vue";
 import Download from "../views/Download.vue";
 import TagsCreate from "../views/TagsCreate.vue";
+import TunnelCreate from "../views/TunnelCreate.vue";
 
 const index = createRouter(
     {
@@ -86,7 +87,11 @@ const index = createRouter(
             {
                 path: '/tags/create',
                 component: TagsCreate
-            }
+            },
+            {
+                path: '/tunnels/create',
+                component: TunnelCreate
+            },
         ]
     });
 
