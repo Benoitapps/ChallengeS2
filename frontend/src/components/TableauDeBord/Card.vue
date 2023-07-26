@@ -85,7 +85,10 @@ function toggleFavorite() {
   
     <div class="card__head">
       <h2>{{ props.title }}</h2>
-      <More @toggleFavorite="toggleFavorite()" @removeCard="$emit('removeCard', props.index)"/>
+      <More
+          @toggleFavorite="toggleFavorite()"
+          @removeCard="$emit('removeCard', props.title)"
+      />
     </div>
 
     <Keys
