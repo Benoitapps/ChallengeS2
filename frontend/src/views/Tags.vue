@@ -9,8 +9,8 @@ let tunnels = ref([]);
 let defaultMessageTag = ref('Chargement des tags...');
 let defaultMessageTunnel = ref('Chargement des tunnels...');
 
+const sdk = inject('sdk');
 onMounted(async () => {
-  const sdk = inject('sdk');
   sdk.initTags();
 
   // ? Get tags
@@ -42,10 +42,10 @@ onMounted(async () => {
   }
 
   sdk.initTracker();
+});
 
-  onUnmounted(() => {
-    sdk.stopTracker();
-  });
+onUnmounted(() => {
+  sdk.stopTracker();
 });
 </script>
 

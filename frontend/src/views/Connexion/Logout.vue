@@ -5,7 +5,7 @@ const env = import.meta.env
 const users = ref([]);
 const error = ref('');
 
-const getDecoonnectedUser = async () => {
+const disconnect = async () => {
   try {
     const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/logout`, {
       method: 'POST',
@@ -27,12 +27,7 @@ const getDecoonnectedUser = async () => {
   }
 };
 
-const login = () => {
-  // Redirection vers la page de connexion ou une autre page appropriée
-  router.push('/login');
-};
-
-getDecoonnectedUser();
+disconnect();
 </script>
 
 <template>
