@@ -129,7 +129,7 @@ function getConnectedUser(req, res) {
             userId: user.id,
             email: user.email,
             website: user.website,
-            apiToken : user.api_token
+            apiToken: user.api_token,
             // Ajoutez d'autres propriétés de l'utilisateur si nécessaire
           });
         })

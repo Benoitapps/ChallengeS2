@@ -62,7 +62,20 @@ onMounted(() => {
           <router-link to="/login">Connexion</router-link>
         </li>
         <li class="navbar__links">
-          <router-link to="/AdminHome">Admin</router-link>
+          <router-link to="/AdminHome">
+            <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48">
+              <path d="M480-450q-58 0-97.5-39.5T343-587q0-58 39.5-97.5T480-724q58 0 97.5 39.5T617-587q0 58-39.5 97.5T480-450Zm0-60q34 0 55.5-21.5T557-587q0-34-21.5-55.5T480-664q-34 0-55.5 21.5T403-587q0 34 21.5 55.5T480-510Zm0 429q-140-35-230-162.5T160-523v-238l320-120 320 120v238q0 152-90 279.5T480-81Zm0-399Zm0-337-260 98v196q0 63 17.5 120.5T287-296q46-25 93.5-37.5T480-346q52 0 99.5 12.5T673-296q32-49 49.5-106.5T740-523v-196l-260-98Zm0 531q-39 0-78 10t-77 30q32 35 71 61.5t84 41.5q45-15 84-41.5t71-61.5q-38-20-77-30t-78-10Z"/>
+            </svg>
+            Admin
+          </router-link>
+        </li>
+        <li class="navbar__links">
+          <router-link to="/download">
+            <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48">
+              <path d="M220-160q-24 0-42-18t-18-42v-143h60v143h520v-143h60v143q0 24-18 42t-42 18H220Zm260-153L287-506l43-43 120 120v-371h60v371l120-120 43 43-193 193Z"/>
+            </svg>
+            Télécharger le SDK
+          </router-link>
         </li>
         <li class="navbar__links">
           <router-link to="/profil">

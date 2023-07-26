@@ -31,7 +31,6 @@ function all(req, res) {
             userId: userId
         }
     }).then((tags) => {
-        console.log(tags)
         tags = tags.map((tag) => {
             tag = tag.dataValues;
             delete tag.userId;

@@ -13,7 +13,9 @@ import ProfilModify from "../views/Profil/ProfilModify.vue";
 import Logout from "../views/Connexion/Logout.vue";
 import Tags from "../views/Tags.vue";
 import Test from "../views/Test.vue";
+import Download from "../views/Download.vue";
 import TagsCreate from "../views/TagsCreate.vue";
+import TunnelCreate from "../views/TunnelCreate.vue";
 
 const index = createRouter(
     {
@@ -75,13 +77,21 @@ const index = createRouter(
                 component: Tags
             },
             {
+                path: '/download',
+                component: Download
+            },
+            {
                 path: '/test',
                 component: Test
             },
             {
                 path: '/tags/create',
                 component: TagsCreate
-            }
+            },
+            {
+                path: '/tunnels/create',
+                component: TunnelCreate
+            },
         ]
     });
 

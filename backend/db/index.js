@@ -19,6 +19,8 @@ const User = db.User;
 const KpiName = db.KpiName;
 const ChartsName = db.ChartsName;
 const Tag = db.Tag;
+const Tunnel = db.Tunnel;
+const TunnelTag = db.TunnelTag;
 const Image = db.Image;
 
 User.belongsToMany(KpiName, { through: "UserKpiNames" });
@@ -35,6 +37,25 @@ User.hasMany(Tag, {
   foreignKey: "userId",
 });
 
+Tag.hasMany(TunnelTag, {
+  foreignKey: "tagId",
+  alias: "tunnel_tags",
+});
+TunnelTag.belongsTo(Tag, {
+  foreignKey: "tagId",
+  through: "TunnelTag",
+  alias: "tag",
+});
+
+TunnelTag.belongsTo(Tunnel, {
+  foreignKey: "tunnelId",
+  through: "TunnelTag",
+  alias: "tunnel",
+});
+Tunnel.hasMany(TunnelTag, {
+  foreignKey: "tunnelId",
+  alias: "tunnel_tags",
+});
 // Image.belongsTo(User, {
 //   foreignKey: "userId",
 // });
