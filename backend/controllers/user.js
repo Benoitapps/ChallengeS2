@@ -17,6 +17,22 @@ async function signup(req, res) {
       if (!req.body?.email || !req.body?.password || !req.body?.website) {
           return res.status(400).json({ error: 'Missing parameters' });
       }
+      //const myRegex = /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+$/i;
+
+
+      // if(myRegex.test(req.body.password == false) ){
+      //   return res.status(400).json({ error: 'Le mot de passe ne doit pas contenir certains caractères incorrects.' });
+      // }
+      if (req.body.password.length < 8 || req.body.password.length > 32) {
+        return res.status(400).json({ error: 'Le mot de passe doit contenir entre 8 et 32 caractères.' });
+      }
+
+      const usertest = await User.findOne({ 
+        where: {email: req.body.email },});
+
+      if(usertest){
+        return res.status(400).json({ error: 'Adresse mail incorrecte' });
+      }
 
       const apiToken = generateToken(32);
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -45,7 +61,7 @@ async function login(req, res) {
             where: {email: req.body.email },});
 
         if (!user) {
-            return res.status(401).json({ error: 'Utilisateur non trouvé !' });
+            return res.status(401).json({ error: 'Utilisateur ou Mot de passe incorrect!' });
         }
 
         if (user.is_verified === false) {
@@ -55,7 +71,7 @@ async function login(req, res) {
         const validPassword = await bcrypt.compare(req.body.password, user.password);
 
         if (!validPassword) {
-            return res.status(401).json({ error: 'Mot de passe incorrect !' });
+            return res.status(401).json({ error: 'Utilisateur ou Mot de passe incorrect!' });
         }
         console.log("lID "+ user.api_token);
 
