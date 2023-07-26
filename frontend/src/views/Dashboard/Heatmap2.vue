@@ -29,6 +29,7 @@ const choiceType = ref("");
 const res = ref([]);
 const testres = ref([]);
 
+
 watch(map1, async (newRes) => {
   console.log("watchclic", newRes);
   if (!heatmapRef.value) {

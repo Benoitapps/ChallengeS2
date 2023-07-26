@@ -44,30 +44,6 @@ const periods = [
   },
 ];
 
-// const visitedPages = ref([
-//   {
-//     label: "Accueil",
-//     value: "50",
-//   },
-//   {
-//     label: "Contact",
-//     value: "30",
-//   },
-//   {
-//     label: "A propos",
-//     value: "20",
-//   },
-//   {
-//     label: "Blog",
-//     value: "10",
-//   },
-// ]);
-// const visitedPages = ref(
-//   page.value.result.results.map((item) => ({
-//     label: item.path,
-//     value: String(item.count) // Convertir en chaîne pour s'assurer que "value" est une chaîne
-//   }))
-// );
 const visitedPages = reactive({
   data: []
 });
@@ -169,6 +145,7 @@ const getKPI = async () => {
         "Content-Type": "application/json",
       },
       credentials: "include",
+      body: JSON.stringify({apiToken : userApi.value})
     });
 
     if (response.ok) {

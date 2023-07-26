@@ -59,7 +59,10 @@ function getConnectedUserId(req) {
   async function getKPI(req, res) {
     try {
       console.log("GetAPI");
-      const api_tokenUsder =getConnectedUserId(req);
+      const {apiToken} = req.body
+      console.log("body",apiToken)
+     // const api_tokenUsder =getConnectedUserId(req);
+      const api_tokenUsder =apiToken;
       console.log("api_tokenUsder", api_tokenUsder);
       const periods = req.param.resperiod;
       const title = req.param.nameCard;
@@ -312,7 +315,10 @@ console.log("dateformattoday4= " + dateformattoday.setMonth(dateformattoday.getM
 
   async function kpiChoice(req, res) {
     try {
-      const api_tokenUsder =getConnectedUserId(req);
+      const {apiToken} = req.body
+      console.log("body",apiToken)
+     // const api_tokenUsder =getConnectedUserId(req);
+     const api_tokenUsder =apiToken;
       const periods = req.params.resperiod;
       const title = req.params.nameCard;
       console.log("KpiChoice : "+ periods + ","+ title);

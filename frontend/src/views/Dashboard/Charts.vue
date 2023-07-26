@@ -121,7 +121,8 @@ async function getData() {
         headers: {
           'Content-Type': 'application/json'
         },
-        credentials : 'include'
+        credentials : 'include',
+        body: JSON.stringify({apiToken : userApi.value}),
       });
       const data = await response.json();
 
@@ -162,7 +163,8 @@ const updateChart = async (values) => {
         headers: {
           'Content-Type': 'application/json'
         },
-        credentials : 'include'
+        credentials : 'include',
+        body: JSON.stringify({apiToken : userApi.value}),
       });
       const data = await response.json();
 
