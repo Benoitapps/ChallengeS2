@@ -121,8 +121,8 @@ const codeStep3 = `const MOUSE_DELAY = 5000;`;
       <button id="downloadButton" @click="downloadSDK">Télécharger</button>
 
       <div class="tutorial">
-        <transition name="fade">
-          <div v-show="step === 1" class="step">
+        <Transition name="fade" mode="out-in">
+          <div v-if="step === 1" class="step">
             <h1>Intégration du SDK pour le suivi d'analytiques</h1>
             <p>Ce guide vous explique comment intégrer le SDK de suivi d'analytiques dans votre projet. Le SDK permet de
               collecter des données telles que les mouvements de souris et les clics des utilisateurs sur votre site.</p>
@@ -144,10 +144,8 @@ const codeStep3 = `const MOUSE_DELAY = 5000;`;
               copySuccessText="Copié !" />
             <button @click="skipStep" class="buttonSkip">Suivant</button>
           </div>
-        </transition>
 
-        <transition name="fade">
-          <div v-show="step === 2" class="step">
+          <div v-else-if="step === 2" class="step">
             <h2>Étape 2 : Utilisation du SDK</h2>
             <p>Maintenant que le suivi est initialisé, vous pouvez utiliser les fonctionnalités du SDK pour collecter des
               données d'analytiques.<br>Voici quelques exemples d'utilisation :</p><br>
@@ -162,10 +160,8 @@ const codeStep3 = `const MOUSE_DELAY = 5000;`;
               copySuccessText="Copié !" />
             <button @click="skipStep" class="buttonSkip">Suivant</button>
           </div>
-        </transition>
 
-        <transition name="fade">
-          <div v-show="step === 3" class="step">
+          <div v-else-if="step === 3" class="step">
             <h2>Étape 3 : Personnalisation du suivi</h2>
             <p>Vous pouvez également personnaliser le suivi en modifiant les paramètres du SDK. Par exemple, vous pouvez
               ajuster le délai entre les mouvements de souris à suivre.<br>Voici un exemple :</p>
@@ -173,7 +169,7 @@ const codeStep3 = `const MOUSE_DELAY = 5000;`;
               copySuccessText="Copié !" />
             <button @click="finishTutorial" class="buttonSkip">Recommencer le tutoriel</button>
           </div>
-        </transition>
+        </Transition>
       </div>
     </div>
   </main>
@@ -182,7 +178,7 @@ const codeStep3 = `const MOUSE_DELAY = 5000;`;
 <style scoped lang="scss">
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.5s;
+  transition: opacity 0.4s;
 }
 
 .fade-enter,
@@ -190,39 +186,33 @@ const codeStep3 = `const MOUSE_DELAY = 5000;`;
   opacity: 0;
 }
 
-.step {
-  margin-bottom: 20px;
-}
-
-#downloadButton {
-  cursor: pointer;
-}
-
-.tutorial {
-  display: flex;
-  // justify-content: center;
-  // align-items: center;
-  border: 1px solid #ccc;
-  padding: 20px;
-  margin: 20px;
-  border-radius: 8px;
-}
-
 button {
-  background-color: blue;
-  color: white;
+  background-color: var(--primary);
   border: none;
   border-radius: 4px;
   padding: 10px 20px;
   cursor: pointer;
 }
 
-.highlight {
-  background-color: #ffe8bf;
-  padding: 2px 4px;
-  font-family: 'Courier New', monospace;
-  color: #d45d00;
-  font-size: 18px;
-  font-weight: bold;
+h1,
+h2 {
+  margin-bottom: 1rem; // 16px
+}
+
+.tutorial {
+  display: flex;
+  border: var(--border);
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 8px;
+
+  .highlight {
+    background-color: var(--accent);
+    padding: 2px 4px;
+    font-family: 'Courier New', monospace;
+    color: #d45d00;
+    font-size: 18px;
+    font-weight: bold;
+  }
 }
 </style>
