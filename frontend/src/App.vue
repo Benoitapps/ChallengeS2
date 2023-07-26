@@ -2,13 +2,13 @@
 import Navbar from "./components/Navbar.vue";
 import {inject, onMounted, onUnmounted, ref} from "vue";
 
+const sdk = inject('sdk');
 onMounted(() => {
-  const sdk = inject('sdk');
   sdk.trackNavigation();
+});
 
-  onUnmounted(() => {
-    sdk.stopTrackingNavigation();
-  });
+onUnmounted(() => {
+  sdk.stopTrackingNavigation();
 });
 </script>
 

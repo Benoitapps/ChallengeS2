@@ -142,15 +142,14 @@ getConnectedUser();
 getAllCharts();
 getUserCharts();
 
+const sdk = inject('sdk');
 onMounted(() => {
-  const sdk = inject('sdk');
   sdk.initTracker();
 
   getData();
-
-  onUnmounted(() => {
-    sdk.stopTracker();
-  });
+});
+onUnmounted(() => {
+  sdk.stopTracker();
 });
 
 const updateChart = async (values) => {
