@@ -14,8 +14,29 @@ Ce guide vous explique comment intégrer le SDK de suivi d'analytiques dans votr
 
     export default {
         install(app, apiToken) {
-            app.provide('sdk', new SDK(apiToken));
-        }
+        console.log("Tracking plugin is installed");
+        const sdk = new SDK(apiToken);
+        
+        app.provide('sdk', sdk);
+
+        app.directive('tracker', {
+            mounted(el, binding){
+                const tag = binding.value;
+                const events = Object.keys(binding.modifiers);
+
+                events.forEach(event => {
+                    el.addEventListener(event, () => {
+                        sdk.addTagToQueue({
+                            token: tag,
+                            path: window.location.pathname,
+                            timestamp: Date.now(),
+                            eventType: event,
+                        });
+                    });
+                });
+            }
+        });
+    }
     };
     ```
 
@@ -68,11 +89,20 @@ Maintenant que le suivi est initialisé, vous pouvez utiliser les fonctionnalit�
     sdk.initTracker();
     ```
 
-## Étape 3 : Personnalisation du suivi
+## Étape 3 : Personnalisation du suivi (Tags)
 
-Vous pouvez également personnaliser le suivi en modifiant les paramètres du SDK. Par exemple, vous pouvez ajuster le délai entre les mouvements de souris à suivre. Voici un exemple :
+Le plugin de suivi ajoute une directive personnalisée appelée v-tracker qui peut être utilisée pour suivre les événements sur les éléments du DOM. La directive prend un argument obligatoire qui est le nom du tag à suivre. Vous pouvez également ajouter des modificateurs pour suivre des événements spécifiques. Voici un exemple :
 
-```javascript
-const MOUSE_DELAY = 5000;
+```html
+<button v-tracker:mouseover.click="'token_de_votre_tag'">Click me</button>
 ```
+### Détails sur la directive
+La directive v-tracker permet de suivre différents types d'événements sur un élément du DOM et d'enregistrer les données associées dans le SDK. Voici comment cela fonctionne :
+
+- `v-tracker`: La directive principale, suivie du type d'événement ou d'une combinaison d'événements que vous souhaitez suivre.
+
+- `v-tracker:[événement]`: Vous pouvez spécifier un ou plusieurs événements séparés par des points pour lesquels vous souhaitez effectuer le suivi. Par exemple, `v-tracker:click.input` suivra à la fois les événements click et input.
+
+
+Notez que vous pouvez personnaliser la tag selon vos besoins et l'utiliser pour différencier différents événements dans le SDK.
 
