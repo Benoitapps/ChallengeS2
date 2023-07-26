@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import {ref, computed, onMounted, inject, onUnmounted} from 'vue';
 const env = import.meta.env
 const users = ref([]);
 const error = ref('');
@@ -123,6 +123,15 @@ const regenerateToken = async () => {
 };
 
 getConnectedUser();
+
+onMounted(() => {
+  const sdk = inject('sdk');
+  sdk.initTracker();
+
+  onUnmounted(() => {
+    sdk.stopTracker();
+  });
+});
 </script>
 
 

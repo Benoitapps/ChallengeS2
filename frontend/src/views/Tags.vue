@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, inject,ref } from 'vue';
+import {onMounted, inject, ref, onUnmounted} from 'vue';
 import TabLine from '../components/Tags/TabLine.vue';
 import TabLineTunnel from '../components/Tunnels/TabLineTunnel.vue';
 const env = import.meta.env;
@@ -40,6 +40,12 @@ onMounted(async () => {
   if (resTunnel.length == 0) {
     defaultMessageTunnel.value = 'Aucun tunnel trouvé';
   }
+
+  sdk.initTracker();
+
+  onUnmounted(() => {
+    sdk.stopTracker();
+  });
 });
 </script>
 
