@@ -192,6 +192,10 @@ button {
   border-radius: 4px;
   padding: 10px 20px;
   cursor: pointer;
+
+  &:hover {
+    background-color: var(--accent);
+  }
 }
 
 h1,

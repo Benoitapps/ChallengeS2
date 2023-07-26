@@ -140,7 +140,7 @@ getConnectedUser();
       <router-link to="/profil/modifier" class="modifier-button">Modifier</router-link>
     </div>
     <div class="profile__container">
-      <h3>Votre clé API :</h3>
+      <h2>Votre clé API :</h2>
       <div class="show-key">
         <ul>
           <li v-for="ligne in users" :key="ligne">
@@ -231,6 +231,10 @@ getConnectedUser();
       text-align: center;
       width: 100%;
       margin-top: 1.25rem;
+
+      &:hover {
+        background-color: var(--accent);
+      }
     }
 
     button:not(.show-key button) {
@@ -244,6 +248,10 @@ getConnectedUser();
       font-size: 1rem;
       width: 100%;
       margin-top: 1.25rem;
+
+      &:hover {
+        background-color: var(--accent);
+      }
     }
 
     .show-key {
