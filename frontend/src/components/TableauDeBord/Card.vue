@@ -6,7 +6,7 @@ import {onMounted, ref, watch} from "vue";
 import TimeScale from "./TimeScale.vue";
 
 
-let props = defineProps({
+const props = defineProps({
   index: {
     type: Number,
     default: 0
