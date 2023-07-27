@@ -6,9 +6,10 @@ import { useRoute } from 'vue-router';
 const route = useRoute();
 const env = import.meta.env
 const user = ref([]);
-const userRole =ref("");
+const userRole = ref("");
 const error = ref("");
 const showNavbar = ref(true);
+const isAdmin = ref(false);
 const sdk = inject('sdk');
 
 const getConnectedUser = async () => {
@@ -23,9 +24,8 @@ const getConnectedUser = async () => {
 
     if (response.ok) {
       const data = await response.json();
-      user.value = [data];
-      userToken.value = data.apiToken;
-      userRole.value = data.role
+      user.value.push(data);
+      userRole.value = data.role;
     } else {
       const data = await response.json();
       error.value = data.error;
@@ -34,8 +34,6 @@ const getConnectedUser = async () => {
     error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
   }
 };
-
-getConnectedUser();
 
 if(route.path === "/login" || route.path === "/register" || route.path === "/logout"){
   showNavbar.value = false;
@@ -51,6 +49,16 @@ watch(route, () => {
 
 onMounted(() => {
   sdk.trackNavigation();
+
+  getConnectedUser();
+});
+
+watch(userRole, () => {
+  if(userRole.value === "admin"){
+    isAdmin.value = true;
+  } else {
+    isAdmin.value = false;
+  }
 });
 
 onUnmounted(() => {
@@ -59,7 +67,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <Navbar v-if="showNavbar"/>
+  <Navbar v-if="showNavbar" :admin="isAdmin"/>
 
   <router-view v-slot="{ Component }">
     <component :is="Component" />
