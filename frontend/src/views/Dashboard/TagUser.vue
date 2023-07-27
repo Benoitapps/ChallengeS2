@@ -39,6 +39,10 @@ const periods = [
   },
 ];
 
+const periods2 = [
+
+];
+
 const visitedPages = reactive({
   data: []
 });
@@ -58,15 +62,13 @@ watchEffect(() => {
       title: "Total clics sur les tags",
       type: "keys",
       list: visitedPagesOver.data,
-      periods: periods,
-      state: testState("nbClicsTotal"),
+        state: testState("Over par tag"),
     },
     {
       id: "page",
-      title: "Clics par Tag",
+      title: "Total over sur les tags",
       type: "keys",
       list: visitedPages.data,
-      periods: periods,
       state: testState("Clics par tag"),
     },
   ]);
@@ -141,6 +143,7 @@ const getKPI = async () => {
     } else {
       const data = await response.json();
       error.value = data.error;
+      //visitedPages.data = {"tags" : "0"}
     }
   } catch (e) {
     error.value =
