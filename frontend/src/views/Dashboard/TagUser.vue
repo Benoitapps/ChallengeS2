@@ -103,7 +103,13 @@ const getConnectedUser = async () => {
     error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
   }
 };
+const intervalleEnMillisecondes = 2000; // 2 secondes
+const monInterval = setInterval(interval, intervalleEnMillisecondes);
 
+function interval(){
+  
+  getKPI()
+}
 
 const getKPI = async () => {
 
