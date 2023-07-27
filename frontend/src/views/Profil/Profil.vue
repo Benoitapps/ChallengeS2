@@ -3,6 +3,8 @@ import {ref, computed, onMounted, inject, onUnmounted} from 'vue';
 const env = import.meta.env
 const users = ref([]);
 const error = ref('');
+import router from '../../router';
+
 
 const userToken = ref('');
 
@@ -27,6 +29,7 @@ const getConnectedUser = async () => {
     } else {
       const data = await response.json();
       error.value = data.error;
+      router.push('/login');
     }
   } catch (e) {
     error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
