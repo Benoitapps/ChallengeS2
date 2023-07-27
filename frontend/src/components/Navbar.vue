@@ -7,9 +7,24 @@ const env = import.meta.env
 const setLinkSelected = (link) => {
   const linkHref = link.querySelector('a').getAttribute('href');
 
-  if (route.fullPath.match(linkHref)) {
+  if (
+      linkHref !== "/" &&
+      !route.fullPath.match("/tunnels") &&
+      route.fullPath.match(linkHref)
+  ) {
     document.querySelector(".selected")?.classList.remove("selected");
     link.classList.add('selected');
+  } else if (
+      linkHref === "/" &&
+      linkHref === route.fullPath
+  ) {
+    document.querySelector(".selected")?.classList.remove("selected");
+    link.classList.add('selected');
+  } else if (
+      route.fullPath.match("/tunnels")
+  ) {
+    document.querySelector(".selected")?.classList.remove("selected");
+    document.querySelector("a[href*='/tags']").closest(".navbar__links").classList.add('selected');
   }
 };
 
