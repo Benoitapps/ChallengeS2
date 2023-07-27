@@ -1,15 +1,17 @@
 const { Router } = require("express");
+const authMiddleware = require('../middleware/authMiddleware');
+
 
 module.exports = function (Controller, options = {}) {
   const router = new Router();
 
-  router.get("/", Controller.getAll);
-  router.post("/", Controller.create);
+  router.get("/", authMiddleware,Controller.getAll);
+  router.post("/", authMiddleware,Controller.create);
 
-  router.get("/:id", Controller.getOne);
-  router.put("/:id", Controller.replace);
-  router.patch("/:id", Controller.update);
-  router.delete("/:id", Controller.delete);
+  router.get("/:id",authMiddleware, Controller.getOne);
+  router.put("/:id",authMiddleware, Controller.replace);
+  router.patch("/:id",authMiddleware, Controller.update);
+  router.delete("/:id",authMiddleware, Controller.delete);
 
   return router;
 };

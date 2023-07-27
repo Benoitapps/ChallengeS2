@@ -61,7 +61,7 @@ router.post("/", async (req, res) => {
             visitor.dateLastVisit = new Date();
             visitor.sessions.push(session);
         }
-
+        
         // save user tracker
         await userTracker.save();
 

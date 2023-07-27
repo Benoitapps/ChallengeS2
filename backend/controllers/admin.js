@@ -74,6 +74,4 @@ async function updateToken(req, res) {
 }
 
 
-
-
 module.exports = { getUserNotVerified, UserVerified, getAllUser,updateToken ,getTokenUserbyId};

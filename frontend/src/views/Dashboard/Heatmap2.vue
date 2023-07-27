@@ -29,6 +29,20 @@ const choiceType = ref("");
 const res = ref([]);
 const testres = ref([]);
 
+const getConnectedUser = async () => {
+  try {
+    const userData = localStorage.getItem('myUser');;
+    if (userData) {
+      const parsedData = JSON.parse(userData);
+
+      userId.value = parsedData.userId;
+      userApi.value = parsedData.apiToken;
+    }
+  } catch (error) {
+    error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
+  }
+};
+getConnectedUser();
 
 watch(map1, async (newRes) => {
   console.log("watchclic", newRes);
@@ -58,11 +72,14 @@ watchEffect(async () => {
   console.log("je passe ");
   try {
     const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/heatmap/`, {
-      method: "GET",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       credentials: "include",
+      body: JSON.stringify({apiToken : userApi.value})
+
+      
     });
     if (response.ok) {
       const data = await response.json();
@@ -87,11 +104,13 @@ watchEffect(async () => {
 console.log("je passe mouse");
 try {
 const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/heatmap/mouse`, {
-  method: "GET",
+  method: "POST",
   headers: {
     "Content-Type": "application/json",
   },
   credentials: "include",
+  body: JSON.stringify({apiToken : userApi.value})
+
 });
 
 if (response.ok) {
@@ -168,12 +187,12 @@ function changePath(key,coordinates, type) {
 
 
 
-function handleImageUpload(path) {
+function handleImageUpload(files, path) {
+  console.log("Le files est passé et est :", files);
   console.log("Le path est passé et est :", path);
-  const file = document.querySelector('input[type=file]').files[0];
 
   // Créer un objet Blob à partir du fichier
-  const imageBlob = new Blob([file], { type: file.type });
+  const imageBlob = new Blob(files, { type: files[0].type });
 
   const reader = new FileReader();
   reader.onloadend = () => {
@@ -218,7 +237,12 @@ function handleImageUpload(path) {
    
     console.log("imagechemin",response);
     if (response.ok) {
+      try{
       getImage();
+      }catch{
+        return error.value = "pas d'image";
+      }
+      document.getElementById('input[type=file]').value = '';
 
       // Image uploaded successfully
       // You may show a success message or refresh the heatmap, etc.
@@ -262,7 +286,8 @@ async function getImage() {
     if (response.ok) {
       const data = await response.json();
       console.log("imagerecuperer en bdd",data);
-      tabimage.value =data
+      tabimage.value =data;
+      imageInput.value ="";
 
     } else {
       const data = await response.json();
@@ -300,17 +325,16 @@ getImage();
       </div>
     </div>  
     <div ref="heatmapContainerRef" id="heatmapContainer">
-      <div v-if="image != ''">
+    
       <img class="image" :src="srcImage.src" alt="Image décodée" />
     </div>
-    <div v-else>
-      <div >Ajouter les images de votre site </div>
-    </div>
-    </div>
 
-    <div v-for="item in mapmouse.resPageMouse" :key="item.id" >
-      <p>Ajouter une image pour la page : {{ item.path }}</p>
-    <input type="file" ref="imageInput" @change="handleImageUpload(item.path)" />
+    <div class="ajoutimage" v-for="item in mapmouse.resPageMouse" :key="item.id" >
+      <div class="titreimage">
+      <p>Ajouter une image pour la page :</p>
+        <p class="titre"> {{ item.path }}</p>
+    </div>
+    <input type="file" @change="(e) => handleImageUpload(e.target.files, item.path)" />
   </div>
 
 <!--     
@@ -331,9 +355,28 @@ getImage();
   // height: 20em;
   border: black solid 5px;
   background: rgba(0, 0, 0, .4);
-  width: 60em;
-  height: 40em;
-  margin-top: 2px;
+  width: 1136px;
+  height: 570px;
+  //margin-top: 2px;
+  overflow: hidden;
+}
+
+.titreimage{
+  display: flex;
+  margin-top: 5px;
+}
+
+.titre{
+  background-color: var(--primary);
+  padding: 2px;
+
+}
+
+.ajoutimage{
+  background-color: white;
+  border: #000 solid 1px;
+  padding: 5px;
+  width: 25em;
 }
 
 .image{
@@ -342,10 +385,15 @@ getImage();
 
 }
 
+main{
+  overflow: auto;
+}
+
 .bodypage{
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: fit-content;
 }
 
 .bouton{
@@ -376,6 +424,7 @@ getImage();
 
   .interieur{
     display: flex;
+    flex-wrap: wrap;
   }
 
   .titre{
