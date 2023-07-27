@@ -28,7 +28,7 @@ const sequelize = require('sequelize')
 
 // Use to allow cross-origin requests
 app.use(cors({
-  origin: `${process.env.URL}:${process.env.PORT_FRONT}`,
+  origin: [`${process.env.URL}:${process.env.PORT_FRONT}`, 'http://162.19.79.79:8080/'],
   credentials : true,
 }));
 

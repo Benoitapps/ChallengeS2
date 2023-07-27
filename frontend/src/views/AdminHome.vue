@@ -1,6 +1,9 @@
 <script>
 import { ref } from 'vue';
 const env = import.meta.env
+import router from '../router';
+
+
 export default {
   setup() {
     const usersNotVerified = ref([]);
@@ -18,6 +21,8 @@ export default {
       userId.value = parsedData.userId;
 
       console.log("mon id est le : "+ userId.value)
+    }else{
+      router.push('/login');
     }
   } catch (error) {
     error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";

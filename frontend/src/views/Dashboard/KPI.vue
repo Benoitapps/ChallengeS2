@@ -6,6 +6,8 @@ import Modal from "../../components/Modal.vue";
 import { inject, onMounted, onUnmounted, ref } from "vue";
 import { reactive, watch, watchEffect  } from "vue";
 const env = import.meta.env
+import router from '../../router';
+
 
 const userId = ref('');
 const userApi = ref('');
@@ -128,12 +130,23 @@ const getConnectedUser = async () => {
 
       userId.value = parsedData.userId;
       userApi.value = parsedData.apiToken;
+    }else{
+      router.push('/login');
     }
   } catch (error) {
     error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
   }
 };
 
+const getReload = async () => {
+ 
+    if ( !document.querySelector("#monElement")) {
+      //window.location.reload();
+      console.log("querySelector");
+
+    }
+};
+getReload();
 
 const getKPI = async () => {
 

@@ -142,6 +142,43 @@ function getConnectedUser(req, res) {
   }
 
 
+  function getConnectedUserNav(req, res) {
+    const token = req.cookies.token;
+  
+    if (!token) {
+      return res.status(401).json({ error: 'Token not found' });
+    }
+  
+    try {
+      const decoded = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+      const userEmail = decoded.userEmail;
+  
+      // Rechercher l'utilisateur correspondant à l'ID
+      User.findOne({ where: { email: userEmail } })
+        .then(user => {
+          if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+          }
+  
+          // Renvoyer les informations de l'utilisateur connecté
+          console.log(user.id)
+          res.status(200).json({
+            userId: user.id,
+            email: user.email,
+            apiToken: user.api_token,
+            role: user.role
+            // Ajoutez d'autres propriétés de l'utilisateur si nécessaire
+          });
+        })
+        .catch(error => {
+          res.status(500).json({ error: error.message });
+        });
+    } catch (error) {
+      res.status(401).json({ error: 'Invalid token' });
+    }
+  }
+
+
   async function logout(req, res) {
     try {
       res.clearCookie('token');
@@ -151,4 +188,4 @@ function getConnectedUser(req, res) {
     }
   }
   
-module.exports = { signup, login, getUser, getConnectedUser, logout };
+module.exports = { signup, login, getUser, getConnectedUser, logout,getConnectedUserNav };

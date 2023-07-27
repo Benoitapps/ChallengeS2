@@ -6,7 +6,7 @@ import trackingPlugin from './plugins/trackingPlugin';
 import CodeBlock from 'vue3-code-block';
 
 const app = createApp(App);
-app.use(trackingPlugin, "mn6so1btd2fzw7g8fbhyjepuhpgr1cet");
+app.use(trackingPlugin, "3tspucnwtebczm7eaenyqmmybsllam9m");
 app.use(router)
 app.component('CodeBlock', CodeBlock)
 app.mount('#app');

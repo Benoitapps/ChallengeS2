@@ -1,11 +1,14 @@
 <script setup>
 import { ref } from 'vue';
+import router from '../../router';
+
 const env = import.meta.env
     const users = ref([]);
     const error = ref('');
     const updatedEmail = ref('');
     const updatedWebsite = ref('');
     const userId = ref('');
+    
 
     const getConnectedUser = async () => {
       try {

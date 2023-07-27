@@ -8,4 +8,6 @@ const authMiddleware = require('../middleware/authMiddleware');
 router.get('/co',authMiddleware, userCtrl.getUser);
 router.get('/',authMiddleware, userCtrl.getConnectedUser);
 
+router.get('/navbar',authMiddleware, userCtrl.getConnectedUserNav);
+
 module.exports = router;

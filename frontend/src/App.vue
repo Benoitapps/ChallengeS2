@@ -1,8 +1,56 @@
 <script setup>
 import Navbar from "./components/Navbar.vue";
-import {inject, onMounted, onUnmounted, ref} from "vue";
+import {inject, onMounted, onUnmounted, ref, watch} from "vue";
+import { useRoute } from 'vue-router';
 
+const route = useRoute();
+const env = import.meta.env
+const user = ref([]);
+const userRole =ref("");
+const error = ref("");
+const showNavbar = ref(true);
 const sdk = inject('sdk');
+
+const getConnectedUser = async () => {
+  try {
+    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/connecter/navbar`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include'
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      user.value = [data];
+      userToken.value = data.apiToken;
+      userRole.value = data.role
+      showNavbar.value = true;
+    } else {
+      const data = await response.json();
+      error.value = data.error;
+      showNavbar.value = false;
+    }
+  } catch (e) {
+    error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
+  }
+};
+
+getConnectedUser();
+
+if(route.path === "/login" || route.path === "/register" || route.path === "/logout"){
+  showNavbar.value = false;
+}
+
+watch(route, () => {
+  if(route.path === "/login" || route.path === "/register" || route.path === "/logout"){
+    showNavbar.value = false;
+  } else {
+    showNavbar.value = true;
+  }
+});
+
 onMounted(() => {
   sdk.trackNavigation();
 });
@@ -13,7 +61,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <Navbar/>
+  <Navbar v-if="showNavbar"/>
 
   <router-view v-slot="{ Component }">
     <component :is="Component" />
@@ -128,11 +176,11 @@ input {
 main {
   position: relative;
   z-index: 1;
-  width: calc(100% - 200px);
+  flex: 1;
   min-height: 100vh;
-  margin-left: 200px;
   padding: 3.125rem; // 50px
   background: var(--background);
+  overflow-x: auto;
 }
 
 .basic-link {

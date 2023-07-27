@@ -33,6 +33,20 @@ const updateTagSelected = () => {
     });
 }
 
+const getConnectedUser = async () => {
+  try {
+    const userData = localStorage.getItem('myUser');;
+    if (userData) {
+      const parsedData = JSON.parse(userData);
+
+    }else{
+      router.push('/login');
+    }
+  } catch (error) {
+    error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
+  }
+};
+
 const createTunnel = async () => {
     let containerPosition = document.getElementById('tag-position');
     let tagsOrder = containerPosition.querySelectorAll('[id^=tag-order-]');
