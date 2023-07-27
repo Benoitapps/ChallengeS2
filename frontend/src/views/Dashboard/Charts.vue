@@ -3,6 +3,8 @@ import Card from "../../components/TableauDeBord/Card.vue";
 import {onMounted, ref, reactive, onUnmounted, inject} from "vue";
 const env = import.meta.env
 import Modal from "../../components/Modal.vue";
+import router from '../../router';
+
 
 const userId = ref('');
 const userApi = ref('');
@@ -63,6 +65,8 @@ const getConnectedUser = async () => {
 
       userId.value = parsedData.userId;
       userApi.value = parsedData.apiToken;
+    }else{
+      router.push('/login');
     }
   } catch (error) {
     error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
