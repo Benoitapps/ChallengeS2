@@ -23,7 +23,7 @@ function create(req, res) {
 function all(req, res) {
   const token = req.cookies["token"];
   if (!token) return res.status(401).json({ error: "Unauthorized" });
-  const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET); // ! RANDOM_TOKEN_SECRET dans env
+  const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
   const userId = decodedToken.userId;
 
   Tag.findAll({
