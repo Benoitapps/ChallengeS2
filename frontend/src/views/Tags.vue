@@ -11,8 +11,6 @@ let defaultMessageTunnel = ref('Chargement des tunnels...');
 
 const sdk = inject('sdk');
 onMounted(async () => {
-  sdk.initTags();
-
   // ? Get tags
   const responseTag = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/tags`, {
     method: 'GET',
@@ -76,7 +74,7 @@ onUnmounted(() => {
       </tbody>
     </table>
 
-    <button data-tag="6c4t71zz">Click me (tag example)</button>
+    <button v-tracker:click.mouseover="'2ocraesx'">Click me (tag example)</button>
 
 
     <div class="container-btn">

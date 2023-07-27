@@ -201,6 +201,8 @@ button {
   border-radius: 4px;
   padding: 10px 20px;
   cursor: pointer;
+  font-weight: 700;
+  color: var(--secondary);
 
   &:hover {
     background-color: var(--accent);

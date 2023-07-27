@@ -66,6 +66,8 @@ disconnect();
       height: 30px;
       cursor: pointer;
       width: 100%;
+      font-weight: 700;
+      color: var(--secondary);
 
       &:hover {
         background: var(--accent);
