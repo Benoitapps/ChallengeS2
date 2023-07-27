@@ -148,6 +148,14 @@ const getReload = async () => {
 };
 getReload();
 
+const intervalleEnMillisecondes = 2000; // 2 secondes
+const monInterval = setInterval(interval, intervalleEnMillisecondes);
+
+function interval(){
+  
+  getKPI()
+}
+
 const getKPI = async () => {
 
   
