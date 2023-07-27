@@ -112,10 +112,16 @@ export default class SDK {
         window.removeEventListener("click", this.navigationFunction);
     }
 
+    uuid() {
+        return ('10000000-1000-4000-8000-100000000000').replace(/[018]/g, c => (
+            c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)
+        );
+    }
+
     getFingerprintUser() {
         let fingerprint = localStorage.getItem('fingerprint');
         if (fingerprint && fingerprint.trim() !== "") return fingerprint;
-        return localStorage.setItem('fingerprint', window.crypto.randomUUID());
+        return localStorage.setItem('fingerprint', this.uuid());
     }
 
     initSendData() {
