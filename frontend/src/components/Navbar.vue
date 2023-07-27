@@ -191,8 +191,14 @@ watch(
           background-color: var(--primary);
 
           a {
+            color: var(--secondary);
+
             &:hover {
               background-color: var(--primary) !important;
+            }
+
+            path {
+              fill: var(--secondary);
             }
           }
         }

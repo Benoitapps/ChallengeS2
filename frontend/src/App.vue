@@ -113,6 +113,14 @@ select {
   }
 }
 
+input {
+  &:-webkit-autofill,
+  &:autofill {
+    outline: var(--primary);
+    box-shadow: 0 0 0 1000px var(--accent) inset;
+  }
+}
+
 #app {
   display: flex;
 }

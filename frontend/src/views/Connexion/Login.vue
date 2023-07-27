@@ -111,6 +111,8 @@ const signup = async () => {
         border-radius: 4px;
         height: 30px;
         cursor: pointer;
+        font-weight: 700;
+        color: var(--secondary);
 
         &:hover {
           background: var(--accent);
