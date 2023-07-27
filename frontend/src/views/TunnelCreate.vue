@@ -6,6 +6,8 @@ const env = import.meta.env;
 let tags = ref([]);
 let tagsSelected = ref([]);
 let tagFormed = ref([]);
+const showErrorLabelTag = ref(false);
+const errorMessage = ref('');
 
 onMounted(async () => {
     let response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/tags`, {
@@ -42,6 +44,11 @@ const createTunnel = async () => {
     });
 
     let tunnelName = document.getElementById('tunnel-name').value;
+    if (tunnelName.length < 3) {
+        showErrorLabelTag.value = true;
+        errorMessage.value = "Le tunnel doit contenir au moins 4 caractères.";
+        return;
+    }
 
     const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/tunnels/create`, {
         method: 'POST',
@@ -99,6 +106,9 @@ const createTunnel = async () => {
             
         </div>
         <div style="width: 100%; padding: 0 10px;">
+            <div v-show="showErrorLabelTag" class="error-message">
+                {{ errorMessage }}
+            </div>
             <button style="width: 100%; margin-top: 10px;" @click="createTunnel()">CREER</button>
         </div>
     </main>
@@ -155,5 +165,10 @@ const createTunnel = async () => {
 
     .info {
         margin-left: 14px;
+    }
+
+    .error-message {
+        color: red;
+        margin-top: 5px;
     }
 </style>
