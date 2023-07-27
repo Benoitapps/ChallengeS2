@@ -10,6 +10,7 @@ export default {
     const users = ref([]);
     const error = ref('');
     const userId = ref('');
+    const userDelete = ref('');
 
 
     const getConnectedUser = async () => {
@@ -98,6 +99,8 @@ const getConnectedUserAfter = async () => {
       }
     };
 
+    
+
     const verifyUser = async (theuserId) => {
         console.log(theuserId);
       try {
@@ -148,6 +151,31 @@ const getConnectedUserAfter = async () => {
         error.value = "Une erreur s'est produite lors de la vérification de l'utilisateur";
       }
     };
+    
+
+    const deleteuser = async (useriddelete) => {
+      try {
+      
+        const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/users/${useriddelete}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include',
+          //body: JSON.stringify(updatedUser)
+        });
+        console.log("response",response)
+        if (response.ok) {
+          console.log('Utilisateur suprimer');
+          getUsers();
+        } else {
+          const data = await response.json();
+          error.value = data.error;
+        }
+      } catch (e) {
+        error.value = "Une erreur s'est produite lors de la supression de l'utilisateur";
+      }
+    };
 
     getConnectedUser();
     getUsersNotVerified(); // Récupérer les utilisateurs au chargement de la page
@@ -158,7 +186,8 @@ const getConnectedUserAfter = async () => {
       error,
       users,
       verifyUser,
-      takeToken
+      takeToken,
+      deleteuser,
     };
   }
 };
@@ -199,6 +228,7 @@ const getConnectedUserAfter = async () => {
                 </p>
                 <div class="buttons">
                   <button @click="takeToken(user.id, user.website)">Prendre le contrôle</button>
+                  <button @click="deleteuser(user.id)">Suprimmer</button>
                 </div>
               </div>
             </li>
