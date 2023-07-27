@@ -1,6 +1,7 @@
 const Tunnel = require("../db").Tunnel;
 const TunnelTag = require("../db").TunnelTag;
 const jwt = require('jsonwebtoken');
+const Usertracker = require('../models/Usertracker');
 require('dotenv').config({ path: '.env.local', override: true });
 
 async function create(req, res) {
@@ -81,4 +82,62 @@ async function deleteItem(req, res) {
     }
 }
 
-module.exports = { create, all, deleteItem };
+async function getStats(req, res) {
+    // TODO: not working
+    let data = req.body;
+    data = JSON.parse(data);
+
+    let userApi = data.userApi;
+
+    const pipeline = [
+        {
+            $match: {
+                api_token: userApi
+            }
+        },
+        {
+            $unwind: "$visitors"
+        },
+        {
+            $unwind: "$visitors.sessions"
+        },
+        {
+            $unwind: "$visitors.sessions.tags"
+        },
+        {
+            $group: {
+                _id: {
+                    sessionId: "$visitors.sessions._id",
+                    tagToken: "$visitors.sessions.tags.token"
+                },
+                tags: {
+                    $push: "$visitors.sessions.tags"
+                }
+            }
+        },
+        {
+            $group: {
+                _id: "$_id.sessionId",
+                sessionTags: {
+                    $push: {
+                        token: "$_id.tagToken",
+                        tags: "$tags"
+                    }
+                }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                sessionId: "$_id",
+                sessionTags: 1
+            }
+        }
+    ]
+
+    const result = await Usertracker.aggregate(pipeline).exec();
+
+    res.status(200).json(result);
+}
+
+module.exports = { create, all, deleteItem, getStats };

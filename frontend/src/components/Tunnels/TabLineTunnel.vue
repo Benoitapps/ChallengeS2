@@ -1,11 +1,31 @@
 <script setup>
 const env = import.meta.env;
+import { ref } from 'vue';
+
+const userApi = ref('');
 
 const props = defineProps({
     tunnel: {
         type: Object,
     }
 });
+
+const getConnectedUser = async () => {
+    try {
+        const userData = localStorage.getItem('myUser');
+        if (userData) {
+            const parsedData = JSON.parse(userData);
+
+            userApi.value = parsedData.apiToken;
+        }else{
+            router.push('/login');
+        }
+    } catch (error) {
+        error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
+    }
+};
+
+getConnectedUser();
 
 const deleteLine = async (id) => {
     console.log(id)
@@ -22,6 +42,22 @@ const deleteLine = async (id) => {
         document.querySelector(`#tunnel-${id}`).remove();
     }
 }
+
+const getStats = async (id) => {
+    console.log(userApi.value)
+    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/tunnels/stats/${id}`, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({
+            userApi: userApi.value
+        })
+    });
+    if (!response.ok) {
+        throw new Error(`Erreur HTTP ! statut : ${response.status}`);
+    };
+
+    const data = await response.json();
+}
 </script>
 
 <template>
@@ -29,6 +65,7 @@ const deleteLine = async (id) => {
         <td class="center">{{ props.tunnel.name }}</td>
         <td class="center">
             <button @click="deleteLine(props.tunnel.id)" class="deleteBtn">SUPPRIMER</button>
+            <!-- <button @click="getStats(props.tunnel.id)" disabled>Voir les stats</button> -->
         </td>
     </tr>
 </template>

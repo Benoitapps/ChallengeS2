@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, inject, ref, onUnmounted} from 'vue';
+import { onMounted, ref } from 'vue';
 import TabLine from '../components/Tags/TabLine.vue';
 import TabLineTunnel from '../components/Tunnels/TabLineTunnel.vue';
 const env = import.meta.env;
