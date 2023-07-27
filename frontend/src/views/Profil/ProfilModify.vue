@@ -142,6 +142,8 @@ const env = import.meta.env
       text-align: center;
       width: 100%;
       margin-top: 1.25rem;
+      color: var(--secondary);
+      font-weight: 700;
     }
   }
 }
