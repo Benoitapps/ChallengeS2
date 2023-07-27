@@ -1,21 +1,35 @@
 <script setup>
-import { onMounted } from 'vue'
+import {onMounted, watch} from 'vue';
+import { useRoute } from 'vue-router';
+const route = useRoute();
+const env = import.meta.env
+
+const setLinkSelected = (link) => {
+  const linkHref = link.querySelector('a').getAttribute('href');
+
+  if (linkHref === route.fullPath) {
+    link.classList.add('selected');
+  } else {
+    link.classList.remove('selected');
+  }
+};
 
 onMounted(() => {
-  document.querySelectorAll(".navbar__links").forEach(link => {
-    if(link.querySelector("a").href === window.location.href) {
-      link.classList.add("selected");
-    }
-
-    link.addEventListener("click", () => {
-      if(document.querySelector(".selected")) {
-        document.querySelector(".selected").classList.remove("selected");
-      }
-
-      link.classList.add("selected");
-    });
+  const navbarLinks = document.querySelectorAll('.navbar__links');
+  navbarLinks.forEach((link) => {
+    setLinkSelected(link);
   });
 });
+
+watch(
+    () => route.fullPath,
+    (newVal) => {
+      const navbarLinks = document.querySelectorAll('.navbar__links');
+      navbarLinks.forEach((link) => {
+        setLinkSelected(link);
+      });
+    }
+);
 </script>
 
 <template>
