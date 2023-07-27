@@ -80,9 +80,9 @@ const createTunnel = async () => {
                         Tags
                     </span>
                     <br>
-                    <label v-for="tag in tags" :key="tag.id" @click="updateTagSelected()">
-                        {{ tag.name }}
+                    <label v-for="tag in tags" :key="tag.id" @click="updateTagSelected()" style="margin-right: 15px;">
                         <input type="checkbox" name="tunnel_tags" id="tunnel-tags" placeholder="Tag" :data-id="tag.id" :data-name="tag.name">
+                        {{ tag.name }}
                     </label>
                 </div>
                 <div class="container-info">
