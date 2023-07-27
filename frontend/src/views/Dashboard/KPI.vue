@@ -15,6 +15,7 @@ const moysessions = ref("");
 const moySessionVisiteur = ref("");
 const page = ref([]);
 const pagevisite = ref([]);
+const lapageVisite = ref([]);
 const visiteur = ref("");
 const error = ref("");
 const nameCard = ref("");
@@ -45,6 +46,9 @@ const periods = [
 ];
 
 const visitedPages = reactive({
+  data: []
+});
+const pageVisites = reactive({
   data: []
 });
 
@@ -97,9 +101,9 @@ watchEffect(() => {
     },
     {
       id: "visitepage",
-      title: "Page les plus visitée",
+      title: "Visites par page",
       type: "keys",
-      number: pagevisite,
+      list: pageVisites.data,
       periods: periods,
       state: testState("Top pages"),
     },
@@ -149,6 +153,7 @@ const getKPI = async () => {
 
     if (response.ok) {
       const data = await response.json();
+      console.log(data);
 
       if (nameCard.value != "test") {
 
@@ -164,11 +169,19 @@ const getKPI = async () => {
         moysessions.value = data.resMoyenne;
         visiteur.value = data.resVisiteur;
         moySessionVisiteur.value = 0;
-        page.value = data.resPage
+        page.value = data.resPage;
         visitedPages.data = page.value.result.results.map((item) => ({
           label: item.path,
           value: String(item.count) // Convertir en chaîne pour s'assurer que "value" est une chaîne
         }));
+
+        lapageVisite.value = data.resPagesVisite;
+        pageVisites.data = lapageVisite.value.result.results.map((item) => ({
+          label: item.path,
+          value: String(item.count) // Convertir en chaîne pour s'assurer que "value" est une chaîne
+        }));
+
+
       }
     } else {
       const data = await response.json();
