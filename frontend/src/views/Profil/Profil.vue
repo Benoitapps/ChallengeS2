@@ -198,7 +198,9 @@ onMounted(() => {
 <style scoped lang="scss">
 .profile {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+  gap: 3rem; // 48px
+  flex-wrap: wrap;
   width: 100%;
   height: 100%;
 
