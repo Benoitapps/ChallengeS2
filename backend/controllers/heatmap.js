@@ -109,6 +109,7 @@ function getConnectedUserId(req) {
       ]
       
 const result = await Usertracker.aggregate(pipeline).exec();
+console.log(result[0]);
       const resPages = result[0].result.results;
       let resValue;
 
@@ -142,7 +143,7 @@ const result = await Usertracker.aggregate(pipeline).exec();
         resPage : resPages
      }); // Renvoie le nombre total de clics au format JSON
   } catch (error) {
-    res.status(401).json({ error: error.message }); // Gère les erreurs d'authentification ou de token et renvoie l'erreur au format JSON
+    res.status(401).json({ error: error.message });
   }
   }
 

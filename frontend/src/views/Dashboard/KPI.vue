@@ -79,7 +79,7 @@ watchEffect(() => {
       type: "keys",
       list: visitedPages.data,
       periods: periods,
-      state: testState("e"),
+      state: testState("Clics par page"),
     },
     {
       id: "Moyennedessessions",
@@ -87,7 +87,7 @@ watchEffect(() => {
       type: "keys",
       number: moysessions,
       periods: periods,
-      state: testState("a"),
+      state: testState("Durée moyenne des sessions"),
     },
     {
       id: "visiteur",
@@ -95,7 +95,7 @@ watchEffect(() => {
       type: "keys",
       number: visiteur,
       periods: periods,
-      state: testState("a"),
+      state: testState("Visiteurs"),
     },
     {
       id: "visitepage",
@@ -103,7 +103,7 @@ watchEffect(() => {
       type: "keys",
       number: pagevisite,
       periods: periods,
-      state: testState("d"),
+      state: testState("Top pages"),
     },
   ]);
 
