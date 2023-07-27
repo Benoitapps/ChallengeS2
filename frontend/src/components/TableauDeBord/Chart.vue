@@ -49,93 +49,95 @@ let dimensions = {
 }
 
 function generateChart() {
-  dimensions = {
-    width: document.querySelector("[data-chart]").clientWidth,
-    height: document.querySelector("[data-chart]").clientHeight,
-    marginTop: 8
-  }
-
-  const xAccessor = (d) => d.date = new Date(d.date)
-  const yAccessor = (d) => d.amount
-  const formatDate = d3.timeFormat('%d-%m-%Y %H:%M')
-
-  const getText = (data, d) => {
-    const to = xAccessor(d);
-
-    return `${formatDate(to)}`
-  }
-
-  const svg = d3
-      .select(`#chart-${props.index} svg`)
-      .attr('width', dimensions.width)
-      .attr('height', dimensions.height)
-      .attr('viewBox', `0 0 ${dimensions.width} ${dimensions.height}`)
-
-  const xDomain = d3.extent(props.data, xAccessor)
-  const yDomain = [0, d3.max(props.data, yAccessor)]
-
-  const xScale = d3.scaleTime()
-      .domain(xDomain)
-      .range([0, dimensions.width])
-
-  const yScale = d3.scaleLinear()
-      .domain(yDomain)
-      .range([dimensions.height, dimensions.marginTop])
-
-  /* Area */
-  const areaGenerator = d3.area()
-      .x((d) => xScale(xAccessor(d)))
-      .y1((d) => yScale(yAccessor(d)))
-      .y0(dimensions.height)
-
-  const area = svg
-      .insert('path', 'line')
-      .datum(props.data)
-      .attr('d', areaGenerator)
-      .attr('fill', 'var(--chart-fill)')
-
-  /* Line */
-  const lineGenerator = d3.line()
-      .x((d) => xScale(xAccessor(d)))
-      .y((d) => yScale(yAccessor(d)))
-
-  const line = svg
-      .insert('path', 'line')
-      .datum(props.data)
-      .attr('d', lineGenerator)
-      .attr('stroke', 'var(--chart-stroke)')
-      .attr('stroke-width', 'var(--chart-stroke-width)')
-      .attr('stroke-linejoin', 'round')
-      .attr('fill', 'none')
-
-  /* Bisector */
-  const bisect = d3.bisector(xAccessor)
-
-  /* Events */
-  svg.on('mousemove', (e) => {
-    if(props.data.length > 0) {
-      const [posX, posY] = d3.pointer(e);
-      const date = xScale.invert(posX);
-
-      const index = bisect.center(props.data, date);
-      const d = props.data[index];
-
-      xMarker.value = xScale(xAccessor(d));
-      yMarker.value = yScale(yAccessor(d));
-      opacityMarker.value = 1;
-
-      d3.select(`#chart-${props.index} [data-heading]`).text(getText(props.data, d));
-      d3.select(`#chart-${props.index} [data-total]`).text(yAccessor(d));
+  if(document.querySelector("[data-chart]")) {
+    dimensions = {
+      width: document.querySelector("[data-chart]").clientWidth,
+      height: document.querySelector("[data-chart]").clientHeight,
+      marginTop: 8
     }
-  })
 
-  svg.on('mouseleave', () => {
-    if(props.data.length > 0) {
-      opacityMarker.value = 0;
-      d3.select(`#chart-${props.index} [data-heading]`).text('');
-      d3.select(`#chart-${props.index} [data-total]`).text('');
+    const xAccessor = (d) => d.date = new Date(d.date)
+    const yAccessor = (d) => d.amount
+    const formatDate = d3.timeFormat('%d-%m-%Y %H:%M')
+
+    const getText = (data, d) => {
+      const to = xAccessor(d);
+
+      return `${formatDate(to)}`
     }
-  })
+
+    const svg = d3
+        .select(`#chart-${props.index} svg`)
+        .attr('width', dimensions.width)
+        .attr('height', dimensions.height)
+        .attr('viewBox', `0 0 ${dimensions.width} ${dimensions.height}`)
+
+    const xDomain = d3.extent(props.data, xAccessor)
+    const yDomain = [0, d3.max(props.data, yAccessor)]
+
+    const xScale = d3.scaleTime()
+        .domain(xDomain)
+        .range([0, dimensions.width])
+
+    const yScale = d3.scaleLinear()
+        .domain(yDomain)
+        .range([dimensions.height, dimensions.marginTop])
+
+    /* Area */
+    const areaGenerator = d3.area()
+        .x((d) => xScale(xAccessor(d)))
+        .y1((d) => yScale(yAccessor(d)))
+        .y0(dimensions.height)
+
+    const area = svg
+        .insert('path', 'line')
+        .datum(props.data)
+        .attr('d', areaGenerator)
+        .attr('fill', 'var(--chart-fill)')
+
+    /* Line */
+    const lineGenerator = d3.line()
+        .x((d) => xScale(xAccessor(d)))
+        .y((d) => yScale(yAccessor(d)))
+
+    const line = svg
+        .insert('path', 'line')
+        .datum(props.data)
+        .attr('d', lineGenerator)
+        .attr('stroke', 'var(--chart-stroke)')
+        .attr('stroke-width', 'var(--chart-stroke-width)')
+        .attr('stroke-linejoin', 'round')
+        .attr('fill', 'none')
+
+    /* Bisector */
+    const bisect = d3.bisector(xAccessor)
+
+    /* Events */
+    svg.on('mousemove', (e) => {
+      if(props.data.length > 0) {
+        const [posX, posY] = d3.pointer(e);
+        const date = xScale.invert(posX);
+
+        const index = bisect.center(props.data, date);
+        const d = props.data[index];
+
+        xMarker.value = xScale(xAccessor(d));
+        yMarker.value = yScale(yAccessor(d));
+        opacityMarker.value = 1;
+
+        d3.select(`#chart-${props.index} [data-heading]`).text(getText(props.data, d));
+        d3.select(`#chart-${props.index} [data-total]`).text(yAccessor(d));
+      }
+    })
+
+    svg.on('mouseleave', () => {
+      if(props.data.length > 0) {
+        opacityMarker.value = 0;
+        d3.select(`#chart-${props.index} [data-heading]`).text('');
+        d3.select(`#chart-${props.index} [data-total]`).text('');
+      }
+    })
+  }
 }
 </script>
 

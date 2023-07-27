@@ -26,11 +26,9 @@ const getConnectedUser = async () => {
       user.value = [data];
       userToken.value = data.apiToken;
       userRole.value = data.role
-      showNavbar.value = true;
     } else {
       const data = await response.json();
       error.value = data.error;
-      showNavbar.value = false;
     }
   } catch (e) {
     error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
