@@ -140,4 +140,31 @@ async function getStats(req, res) {
     res.status(200).json(result);
 }
 
-module.exports = { create, all, deleteItem, getStats };
+async function updateName(req, res) {
+    const token = req.cookies["token"];
+    const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
+    const userId = decodedToken.userId; 
+    let data = JSON.parse(req.body);
+    const tunnelId = req.params.id;
+    const newName = data.name;
+
+    try {
+        await Tunnel.update(
+            {
+                name: newName
+            }, 
+            {
+                where: {
+                    id: parseInt(tunnelId),
+                    userId: userId
+                }
+            }   
+        )
+
+        res.status(200).json({ message: "Tunnel name updated" })
+    } catch (err) {
+        res.status(401).json({ error: "Unauthorized" });
+    }
+}
+
+module.exports = { create, all, deleteItem, getStats, updateName };

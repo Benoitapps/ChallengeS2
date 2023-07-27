@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const tunnelCtrl = require('../controllers/tunnel');
+const authMiddleware = require('../middleware/authMiddleware');
 
-router.get('/', tunnelCtrl.all);
-router.post('/create', tunnelCtrl.create);
-router.delete('/delete/:id', tunnelCtrl.deleteItem);
-router.post('/stats/:id', tunnelCtrl.getStats);
+router.get('/', authMiddleware, tunnelCtrl.all);
+router.post('/create', authMiddleware, tunnelCtrl.create);
+router.delete('/delete/:id', authMiddleware, tunnelCtrl.deleteItem);
+router.post('/stats/:id', authMiddleware, tunnelCtrl.getStats);
+router.put('/update/:id', authMiddleware, tunnelCtrl.updateName);
 
 module.exports = router;
