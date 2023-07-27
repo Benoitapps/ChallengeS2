@@ -66,10 +66,14 @@ router.post("/", async (req, res) => {
         await userTracker.save();
 
         // respond with data
-        res.status(200); // pas de json car on ne veut pas de réponse avec le sendBeacon
+        res.status(200).json({
+            message: 'Données sauvegardées !'
+        })
     } catch (error) {
         console.error(error);
-        res.status(500);
+        res.status(500).json({
+            message: "Echec de l'envoi des données"
+        });
     }
 });
 
