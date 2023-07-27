@@ -162,7 +162,6 @@ const getKPI = async () => {
 
     if (response.ok) {
       const data = await response.json();
-      console.log(data);
 
       if (nameCard.value != "test") {
 

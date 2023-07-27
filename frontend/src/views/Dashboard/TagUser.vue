@@ -61,14 +61,14 @@ watchEffect(() => {
       id: "nbClicsTotal",
       title: "Total clics sur les tags",
       type: "keys",
-      list: visitedPagesOver.data,
+      list: visitedPages.data,
         state: testState("Over par tag"),
     },
     {
       id: "page",
       title: "Total over sur les tags",
       type: "keys",
-      list: visitedPages.data,
+      list: visitedPagesOver.data,
       state: testState("Clics par tag"),
     },
   ]);
