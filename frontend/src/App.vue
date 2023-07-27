@@ -169,13 +169,14 @@ input {
 
 #app {
   display: flex;
+  height: 100vh;
 }
 
 main {
   position: relative;
   z-index: 1;
   flex: 1;
-  min-height: 100vh;
+  overflow-y: auto;
   padding: 3.125rem; // 50px
   background: var(--background);
   overflow-x: auto;
