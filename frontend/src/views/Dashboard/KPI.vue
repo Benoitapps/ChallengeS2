@@ -140,6 +140,15 @@ const getConnectedUser = async () => {
   }
 };
 
+
+
+const intervalleEnMillisecondes = 2000; // 2 secondes
+const monInterval = setInterval(interval, intervalleEnMillisecondes);
+
+function interval(){
+  
+  getKPI()
+}
 const getKPI = async () => {
   try {
     const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/kpi/post/${nameCard.value}/${resperiod.value}`, {
