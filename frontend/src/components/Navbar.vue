@@ -7,7 +7,7 @@ const env = import.meta.env
 const setLinkSelected = (link) => {
   const linkHref = link.querySelector('a').getAttribute('href');
 
-  if (linkHref === route.fullPath) {
+  if (route.fullPath.match(linkHref)) {
     document.querySelector(".selected")?.classList.remove("selected");
     link.classList.add('selected');
   }
