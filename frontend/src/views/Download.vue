@@ -33,9 +33,7 @@ const downloadSDK = () => {
       credentials: 'include'
     })
       .then(response => {
-        console.log(response);
         if (response.ok) {
-          console.log(response);
           return response;
         }
         else {
@@ -62,7 +60,7 @@ const downloadSDK = () => {
       });
   }
   catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 

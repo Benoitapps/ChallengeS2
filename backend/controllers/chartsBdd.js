@@ -71,7 +71,6 @@ async function getChartsNotUser(req, res) {
 async function addChartsToUser(req, res) {
     const userApi = req.params.userId; // Utilisez "userId" au lieu de "const { userId, chartsNameId } = req.params;"
     const chartsNameId = req.params.chartsNameId; // Utilisez "chartsNameId" au lieu de "const { userId, chartsNameId } = req.params;"
-    console.log(req.params);
 
     try {
         const user = await User.findOne({ where: { api_token: userApi } });

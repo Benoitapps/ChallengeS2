@@ -34,7 +34,6 @@ const getConnectedUserAfter = async () => {
     });
 
     if (response.ok) {
-      console.log("stocke donne");
       const data = await response.json();
 
       localStorage.setItem('myUser', JSON.stringify(data));
@@ -56,11 +55,8 @@ const deleteuser = async (useriddelete) => {
             'Content-Type': 'application/json'
           },
           credentials: 'include',
-          //body: JSON.stringify(updatedUser)
         });
-        console.log("response",response)
         if (response.ok) {
-          console.log('Utilisateur suprimer');
           getUsers();
         } else {
           const data = await response.json();

@@ -1,5 +1,3 @@
-
-  
 <script setup>
 import { onMounted, onUnmounted, ref, watch, watchEffect } from "vue";
 import h337 from '@mars3d/heatmap.js'
@@ -11,7 +9,6 @@ const heatmapRef = ref("");
 const heatmapContainerRef = ref("");
 const imageInput = ref("");
 const tabimage = ref([]);
-const nameImage = ref("");
 
 const userApi = ref("");
 
@@ -23,13 +20,8 @@ const mapmouse = ref([]);
 
 const error = ref("");
 
-const chemin = ref("");
-const srcbase = ref("");
 const src = ref("");
 const srcImage = ref("");
-const choiceType = ref("");
-const res = ref([]);
-const testres = ref([]);
 
 const getConnectedUser = async () => {
   try {
@@ -39,7 +31,7 @@ const getConnectedUser = async () => {
 
       userId.value = parsedData.userId;
       userApi.value = parsedData.apiToken;
-    }else{
+    } else {
       router.push('/login');
     }
   } catch (error) {
@@ -49,7 +41,6 @@ const getConnectedUser = async () => {
 getConnectedUser();
 
 watch(map1, async (newRes) => {
-  console.log("watchclic", newRes);
   if (!heatmapRef.value) {
     return;
   }
@@ -61,7 +52,6 @@ watch(map1, async (newRes) => {
 });
 
 watch(map1mouse, async (newRes) => {
-  console.log("watchmouse", newRes);
   if (!heatmapRef.value) {
     return;
   }
@@ -73,8 +63,6 @@ watch(map1mouse, async (newRes) => {
 });
 
 watchEffect(async () => {
-  console.log("je passe ");
-  console.log("je passe",userApi.value );
   try {
     const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/heatmap/`, {
       method: "POST",
@@ -82,21 +70,17 @@ watchEffect(async () => {
         "Content-Type": "application/json",
       },
       credentials: "include",
-      body: JSON.stringify({apiToken : userApi.value})
-      
+      body: JSON.stringify({ apiToken: userApi.value })
+
     });
     if (response.ok) {
       const data = await response.json();
       map.value = data;
-      console.log("map",map.value.resPage);
       map1.value = map.value.resPage[0].coordinates;
-      console.log("map1",map1.value);
-      console.log(map.value)
 
-     // console.log("after then", res.value);
     } else {
-      map.value =="";
-      map1.value==""
+      map.value == "";
+      map1.value == ""
       const data = await response.json();
       error.value = data.error;
     }
@@ -107,61 +91,54 @@ watchEffect(async () => {
 
 watchEffect(async () => {
 
-console.log("je passe mouse");
-try {
-const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/heatmap/mouse`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  credentials: "include",
-  body: JSON.stringify({apiToken : userApi.value})
+  try {
+    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/heatmap/mouse`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ apiToken: userApi.value })
 
-});
+    });
 
-if (response.ok) {
-  const data = await response.json();
+    if (response.ok) {
+      const data = await response.json();
       mapmouse.value = data;
-      console.log("map",mapmouse.value.resPagemouse);
       map1mouse.value = mapmouse.value.resPagemouse[0].coordinates;
-      console.log("map1",map1mouse.value);
-      console.log(mapmouse.value)
-} else {
-  const data = await response.json();
-  error.value = data.error;
-}
-} catch (e) {
-error.value ="Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
-}
+    } else {
+      const data = await response.json();
+      error.value = data.error;
+    }
+  } catch (e) {
+    error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
+  }
 });
 
 const getUrl = async (name) => {
-  console.log("get>UlOK")
-try {
-  const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/heatmap/upload/getOne`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
-    body: JSON.stringify({
-        name: name ,
+  try {
+    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/heatmap/upload/getOne`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        name: name,
         apiToken: userApi.value,
       }),
-  });
-  if (response.ok) {
-    const data = await response.json();
-    console.log(data);
-    srcImage.value = data; // Update the kpiData variable with the fetched data
-    console.log(srcImage)
+    });
+    if (response.ok) {
+      const data = await response.json();
+      srcImage.value = data; // Update the kpiData variable with the fetched data
 
-  } else {
-    const errorData = await response.json();
-    error.value = errorData.error;
+    } else {
+      const errorData = await response.json();
+      error.value = errorData.error;
+    }
+  } catch (e) {
+    error.value = "Une erreur s'est produite lors de la récupération des KPI";
   }
-} catch (e) {
-  error.value = "Une erreur s'est produite lors de la récupération des KPI";
-}
 }
 
 onMounted(() => {
@@ -175,27 +152,21 @@ onMounted(() => {
 onUnmounted(() => {
 });
 
-function changePath(key,coordinates, type) {
+function changePath(key, coordinates, type) {
   getUrl(key);
   src.value = key;
-  srcImage.value = "testimage;" 
-  console.log(type);
+  srcImage.value = "testimage;"
   if (type == "clic") {
-    console.log("coordinate",coordinates)
-    map1.value=coordinates
+    map1.value = coordinates
   }
-   if(type == "mouse"){
-    console.log("coordinate",coordinates)
-    map1mouse.value=coordinates
+  if (type == "mouse") {
+    map1mouse.value = coordinates
   }
-  console.log("chemin :", key);
 }
 
 
 
 function handleImageUpload(files, path) {
-  console.log("Le files est passé et est :", files);
-  console.log("Le path est passé et est :", path);
 
   // Créer un objet Blob à partir du fichier
   const imageBlob = new Blob(files, { type: files[0].type });
@@ -212,22 +183,19 @@ function handleImageUpload(files, path) {
 
 
 
-  async function uploadImage(base64Data,path) {
-    console.log("path2", path)
-    try {
+async function uploadImage(base64Data, path) {
+  try {
     const userData = localStorage.getItem('myUser');
     if (userData) {
       const parsedData = JSON.parse(userData);
 
       userApi.value = parsedData.apiToken;
 
-      console.log("mon api est le : "+ userApi.value)
     }
   } catch (error) {
     error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
   }
   try {
-    //console.log("imagebody",base64Data)
     const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/heatmap/upload`, {
       method: "POST",
       headers: {
@@ -235,28 +203,26 @@ function handleImageUpload(files, path) {
       },
       credentials: "include",
       body: JSON.stringify({
-        image: base64Data ,
+        image: base64Data,
         token: userApi.value,
-        name : path
+        name: path
       }),
     });
-   
-    console.log("imagechemin",response);
+
     if (response.ok) {
-      try{
-      getImage();
-      }catch{
+      try {
+        getImage();
+      } catch {
         return error.value = "pas d'image";
       }
       document.getElementById('input[type=file]').value = '';
 
       // Image uploaded successfully
       // You may show a success message or refresh the heatmap, etc.
-      console.log("Image uploaded successfully");
     } else {
       const data = await response.json();
       // Handle the error response
-      error.value ="Image upload failed:", data.error;
+      error.value = "Image upload failed:", data.error;
     }
   } catch (e) {
     error.value = "An error occurred during image upload:";
@@ -264,20 +230,17 @@ function handleImageUpload(files, path) {
 }
 
 async function getImage() {
-  console.log("getImage est apl");
-    try {
+  try {
     const userData = localStorage.getItem('myUser');
     if (userData) {
       const parsedData = JSON.parse(userData);
 
       userApi.value = parsedData.apiToken;
 
-      console.log("mon api est le getimage: "+ userApi.value)
     }
   } catch (error) {
     error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
   }
-  console.log("getimagetokenok");
   try {
     const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/heatmap/upload/get`, {
       method: "POST",
@@ -285,15 +248,13 @@ async function getImage() {
         "Content-Type": "application/json",
       },
       credentials: "include",
-      body: JSON.stringify({apiToken : userApi.value}),
+      body: JSON.stringify({ apiToken: userApi.value }),
     });
-   
-    console.log("imagechemin",response);
+
     if (response.ok) {
       const data = await response.json();
-      console.log("imagerecuperer en bdd",data);
-      tabimage.value =data;
-      imageInput.value ="";
+      tabimage.value = data;
+      imageInput.value = "";
 
     } else {
       const data = await response.json();
@@ -312,38 +273,39 @@ getImage();
 <template>
   <main>
     <div class="bodypage">
-    <div class="type">
-      <div class="type2">
-        <h4>Heatmap Clics page :</h4>
-         <div class="interieur">
-          <div class="titre" v-for="item in map.resPage" :key="item.id" >
-            <button class="bouton" v-on:click="changePath(item.path,item.coordinates , 'clic' )">{{ item.path }}</button>
+      <div class="type">
+        <div class="type2">
+          <h4>Heatmap Clics page :</h4>
+          <div class="interieur">
+            <div class="titre" v-for="item in map.resPage" :key="item.id">
+              <button class="bouton" v-on:click="changePath(item.path, item.coordinates, 'clic')">{{ item.path
+              }}</button>
+            </div>
+          </div>
+        </div>
+        <div class="type2">
+          <h4>Heatmap Suivis page :</h4>
+          <div class="interieur">
+            <div class="titre" v-for="item in mapmouse.resPageMouse" :key="item.id">
+              <button class="bouton" v-on:click="changePath(item.path, item.coordinates, 'mouse')">{{ item.path }}</button>
+            </div>
           </div>
         </div>
       </div>
-      <div class="type2">
-        <h4>Heatmap Suivis page :</h4>
-        <div class="interieur">
-          <div class="titre" v-for="item in mapmouse.resPageMouse" :key="item.id" >
-            <button class="bouton" v-on:click="changePath(item.path,item.coordinates,'mouse' )">{{ item.path }}</button>
-          </div>
-        </div>
+      <div ref="heatmapContainerRef" id="heatmapContainer">
+        <img class="image" :src="srcImage.src" alt="Image décodée" />
       </div>
-    </div>  
-    <div ref="heatmapContainerRef" id="heatmapContainer">
-      <img class="image" :src="srcImage.src" alt="Image décodée" />
-    </div>
-   
 
-    <div class="ajoutimage" v-for="item in mapmouse.resPageMouse" :key="item.id" >
-      <div class="titreimage">
-      <p>Ajouter une image pour la page :</p>
-        <p class="titre"> {{ item.path }}</p>
-    </div>
-    <input type="file" @change="(e) => handleImageUpload(e.target.files, item.path)" />
-  </div>
 
-<!--     
+      <div class="ajoutimage" v-for="item in mapmouse.resPageMouse" :key="item.id">
+        <div class="titreimage">
+          <p>Ajouter une image pour la page :</p>
+          <p class="titre"> {{ item.path }}</p>
+        </div>
+        <input type="file" @change="(e) => handleImageUpload(e.target.files, item.path)" />
+      </div>
+
+      <!--     
     <div v-if="tabimage && tabimage.image && tabimage.image.length > 0">
       <h4>Images depuis la base de données :</h4>
       <div v-for="(image, index) in tabimage.image" :key="index">
@@ -351,7 +313,7 @@ getImage();
         <img :src="image.src" alt="Image décodée" />
       </div>
     </div> -->
-  </div>
+    </div>
   </main>
 </template>
   
@@ -367,60 +329,62 @@ getImage();
   overflow: hidden;
 }
 
-.info{
+.info {
   width: 1136px;
   height: 570px;
   color: white;
   background-color: black;
 }
 
-.titreimage{
+.titreimage {
   display: flex;
   margin-top: 5px;
 }
 
-.titre{
+.titre {
   background-color: var(--primary);
   padding: 2px;
 
 }
 
-.ajoutimage{
+.ajoutimage {
   background-color: white;
   border: #000 solid 1px;
   padding: 5px;
   width: 25em;
 }
 
-.image{
+.image {
   object-fit: contain;
   opacity: 50%;
 
 }
 
-main{
+main {
   overflow: auto;
 }
 
-.bodypage{
+.bodypage {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: fit-content;
 }
 
-.bouton{
+.bouton {
   padding: 2px;
   width: 90px;
-  white-space: nowrap;    
-  overflow: hidden;       
+  white-space: nowrap;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
-  .type{
-    display: flex;
-    justify-content: space-around;
-  }
-  .type2 {
+
+.type {
+  display: flex;
+  justify-content: space-around;
+}
+
+.type2 {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -429,39 +393,42 @@ main{
   background-color: #ffff;
   border: #000 solid 2px;
   margin-bottom: 10px;
-  flex-wrap: nowrap; /* Empêche le contenu de passer à la ligne automatiquement */
+  flex-wrap: nowrap;
+  /* Empêche le contenu de passer à la ligne automatiquement */
   max-width: 500px;
-  overflow-wrap: break-word; /* Permet au texte de passer à la ligne si nécessaire */
+  overflow-wrap: break-word;
+  /* Permet au texte de passer à la ligne si nécessaire */
 }
 
 
-  .interieur{
-    display: flex;
-    flex-wrap: wrap;
-  }
+.interieur {
+  display: flex;
+  flex-wrap: wrap;
+}
 
-  .titre{
-    display: flex;
-  }
-  .heatmap{
-    position: relative;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    opacity: 50%;
-  }
+.titre {
+  display: flex;
+}
 
-  .heatmap iframe {
-    border: #000 solid 2px;
-    pointer-events: none;
-  }
-  .heatmap-point {
-    position: absolute;
-    top: 0; 
-    left: 0; 
-    padding: 15px;
-    opacity: 70%;
-    border-radius: 50%;
-  }
-</style>
+.heatmap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 50%;
+}
+
+.heatmap iframe {
+  border: #000 solid 2px;
+  pointer-events: none;
+}
+
+.heatmap-point {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 15px;
+  opacity: 70%;
+  border-radius: 50%;
+}</style>
   

@@ -31,7 +31,6 @@ async function create(req, res) {
 
         res.status(201).json(tunnel);
     } catch (err) {
-        console.log(err);
         res.status(401).json({ error: "Unauthorized" });
     }
 }

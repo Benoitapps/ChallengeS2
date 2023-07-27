@@ -38,7 +38,6 @@ async function getAllUser(req, res) {
 
 async function getTokenUserbyId(req, res) {
   const tokenid = req.params.tokenid
-  console.log("tokenId "+tokenid)
   try {
     const user = await User.findOne({ where: { id: tokenid } });
     
@@ -51,7 +50,6 @@ async function getTokenUserbyId(req, res) {
 async function updateToken(req, res) {
 
   const token = req.cookies["token"];
-    console.log(token);
     if (!token) {
         return res.status(401).json({ error: 'Authentification requise !' });
     }

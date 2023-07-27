@@ -71,7 +71,6 @@ async function getKpiUser(req, res) {//apiToken
     async function addKpiToUser(req, res) {
         const userApi = req.params.userId; // Utilisez "userId" au lieu de "const { userId, kpiNameId } = req.params;"
         const kpiNameId = req.params.kpiNameId; // Utilisez "kpiNameId" au lieu de "const { userId, kpiNameId } = req.params;"
-        console.log(req.params);
       
         try {
           const user = await User.findOne({ where: { api_token: userApi } });

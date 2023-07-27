@@ -3,7 +3,6 @@ require('dotenv').config({ path: '.env.local', override: true });
 
 function authMiddleware(req, res, next) {
     // Récupérer le cookie 'token'
-    console.log(req.cookies);
     const token = req.cookies["token"];
 
     // Vérifier si le cookie est présent
