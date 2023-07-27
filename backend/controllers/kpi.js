@@ -33,13 +33,13 @@ function formatDuration(duration) {
 async function getKPI(req, res) {
   try {
     const { apiToken } = req.body;
-    const api_tokenUsder = apiToken;
+    const api_tokenUser = apiToken;
 
     //session
     const pipeline = [
       {
         $match: {
-          api_token: api_tokenUsder,
+          api_token: api_tokenUser,
         },
       },
       {
@@ -76,7 +76,7 @@ async function getKPI(req, res) {
     const totalSessions = result[0].totalSessions;
     ////////////////////clics////////////////////////////////////////
     const pipeline2 = [
-      { $match: { api_token: api_tokenUsder } },
+      { $match: { api_token: api_tokenUser } },
       {
         $project: {
           totalClicks: {
@@ -107,7 +107,7 @@ async function getKPI(req, res) {
     const pipeline3 = [
       {
         $match: {
-          api_token: api_tokenUsder,
+          api_token: api_tokenUser,
         },
       },
       {
@@ -146,7 +146,7 @@ async function getKPI(req, res) {
     ////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////nombre de visiteur//////////////////////////////////////////
     const pipeline4 = [
-      { $match: { api_token: api_tokenUsder } },
+      { $match: { api_token: api_tokenUser } },
       {
         $project: {
           numberOfVisitors: {
@@ -162,7 +162,7 @@ async function getKPI(req, res) {
     ////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////clics par page ///////////////////////////////////////
     const pipeline5 = [
-      { $match: { api_token: api_tokenUsder } },
+      { $match: { api_token: api_tokenUser } },
       {
         $project: {
           totalClicks: {
@@ -233,11 +233,92 @@ async function getKPI(req, res) {
     const result5 = await Usertracker.aggregate(pipeline5).exec();
     const resPages = result5[0];
 
-    ////////////////////////////////////////////////////////////////////////////////
-    const pipeline6 = [];
 
-    const result6 = await Usertracker.aggregate(pipeline5).exec();
-    const resPagesVisite = result5[0];
+    ////// Nombre de visites par page
+    const pipeline6 = [
+      {
+        $match: { api_token: api_tokenUser },
+      },
+      {
+        $project: {
+          totalVisites: {
+            $sum: {
+              $map: {
+                input: "$visitors",
+                as: "visitor",
+                in: {
+                  $sum: {
+                    $map: {
+                      input: "$$visitor.sessions",
+                      as: "tracker",
+                      in: {
+                        $size: "$$tracker.paths",
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          visitesPaths: {
+            $reduce: {
+              input: "$visitors",
+              initialValue: [],
+              in: {
+                $concatArrays: [
+                  "$$value",
+                  {
+                    $reduce: {
+                      input: "$$this.sessions",
+                      initialValue: [],
+                      in: {
+                        $concatArrays: [
+                          "$$value",
+                          "$$this.paths.path",
+                        ],
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+      {
+        $unwind: "$visitesPaths",
+      },
+      {
+        $group: {
+          _id: "$visitesPaths",
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          results: {
+            $push: {
+              path: "$_id",
+              count: "$count",
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          result: {
+            $arrayToObject: [
+              [{ k: "results", v: "$results" }],
+            ],
+          },
+        },
+      },
+    ];
+
+    const result6 = await Usertracker.aggregate(pipeline6).exec();
+    const resPagesVisite = result6[0];
 
     ////////////////////////////////////////////////////////////////////////////////
     let timeStamp = 1688999649562;
@@ -250,6 +331,7 @@ async function getKPI(req, res) {
       resMoyenne: formatDuration(resMoyenne),
       resVisiteur: resVisiteur.toString(),
       resPage: resPages,
+      resPagesVisite: resPagesVisite
     }); // Renvoie le nombre total de clics au format JSON
   } catch (error) {
     res.status(401).json({ error: error.message }); // Gère les erreurs d'authentification ou de token et renvoie l'erreur au format JSON
@@ -261,7 +343,7 @@ async function getKPI(req, res) {
 async function kpiChoice(req, res) {
   try {
     const { apiToken } = req.body;
-    const api_tokenUsder = apiToken;
+    const api_tokenUser = apiToken;
     const periods = req.params.resperiod;
     const title = req.params.nameCard;
 
@@ -297,7 +379,7 @@ async function kpiChoice(req, res) {
       const pipeline = [
         {
           $match: {
-            api_token: api_tokenUsder,
+            api_token: api_tokenUser,
           },
         },
         {
@@ -348,7 +430,7 @@ async function kpiChoice(req, res) {
         [
           {
             $match: {
-              api_token: api_tokenUsder,
+              api_token: api_tokenUser,
             },
           },
           {
@@ -399,7 +481,7 @@ async function kpiChoice(req, res) {
       const pipeline = [
         {
           $match: {
-            api_token: api_tokenUsder,
+            api_token: api_tokenUser,
           },
         },
         {
@@ -461,7 +543,7 @@ async function kpiChoice(req, res) {
       const pipeline = [
         {
           $match: {
-            api_token: api_tokenUsder,
+            api_token: api_tokenUser,
           },
         },
         {
@@ -506,7 +588,7 @@ async function kpiChoice(req, res) {
       //////page///////////////////////////////////////////////////////////////////////////////////////////
     } else if (req.params?.nameCard === "page") {
       const pipeline = [
-        { $match: { api_token: api_tokenUsder } },
+        { $match: { api_token: api_tokenUser } },
         {
           $project: {
             totalClicks: {
