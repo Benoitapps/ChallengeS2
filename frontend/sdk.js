@@ -115,7 +115,7 @@ export default class SDK {
     getFingerprintUser() {
         let fingerprint = localStorage.getItem('fingerprint');
         if (fingerprint && fingerprint.trim() !== "") return fingerprint;
-        return localStorage.setItem('fingerprint', self.crypto.randomUUID());
+        return localStorage.setItem('fingerprint', window.crypto.randomUUID());
     }
 
     initSendData() {
