@@ -14,4 +14,6 @@ router.put('/taketoken/:userId/:tokenid/:website',adminMiddleware, adminCtrl.upd
 
 router.get('/token/:userId',adminMiddleware, adminCtrl.getTokenUserbyId);
 
+router.get('/supr', adminCtrl.getDelete);
+
 module.exports = router;

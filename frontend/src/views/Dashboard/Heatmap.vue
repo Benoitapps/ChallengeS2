@@ -7,9 +7,9 @@ const env = import.meta.env
 import router from '../../router';
 
 
-const heatmapRef = ref(null);
-const heatmapContainerRef = ref(null);
-const imageInput = ref(null);
+const heatmapRef = ref("");
+const heatmapContainerRef = ref("");
+const imageInput = ref("");
 const tabimage = ref([]);
 const nameImage = ref("");
 
@@ -74,6 +74,7 @@ watch(map1mouse, async (newRes) => {
 
 watchEffect(async () => {
   console.log("je passe ");
+  console.log("je passe",userApi.value );
   try {
     const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/heatmap/`, {
       method: "POST",
@@ -82,7 +83,6 @@ watchEffect(async () => {
       },
       credentials: "include",
       body: JSON.stringify({apiToken : userApi.value})
-
       
     });
     if (response.ok) {
@@ -95,6 +95,8 @@ watchEffect(async () => {
 
      // console.log("after then", res.value);
     } else {
+      map.value =="";
+      map1.value==""
       const data = await response.json();
       error.value = data.error;
     }
@@ -329,9 +331,9 @@ getImage();
       </div>
     </div>  
     <div ref="heatmapContainerRef" id="heatmapContainer">
-    
       <img class="image" :src="srcImage.src" alt="Image décodée" />
     </div>
+   
 
     <div class="ajoutimage" v-for="item in mapmouse.resPageMouse" :key="item.id" >
       <div class="titreimage">
@@ -363,6 +365,13 @@ getImage();
   height: 570px;
   //margin-top: 2px;
   overflow: hidden;
+}
+
+.info{
+  width: 1136px;
+  height: 570px;
+  color: white;
+  background-color: black;
 }
 
 .titreimage{

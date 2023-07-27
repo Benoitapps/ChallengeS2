@@ -1,4 +1,5 @@
 const User = require("../db").User;
+const KpiName = require("../db").KpiName;
 const jwt = require('jsonwebtoken');
 require('dotenv').config({ path: '.env.local', override: true });
 
@@ -32,6 +33,8 @@ async function getAllUser(req, res) {
     res.status(400).json({ error: error.message });
   }
 }
+
+
 
 async function getTokenUserbyId(req, res) {
   const tokenid = req.params.tokenid
@@ -74,5 +77,30 @@ async function updateToken(req, res) {
   }
 }
 
+async function getDelete(){
+  const iduser = req.params.id;
 
-module.exports = { getUserNotVerified, UserVerified, getAllUser,updateToken ,getTokenUserbyId};
+  const user = User.findOne({where: {id : iduser}})
+
+  //const tag = KpiName.findAll({where:{}})
+
+
+  User.destroy({
+      where: {
+          id: iduser,
+          
+      }
+  }).then(() => {
+      res.status(200).json({
+          message: "user supprimé avec succès"
+      });
+  }).catch((err) => {
+      res.status(500).json({
+          err
+      });
+  });
+  }
+
+
+
+module.exports = { getUserNotVerified, UserVerified, getAllUser,updateToken ,getTokenUserbyId,getDelete,};

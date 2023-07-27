@@ -61,6 +61,7 @@ module.exports = function Controller(Service, options = {}) {
     },
     delete: async (req, res, next) => {
       const { id } = req.params;
+      console.log("delete id : ", id);
       try {
         const nbDeleted = await Service.delete({ id: parseInt(id, 10) });
         if (nbDeleted) res.sendStatus(204);

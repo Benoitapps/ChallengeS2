@@ -16,13 +16,14 @@ const sessions = ref("");
 const moysessions = ref("");
 const moySessionVisiteur = ref("");
 const page = ref([]);
+const pageOver = ref([]);
 const pagevisite = ref([]);
 const visiteur = ref("");
 const error = ref("");
 const nameCard = ref("");
 const resperiod = ref("");
 const kpiData = ref([]);
-const kpiUserData = ref([]);
+const tagUserData = ref([]);
 const periods = [
 {
     label: "Tout",
@@ -49,7 +50,9 @@ const periods = [
 const visitedPages = reactive({
   data: []
 });
-
+const visitedPagesOver = reactive({
+  data: []
+});
 
 
 
@@ -57,53 +60,22 @@ const cards = ref([]);
 
 watchEffect(() => {
   const reactiveCards = reactive([
+   
     {
-      id: "Sessions",
-      title: "Sessions",
+      id: "nbClicsTotal",
+      title: "Total clics sur les tags",
       type: "keys",
-      number: sessions,
+      list: visitedPagesOver.data,
       periods: periods,
-      state: testState("Sessions"),
-    },
-    {
-      id: "Clics",
-      title: "Clics",
-      type: "keys",
-      number: clics,
-      periods: periods,
-      state: testState("Clics"),
+      state: testState("nbClicsTotal"),
     },
     {
       id: "page",
-      title: "Clics par page",
+      title: "Clics par Tag",
       type: "keys",
       list: visitedPages.data,
       periods: periods,
-      state: testState("Clics par page"),
-    },
-    {
-      id: "Moyennedessessions",
-      title: "Moyenne des sessions",
-      type: "keys",
-      number: moysessions,
-      periods: periods,
-      state: testState("Durée moyenne des sessions"),
-    },
-    {
-      id: "visiteur",
-      title: "Visiteurs",
-      type: "keys",
-      number: visiteur,
-      periods: periods,
-      state: testState("Visiteurs"),
-    },
-    {
-      id: "visitepage",
-      title: "Page les plus visitée",
-      type: "keys",
-      number: pagevisite,
-      periods: periods,
-      state: testState("Top pages"),
+      state: testState("Clics par tag"),
     },
   ]);
 
@@ -114,7 +86,7 @@ nameCard.value = "test";
 resperiod.value = "test2";
 
 function testState(name) {
-  for (const element of kpiUserData.value) {
+  for (const element of tagUserData.value) {
     if (element === name) {
       return true;
     }
@@ -124,7 +96,7 @@ function testState(name) {
 
 const getConnectedUser = async () => {
   try {
-    const userData = localStorage.getItem('myUser');
+    const userData = localStorage.getItem('myUser');;
     if (userData) {
       const parsedData = JSON.parse(userData);
 
@@ -138,21 +110,11 @@ const getConnectedUser = async () => {
   }
 };
 
-const getReload = async () => {
- 
-    if ( !document.querySelector("#monElement")) {
-      //window.location.reload();
-      console.log("querySelector");
-
-    }
-};
-getReload();
 
 const getKPI = async () => {
 
-  
   try {
-    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/kpi/post/${nameCard.value}/${resperiod.value}`, {
+    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/taguser/post/${nameCard.value}/${resperiod.value}`, {
       method: "Post",
       headers: {
         "Content-Type": "application/json",
@@ -163,6 +125,7 @@ const getKPI = async () => {
 
     if (response.ok) {
       const data = await response.json();
+      console.log("dataaa",data)
 
       if(nameCard.value != "test"){
 
@@ -172,14 +135,13 @@ const getKPI = async () => {
           }
         });
       }else{
-
-        clics.value = data.totalClicks;
-        sessions.value = data.totalSessions;
-        moysessions.value = data.resMoyenne;
-        visiteur.value = data.resVisiteur;
-        moySessionVisiteur.value = 0;
+        pageOver.value = data.resPageover
         page.value = data.resPage
         visitedPages.data = page.value.result.results.map((item) => ({
+        label: item.path,
+        value: String(item.count) // Convertir en chaîne pour s'assurer que "value" est une chaîne
+      }));
+      visitedPagesOver.data = pageOver.value.result.results.map((item) => ({
         label: item.path,
         value: String(item.count) // Convertir en chaîne pour s'assurer que "value" est une chaîne
       }));
@@ -197,10 +159,10 @@ const getKPI = async () => {
 };
 
 
-const getAllKPI = async () => {
-
+const getNoTag = async () => {
+  console.log("nottag");
   try {
-    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/kpi/bddnot/${userApi.value}`, {
+    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/taguser/bddnot/${userApi.value}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -210,6 +172,7 @@ const getAllKPI = async () => {
     if (response.ok) {
       const data = await response.json();
       kpiData.value = data; // Update the kpiData variable with the fetched data
+      console.log(kpiData.value);
 
     } else {
       const errorData = await response.json();
@@ -220,9 +183,9 @@ const getAllKPI = async () => {
   }
 }
 
-const getUserKPI = async () => {
+const getUserTag = async () => {
   try {
-    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/kpi/bdd/${userApi.value}`, {
+    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/taguser/bdd/${userApi.value}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -231,7 +194,7 @@ const getUserKPI = async () => {
     });
     if (response.ok) {
       const data = await response.json();
-      kpiUserData.value = data.kpiNames; // Update kpiUserData with the fetched kpiNames array
+      tagUserData.value = data.tagNames; // Update tagUserData with the fetched kpiNames array
     } else {
       const errorData = await response.json();
       error.value = errorData.error;
@@ -241,10 +204,10 @@ const getUserKPI = async () => {
   }
 }
 
-const getUserAddKPI = async (kpi) => {
+const getUserAddTag = async (tag) => {
 
   try {
-    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/kpi/addbdd/${userApi.value}/${kpi}`, {
+    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/taguser/addbdd/${userApi.value}/${tag}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -252,8 +215,8 @@ const getUserAddKPI = async (kpi) => {
       credentials: "include",
     });
     if (response.ok) {
-      await getAllKPI();
-      await getUserKPI();
+      await getNoTag();
+      await getUserTag();
 
     } else {
       const errorData = await response.json();
@@ -264,10 +227,10 @@ const getUserAddKPI = async (kpi) => {
   }
 }
 
-const getUserdeleteKPI = async (kpi) => {
+const getUserdeleteTAG = async (tag) => {
 
   try {
-    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/kpi/removebdd/${userApi.value}/${kpi}`, {
+    const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/taguser/removebdd/${userApi.value}/${tag}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -275,8 +238,8 @@ const getUserdeleteKPI = async (kpi) => {
       credentials: "include",
     });
     if (response.ok) {
-      await getAllKPI();
-      await getUserKPI();
+      await getNoTag();
+      await getUserTag();
     } else {
       const errorData = await response.json();
       error.value = errorData.error;
@@ -289,8 +252,17 @@ const getUserdeleteKPI = async (kpi) => {
 
 getConnectedUser();
 getKPI();
-getAllKPI();
-getUserKPI();
+getNoTag();
+getUserTag();
+
+onMounted(() => {
+  const sdk = inject("sdk");
+  sdk.initTracker();
+
+  onUnmounted(() => {
+    sdk.stopTracker();
+  });
+});
 
 function updatePeriod(card, selectedPeriod) {
   
@@ -322,13 +294,13 @@ function updatePeriod(card, selectedPeriod) {
             <h3>Selectionnés</h3>
             <ul>
               <li
-                  v-for="kpiUser in kpiUserData"
+                  v-for="kpiUser in tagUserData"
                   :key="kpiUser.id"
               >
                 {{ kpiUser }}
                 <button
                     class="kpi__modal__button"
-                    @click="getUserdeleteKPI(kpiUser)"
+                    @click="getUserdeleteTAG(kpiUser)"
                 >
                   {{ kpiUser.value }}
                   Supprimer
@@ -340,13 +312,13 @@ function updatePeriod(card, selectedPeriod) {
             <h3>Non Selectionnés</h3>
             <ul>
               <li
-                  v-for="kpi in kpiData.unlinkedKpiNames"
+                  v-for="kpi in kpiData.unlinkedTagNames"
                   :key="kpi.id"
               >
                 {{ kpi }}
                 <button
                     class="kpi__modal__button"
-                    @click="getUserAddKPI(kpi)"
+                    @click="getUserAddTag(kpi)"
                 >
                   {{ kpi.id }}
                   Ajouter</button>
@@ -380,7 +352,7 @@ function updatePeriod(card, selectedPeriod) {
         :state="card.state"
         
         @updatePeriod="updatePeriod(card, $event)"
-        @removeCard="getUserdeleteKPI($event)"
+        @removeCard="getUserdeleteTAG($event)"
       ></Card>
     </ul>
 
