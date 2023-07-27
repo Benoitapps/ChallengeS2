@@ -8,9 +8,8 @@ const setLinkSelected = (link) => {
   const linkHref = link.querySelector('a').getAttribute('href');
 
   if (linkHref === route.fullPath) {
+    document.querySelector(".selected")?.classList.remove("selected");
     link.classList.add('selected');
-  } else {
-    link.classList.remove('selected');
   }
 };
 
