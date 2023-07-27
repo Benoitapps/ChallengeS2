@@ -65,7 +65,7 @@ async function login(req, res) {
         }
 
         if (user.is_verified === false) {
-            return res.status(401).json({ error: 'Votre compte doit etre valider par un admin' });
+            return res.status(401).json({ error: 'Votre compte doit être validé par un administrateur' });
         }
 
         const validPassword = await bcrypt.compare(req.body.password, user.password);
