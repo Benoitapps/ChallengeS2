@@ -1,17 +1,17 @@
 const Tag = require("../db").Tag;
-const jwt = require('jsonwebtoken');
-
-const generateToken = require('../utils/generateToken');
+const jwt = require("jsonwebtoken");
+require("dotenv").config({ path: ".env.local", override: true });
+const generateToken = require("../utils/generateToken");
 
 function create(req, res) {
   const token = req.cookies["token"];
-  const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+  const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
   const userId = decodedToken.userId;
   Tag.create({
     name: req.body.label,
     token: generateToken(8),
     userId: userId,
-  })
+  });
 
   res.status(201).json({
     name: req.body.label,
@@ -23,56 +23,57 @@ function create(req, res) {
 function all(req, res) {
   const token = req.cookies["token"];
   if (!token) return res.status(401).json({ error: "Unauthorized" });
-  const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET'); // ! RANDOM_TOKEN_SECRET dans env
+  const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
   const userId = decodedToken.userId;
 
   Tag.findAll({
     where: {
-      userId: userId
-    }
-  }).then((tags) => {
-    tags = tags.map((tag) => {
-      tag = tag.dataValues;
-      delete tag.userId;
-      return tag;
+      userId: userId,
+    },
+  })
+    .then((tags) => {
+      tags = tags.map((tag) => {
+        tag = tag.dataValues;
+        delete tag.userId;
+        return tag;
+      });
+      res.status(200).json(tags);
+    })
+    .catch((err) => {
+      res.status(500).json({
+        err,
+      });
     });
-    res.status(200).json(tags);
-  }).catch((err) => {
-    res.status(500).json({
-      err
-    });
-  });
 }
 
 function deleteItem(req, res) {
   const token = req.cookies["token"];
-  const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+  const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
   const userId = decodedToken.userId;
   const tagId = req.params.id;
 
   Tag.destroy({
     where: {
       id: tagId,
-      userId: userId
-    }
-  }).then(() => {
-    res.status(200).json({
-      message: "Tag supprimé avec succès"
+      userId: userId,
+    },
+  })
+    .then(() => {
+      res.status(200).json({
+        message: "Tag supprimé avec succès",
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        err,
+      });
     });
-  }).catch((err) => {
-    res.status(500).json({
-      err
-    });
-  });
 }
 
 async function getTag(req, res) {
   try {
-    console.log("GetTag");
-    const { apiToken } = req.body
-    console.log("body", apiToken)
+    const { apiToken } = req.body;
     const api_tokenUser = apiToken;
-    console.log("api_tokenUser", api_tokenUser);
 
     /////////Tags event click, clics par tag
     const pipeline = [
@@ -99,10 +100,7 @@ async function getTag(req, res) {
                             input: "$$tracker.tags",
                             as: "tag",
                             cond: {
-                              $eq: [
-                                "$$tag.eventType",
-                                "click",
-                              ],
+                              $eq: ["$$tag.eventType", "click"],
                             },
                           },
                         },
@@ -131,14 +129,10 @@ async function getTag(req, res) {
                             $map: {
                               input: {
                                 $filter: {
-                                  input:
-                                    "$$this.tags",
+                                  input: "$$this.tags",
                                   as: "tag",
                                   cond: {
-                                    $eq: [
-                                      "$$tag.eventType",
-                                      "click",
-                                    ],
+                                    $eq: ["$$tag.eventType", "click"],
                                   },
                                 },
                               },
@@ -180,20 +174,14 @@ async function getTag(req, res) {
         $project: {
           _id: 0,
           result: {
-            $arrayToObject: [
-              [{ k: "results", v: "$results" }],
-            ],
+            $arrayToObject: [[{ k: "results", v: "$results" }]],
           },
         },
       },
-    ]
+    ];
 
     const result = await Usertracker.aggregate(pipeline).exec();
-    const resTagsClicks = result[0]
-
-    console.log("resTagsClicks " + resTagsClicks);
-    console.log(resTagsClicks);
-
+    const resTagsClicks = result[0];
 
     ///////Tags event mouseover, clics par tag
     const pipeline2 = [
@@ -220,10 +208,7 @@ async function getTag(req, res) {
                             input: "$$tracker.tags",
                             as: "tag",
                             cond: {
-                              $eq: [
-                                "$$tag.eventType",
-                                "mouseover",
-                              ],
+                              $eq: ["$$tag.eventType", "mouseover"],
                             },
                           },
                         },
@@ -252,14 +237,10 @@ async function getTag(req, res) {
                             $map: {
                               input: {
                                 $filter: {
-                                  input:
-                                    "$$this.tags",
+                                  input: "$$this.tags",
                                   as: "tag",
                                   cond: {
-                                    $eq: [
-                                      "$$tag.eventType",
-                                      "mouseover",
-                                    ],
+                                    $eq: ["$$tag.eventType", "mouseover"],
                                   },
                                 },
                               },
@@ -301,38 +282,49 @@ async function getTag(req, res) {
         $project: {
           _id: 0,
           result: {
-            $arrayToObject: [
-              [{ k: "results", v: "$results" }],
-            ],
+            $arrayToObject: [[{ k: "results", v: "$results" }]],
           },
         },
       },
-    ]
+    ];
 
     const result2 = await Usertracker.aggregate(pipeline2).exec();
-    const resTagsOver = result2[0]
-
-    console.log("resTagsOver " + resTagsOver);
-    console.log(resTagsOver);
-
-    let timeStamp = 1688999649562
-    var dateformat = new Date(timeStamp);
-    var dateformattoday = new Date()
-
-    console.log("dateformat" + dateformat);
-    console.log("dateformattoday1= " + dateformattoday.setHours(dateformattoday.getHours() + 24));
-    console.log("dateformattoday2= " + dateformattoday.setDate(dateformattoday.getDate() + 7));
-    console.log("dateformattoday3= " + dateformattoday.setDate(dateformattoday.getDate() + 30));
-    console.log("dateformattoday4= " + dateformattoday.setMonth(dateformattoday.getMonth() + 12));
-
+    const resTagsOver = result2[0];
 
     res.status(200).json({
       resTagsClicks: resTagsClicks,
-      resTagsOver: resTagsOver
+      resTagsOver: resTagsOver,
     });
   } catch (error) {
     res.status(401).json({ error: error.message }); // Gère les erreurs d'authentification ou de token et renvoie l'erreur au format JSON
   }
 }
 
-module.exports = { create, all, deleteItem, getTag };
+async function updateName(req, res) {
+  const token = req.cookies["token"];
+  const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
+  const userId = decodedToken.userId;
+  let data = JSON.parse(req.body);
+  const tagId = req.params.id;
+  const newName = data.name;
+
+  try {
+    await Tag.update(
+      {
+        name: newName,
+      },
+      {
+        where: {
+          id: parseInt(tagId),
+          userId: userId,
+        },
+      }
+    );
+
+    res.status(200).json({ message: "Tag name updated" });
+  } catch (err) {
+    res.status(401).json({ error: "Unauthorized" });
+  }
+}
+
+module.exports = { create, all, deleteItem, updateName, getTag };

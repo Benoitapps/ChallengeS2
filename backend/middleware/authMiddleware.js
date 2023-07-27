@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
+require('dotenv').config({ path: '.env.local', override: true });
 
 function authMiddleware(req, res, next) {
     // Récupérer le cookie 'token'
-    console.log(req.cookies);
     const token = req.cookies["token"];
 
     // Vérifier si le cookie est présent
@@ -12,7 +12,7 @@ function authMiddleware(req, res, next) {
 
     try {
         // Vérifier et décoder le jeton
-        const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+        const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
         req.userToken = decodedToken.userToken; // Ajouter l'ID de l'utilisateur à la requête
 
         // Passer au middleware suivant

@@ -6,10 +6,6 @@ const email = ref('');
 const password = ref('');
 const error = ref('');
 
-
-
-
-
 const signup = async () => {
   try {
     const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/login`, {
@@ -32,7 +28,6 @@ const signup = async () => {
       // erreur
       const data = await response.json();
       error.value = data.error;
-      console.log(error.value);
     }
   } catch (e) {
     // Gestion des erreurs de connexion

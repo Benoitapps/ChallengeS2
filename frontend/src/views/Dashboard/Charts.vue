@@ -1,6 +1,6 @@
 <script setup>
 import Card from "../../components/TableauDeBord/Card.vue";
-import {onMounted, ref, reactive, onUnmounted, inject} from "vue";
+import { ref, reactive } from "vue";
 const env = import.meta.env
 import Modal from "../../components/Modal.vue";
 import router from '../../router';
@@ -145,16 +145,6 @@ if(period.value === '') {
 getConnectedUser();
 getAllCharts();
 getUserCharts();
-
-const sdk = inject('sdk');
-onMounted(() => {
-  sdk.initTracker();
-
-  getData();
-});
-onUnmounted(() => {
-  sdk.stopTracker();
-});
 
 const updateChart = async (values) => {
   title.value = values[0].toLowerCase();

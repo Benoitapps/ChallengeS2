@@ -1,5 +1,9 @@
 <script setup>
 const env = import.meta.env;
+import { ref, onMounted } from 'vue';
+
+const tagName = ref('');
+const disabled = ref(true);
 
 const props = defineProps({
     tag: {
@@ -21,11 +25,37 @@ const deleteLine = async (id) => {
         document.querySelector(`#tag-${id}`).remove();
     }
 }
+
+const updateName = async () => {
+    disabled.value = !disabled.value;
+    if (!disabled.value) {
+        document.querySelector(`#tag-${props.tag.id} input`).focus();
+    }else{
+        tagName.value = document.querySelector(`#tag-${props.tag.id} input`).value;
+        const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/tags/update/${props.tag.id}`, {
+            method: 'PUT',
+            credentials: 'include',
+            body: JSON.stringify({
+                name: tagName.value
+            })
+        });
+        if (!response.ok) {
+            throw new Error(`Erreur HTTP ! statut : ${response.status}`);
+        };
+    }
+}
+
+onMounted(() => {
+    tagName.value = props.tag.name;
+});
 </script>
 
 <template>
     <tr :id="'tag-' + props.tag.id">
-        <td class="center">{{ props.tag.name }}</td>
+        <td class="center">
+            <input type="text" :value="tagName" style="text-align: center;" :disabled="disabled">
+            <button @click="updateName()" class="edit-btn">edit</button>
+        </td>
         <td class="center">{{ props.tag.token }}</td>
         <td class="center">
             <button @click="deleteLine(props.tag.id)" class="deleteBtn">SUPPRIMER</button>
@@ -66,5 +96,23 @@ td {
     border-radius: 5px;
     padding: 5px 10px;
     cursor: pointer;
+}
+
+.edit-btn {
+    background-color: #5be27f;
+    border: none;
+    border-radius: 5px;
+    padding: 2px 15px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.edit-btn:hover {
+    background-color: #4fc76f;
+    border: none;
+    border-radius: 5px;
+    padding: 2px 15px;
+    cursor: pointer;
+    margin-left: 5px;
 }
 </style>

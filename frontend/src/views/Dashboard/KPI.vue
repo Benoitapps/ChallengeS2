@@ -1,10 +1,8 @@
 <script setup>
 import Card from "../../components/TableauDeBord/Card.vue";
 import Modal from "../../components/Modal.vue";
-// import ModalProvider from '../../providers/ModalProvider.vue';
-// import { getAllKpi , afftab } from "./KPIbdd.vue";
-import { inject, onMounted, onUnmounted, ref } from "vue";
-import { reactive, watch, watchEffect  } from "vue";
+import { ref } from "vue";
+import { reactive, watchEffect } from "vue";
 const env = import.meta.env
 import router from '../../router';
 
@@ -24,11 +22,11 @@ const resperiod = ref("");
 const kpiData = ref([]);
 const kpiUserData = ref([]);
 const periods = [
-{
+  {
     label: "Tout",
     value: "test",
   },
-{
+  {
     label: "Dernières 24h",
     value: "24h",
   },
@@ -124,13 +122,13 @@ function testState(name) {
 
 const getConnectedUser = async () => {
   try {
-    const userData = localStorage.getItem('myUser');;
+    const userData = localStorage.getItem('myUser');
     if (userData) {
       const parsedData = JSON.parse(userData);
 
       userId.value = parsedData.userId;
       userApi.value = parsedData.apiToken;
-    }else{
+    } else {
       router.push('/login');
     }
   } catch (error) {
@@ -138,15 +136,7 @@ const getConnectedUser = async () => {
   }
 };
 
-const getReload = async () => {
- 
-    if ( !document.querySelector("#monElement")) {
-      //window.location.reload();
-      console.log("querySelector");
 
-    }
-};
-getReload();
 
 const intervalleEnMillisecondes = 2000; // 2 secondes
 const monInterval = setInterval(interval, intervalleEnMillisecondes);
@@ -155,10 +145,7 @@ function interval(){
   
   getKPI()
 }
-
 const getKPI = async () => {
-
-  
   try {
     const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/kpi/post/${nameCard.value}/${resperiod.value}`, {
       method: "Post",
@@ -166,20 +153,20 @@ const getKPI = async () => {
         "Content-Type": "application/json",
       },
       credentials: "include",
-      body: JSON.stringify({apiToken : userApi.value})
+      body: JSON.stringify({ apiToken: userApi.value })
     });
 
     if (response.ok) {
       const data = await response.json();
 
-      if(nameCard.value != "test"){
+      if (nameCard.value != "test") {
 
         cards.value.forEach(element => {
-          if(nameCard.value == element.id){
+          if (nameCard.value == element.id) {
             element.number = data.res;
           }
         });
-      }else{
+      } else {
 
         clics.value = data.totalClicks;
         sessions.value = data.totalSessions;
@@ -188,12 +175,10 @@ const getKPI = async () => {
         moySessionVisiteur.value = 0;
         page.value = data.resPage
         visitedPages.data = page.value.result.results.map((item) => ({
-        label: item.path,
-        value: String(item.count) // Convertir en chaîne pour s'assurer que "value" est une chaîne
-      }));
+          label: item.path,
+          value: String(item.count) // Convertir en chaîne pour s'assurer que "value" est une chaîne
+        }));
       }
-     // clics.value = data.totalClicks;
-
     } else {
       const data = await response.json();
       error.value = data.error;
@@ -300,17 +285,8 @@ getKPI();
 getAllKPI();
 getUserKPI();
 
-onMounted(() => {
-  const sdk = inject("sdk");
-  sdk.initTracker();
-
-  onUnmounted(() => {
-    sdk.stopTracker();
-  });
-});
-
 function updatePeriod(card, selectedPeriod) {
-  
+
   resperiod.value = selectedPeriod[1];
   nameCard.value = card.id;
   getKPI();
@@ -322,13 +298,10 @@ function updatePeriod(card, selectedPeriod) {
   <main class="kpi">
     <Modal class="kpi__modal">
       <template #activator="{ openModal }">
-        <button
-            class="open-modal"
-            title="Ouvrir la modal"
-            @click="openModal"
-        >
+        <button class="open-modal" title="Ouvrir la modal" @click="openModal">
           <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48">
-            <path d="m388-80-20-126q-19-7-40-19t-37-25l-118 54-93-164 108-79q-2-9-2.5-20.5T185-480q0-9 .5-20.5T188-521L80-600l93-164 118 54q16-13 37-25t40-18l20-127h184l20 126q19 7 40.5 18.5T669-710l118-54 93 164-108 77q2 10 2.5 21.5t.5 21.5q0 10-.5 21t-2.5 21l108 78-93 164-118-54q-16 13-36.5 25.5T592-206L572-80H388Zm92-270q54 0 92-38t38-92q0-54-38-92t-92-38q-54 0-92 38t-38 92q0 54 38 92t92 38Zm0-60q-29 0-49.5-20.5T410-480q0-29 20.5-49.5T480-550q29 0 49.5 20.5T550-480q0 29-20.5 49.5T480-410Zm0-70Zm-44 340h88l14-112q33-8 62.5-25t53.5-41l106 46 40-72-94-69q4-17 6.5-33.5T715-480q0-17-2-33.5t-7-33.5l94-69-40-72-106 46q-23-26-52-43.5T538-708l-14-112h-88l-14 112q-34 7-63.5 24T306-642l-106-46-40 72 94 69q-4 17-6.5 33.5T245-480q0 17 2.5 33.5T254-413l-94 69 40 72 106-46q24 24 53.5 41t62.5 25l14 112Z"/>
+            <path
+              d="m388-80-20-126q-19-7-40-19t-37-25l-118 54-93-164 108-79q-2-9-2.5-20.5T185-480q0-9 .5-20.5T188-521L80-600l93-164 118 54q16-13 37-25t40-18l20-127h184l20 126q19 7 40.5 18.5T669-710l118-54 93 164-108 77q2 10 2.5 21.5t.5 21.5q0 10-.5 21t-2.5 21l108 78-93 164-118-54q-16 13-36.5 25.5T592-206L572-80H388Zm92-270q54 0 92-38t38-92q0-54-38-92t-92-38q-54 0-92 38t-38 92q0 54 38 92t92 38Zm0-60q-29 0-49.5-20.5T410-480q0-29 20.5-49.5T480-550q29 0 49.5 20.5T550-480q0 29-20.5 49.5T480-410Zm0-70Zm-44 340h88l14-112q33-8 62.5-25t53.5-41l106 46 40-72-94-69q4-17 6.5-33.5T715-480q0-17-2-33.5t-7-33.5l94-69-40-72-106 46q-23-26-52-43.5T538-708l-14-112h-88l-14 112q-34 7-63.5 24T306-642l-106-46-40 72 94 69q-4 17-6.5 33.5T245-480q0 17 2.5 33.5T254-413l-94 69 40 72 106-46q24 24 53.5 41t62.5 25l14 112Z" />
           </svg>
         </button>
       </template>
@@ -338,15 +311,9 @@ function updatePeriod(card, selectedPeriod) {
           <div>
             <h3>Selectionnés</h3>
             <ul>
-              <li
-                  v-for="kpiUser in kpiUserData"
-                  :key="kpiUser.id"
-              >
+              <li v-for="kpiUser in kpiUserData" :key="kpiUser.id">
                 {{ kpiUser }}
-                <button
-                    class="kpi__modal__button"
-                    @click="getUserdeleteKPI(kpiUser)"
-                >
+                <button class="kpi__modal__button" @click="getUserdeleteKPI(kpiUser)">
                   {{ kpiUser.value }}
                   Supprimer
                 </button>
@@ -356,15 +323,9 @@ function updatePeriod(card, selectedPeriod) {
           <div>
             <h3>Non Selectionnés</h3>
             <ul>
-              <li
-                  v-for="kpi in kpiData.unlinkedKpiNames"
-                  :key="kpi.id"
-              >
+              <li v-for="kpi in kpiData.unlinkedKpiNames" :key="kpi.id">
                 {{ kpi }}
-                <button
-                    class="kpi__modal__button"
-                    @click="getUserAddKPI(kpi)"
-                >
+                <button class="kpi__modal__button" @click="getUserAddKPI(kpi)">
                   {{ kpi.id }}
                   Ajouter</button>
               </li>
@@ -373,32 +334,17 @@ function updatePeriod(card, selectedPeriod) {
         </div>
       </template>
       <template #close-icon="{ closeModal }">
-        <button
-            class="close-modal"
-            title="Fermer"
-            @click="closeModal"
-        >
+        <button class="close-modal" title="Fermer" @click="closeModal">
           <svg xmlns="http://www.w3.org/2000/svg" height="48" viewBox="0 -960 960 960" width="48">
-            <path d="m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/>
+            <path d="m249-207-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z" />
           </svg>
         </button>
       </template>
     </Modal>
     <ul class="kpi__container">
-      <Card
-        v-for="(card, index) in cards"
-        :key="card.title"
-        :index="index"
-        :title="card.title"
-        :type="card.type"
-        :number="card.number"
-        :list="card.list"
-        :periods="card.periods" 
-        :state="card.state"
-        
-        @updatePeriod="updatePeriod(card, $event)"
-        @removeCard="getUserdeleteKPI($event)"
-      ></Card>
+      <Card v-for="(card, index) in cards" :key="card.title" :index="index" :title="card.title" :type="card.type"
+        :number="card.number" :list="card.list" :periods="card.periods" :state="card.state"
+        @updatePeriod="updatePeriod(card, $event)" @removeCard="getUserdeleteKPI($event)"></Card>
     </ul>
 
   </main>

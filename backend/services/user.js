@@ -8,9 +8,7 @@ module.exports = function UserService() {
       let dbOptions = {
         where: filters,
       };
-      // options.order = {name: "ASC", dob: "DESC"}
       if (options.order) {
-        // => [["name", "ASC"], ["dob", "DESC"]]
         dbOptions.order = Object.entries(options.order);
       }
       if (options.limit) {
@@ -46,7 +44,6 @@ module.exports = function UserService() {
     },
     update: async (filters, newData) => {
       try {
-        console.log('JE SUIS DANS LE UPDATE DE USER.JS');
         const [nbUpdated, users] = await User.update(newData, {
           where: filters,
           returning: true,

@@ -1,6 +1,7 @@
 const User = require("../db").User;
 const KpiName = require("../db").KpiName;
 const jwt = require('jsonwebtoken');
+require('dotenv').config({ path: '.env.local', override: true });
 
 async function getUserNotVerified(req, res) {
   try {
@@ -37,7 +38,6 @@ async function getAllUser(req, res) {
 
 async function getTokenUserbyId(req, res) {
   const tokenid = req.params.tokenid
-  console.log("tokenId "+tokenid)
   try {
     const user = await User.findOne({ where: { id: tokenid } });
     
@@ -50,16 +50,15 @@ async function getTokenUserbyId(req, res) {
 async function updateToken(req, res) {
 
   const token = req.cookies["token"];
-    console.log(token);
     if (!token) {
         return res.status(401).json({ error: 'Authentification requise !' });
     }
-  const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+  const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
   req.userId = decodedToken.userId; 
 
 
   try {
-    const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+    const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
     req.userId = decodedToken.userId; 
     const tokenUser = await getTokenUserbyId(req,res);
     const userId = req.params.userId;

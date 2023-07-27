@@ -1,6 +1,6 @@
 <script setup>
 import Navbar from "./components/Navbar.vue";
-import {inject, onMounted, onUnmounted, ref, watch} from "vue";
+import { onMounted, ref, watch} from "vue";
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
@@ -10,7 +10,6 @@ const userRole = ref("");
 const error = ref("");
 const showNavbar = ref(true);
 const isAdmin = ref(false);
-const sdk = inject('sdk');
 
 const getConnectedUser = async () => {
   try {
@@ -48,8 +47,6 @@ watch(route, () => {
 });
 
 onMounted(() => {
-  sdk.trackNavigation();
-
   getConnectedUser();
 });
 
@@ -59,10 +56,6 @@ watch(userRole, () => {
   } else {
     isAdmin.value = false;
   }
-});
-
-onUnmounted(() => {
-  sdk.stopTrackingNavigation();
 });
 </script>
 

@@ -1,24 +1,16 @@
 <script setup>
 import Card from "../../components/TableauDeBord/Card.vue";
 import Modal from "../../components/Modal.vue";
-// import ModalProvider from '../../providers/ModalProvider.vue';
-// import { getAllKpi , afftab } from "./KPIbdd.vue";
-import { inject, onMounted, onUnmounted, ref } from "vue";
-import { reactive, watch, watchEffect  } from "vue";
+import { ref } from "vue";
+import { reactive, watchEffect  } from "vue";
 const env = import.meta.env
 import router from '../../router';
 
 
 const userId = ref('');
 const userApi = ref('');
-const clics = ref("");
-const sessions = ref("");
-const moysessions = ref("");
-const moySessionVisiteur = ref("");
 const page = ref([]);
 const pageOver = ref([]);
-const pagevisite = ref([]);
-const visiteur = ref("");
 const error = ref("");
 const nameCard = ref("");
 const resperiod = ref("");
@@ -127,7 +119,6 @@ const getKPI = async () => {
 
     if (response.ok) {
       const data = await response.json();
-      console.log("dataaa",data)
 
       if(nameCard.value != "test"){
 
@@ -148,7 +139,6 @@ const getKPI = async () => {
         value: String(item.count) // Convertir en chaîne pour s'assurer que "value" est une chaîne
       }));
       }
-     // clics.value = data.totalClicks;
 
     } else {
       const data = await response.json();
@@ -163,7 +153,6 @@ const getKPI = async () => {
 
 
 const getNoTag = async () => {
-  console.log("nottag");
   try {
     const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/taguser/bddnot/${userApi.value}`, {
       method: "GET",
@@ -175,7 +164,6 @@ const getNoTag = async () => {
     if (response.ok) {
       const data = await response.json();
       kpiData.value = data; // Update the kpiData variable with the fetched data
-      console.log(kpiData.value);
 
     } else {
       const errorData = await response.json();
@@ -257,15 +245,6 @@ getConnectedUser();
 getKPI();
 getNoTag();
 getUserTag();
-
-onMounted(() => {
-  const sdk = inject("sdk");
-  sdk.initTracker();
-
-  onUnmounted(() => {
-    sdk.stopTracker();
-  });
-});
 
 function updatePeriod(card, selectedPeriod) {
   

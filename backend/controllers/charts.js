@@ -5,6 +5,7 @@ const authMiddleware = require('../middleware/authMiddleware');
 const services = '../services/user'
 const User = require("../db").User;
 const usersessions = require('../models/Usertracker');
+require('dotenv').config({ path: '.env.local', override: true });
 
 function getConnectedUserId(req) {
     const token = req.cookies.token;
@@ -14,7 +15,7 @@ function getConnectedUserId(req) {
     }
 
     try {
-        const decoded = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+        const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
         const userToken = decoded.userToken;
 
         return userToken;
@@ -26,11 +27,10 @@ function getConnectedUserId(req) {
 async function getCharts(req, res) {
     let unit = '';
     let amount = 0;
-   // const api_tokenUsder = getConnectedUserId(req);
-   const {apiToken} = req.body
-      console.log("body",apiToken)
-     // const api_tokenUsder =getConnectedUserId(req);
-     const api_tokenUsder =apiToken;
+    // const api_tokenUsder = getConnectedUserId(req);
+    const {apiToken} = req.body
+    // const api_tokenUsder =getConnectedUserId(req);
+    const api_tokenUsder =apiToken;
 
     if(!req.params?.nameCard || !req.params?.resperiod) {
         return res.status(400).json({ error: 'Missing parameters' });

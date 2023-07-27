@@ -9,10 +9,9 @@ let step = ref(1);
 
 const getConnectedUser = async () => {
   try {
-    const userData = localStorage.getItem('myUser');;
+    const userData = localStorage.getItem('myUser');
     if (userData) {
-      const parsedData = JSON.parse(userData);
-
+      JSON.parse(userData);
     } else {
       router.push('/login');
     }
@@ -34,9 +33,7 @@ const downloadSDK = () => {
       credentials: 'include'
     })
       .then(response => {
-        console.log(response);
         if (response.ok) {
-          console.log(response);
           return response;
         }
         else {
@@ -63,7 +60,7 @@ const downloadSDK = () => {
       });
   }
   catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -157,15 +154,6 @@ const codeStep2_1 = `sdk.trackMouseClick();
 const codeStep2_2 = `sdk.initTracker();
     // sdk.stopTracker(); // Pour arrêter le suivi`;
 const codeStep3 = `<button v-tracker.mouseover.click="'token_de_votre_tag'">Click me</button>`;
-
-onMounted(() => {
-  const sdk = inject('sdk');
-  sdk.initTracker();
-
-  onUnmounted(() => {
-    sdk.stopTracker();
-  });
-});
 </script>
 
 <template>

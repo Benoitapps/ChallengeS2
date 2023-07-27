@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, inject, ref, onUnmounted} from 'vue';
+import { onMounted, ref } from 'vue';
 import TabLine from '../components/Tags/TabLine.vue';
 import TabLineTunnel from '../components/Tunnels/TabLineTunnel.vue';
 const env = import.meta.env;
@@ -9,13 +9,11 @@ let tunnels = ref([]);
 let defaultMessageTag = ref('Chargement des tags...');
 let defaultMessageTunnel = ref('Chargement des tunnels...');
 
-const sdk = inject('sdk');
-
 const getConnectedUser = async () => {
   try {
-    const userData = localStorage.getItem('myUser');;
+    const userData = localStorage.getItem('myUser');
     if (userData) {
-      const parsedData = JSON.parse(userData);
+      JSON.parse(userData);
 
     }else{
       router.push('/login');
@@ -24,7 +22,9 @@ const getConnectedUser = async () => {
     error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
   }
 };
+
 getConnectedUser();
+
 onMounted(async () => {
   // ? Get tags
   const responseTag = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/tags`, {
@@ -53,12 +53,6 @@ onMounted(async () => {
   if (resTunnel.length == 0) {
     defaultMessageTunnel.value = 'Aucun tunnel trouvé';
   }
-
-  sdk.initTracker();
-});
-
-onUnmounted(() => {
-  sdk.stopTracker();
 });
 </script>
 
@@ -88,9 +82,6 @@ onUnmounted(() => {
         <TabLine v-for="(tag, index) in tags" :key="index" :tag="tag" v-else/>
       </tbody>
     </table>
-
-    <button v-tracker.click.mouseover="'2ocraesx'">Click me (tag example)</button>
-
 
     <div class="container-btn">
       <h3>
