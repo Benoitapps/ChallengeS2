@@ -241,8 +241,9 @@ getUsers();
 
     .buttons {
       display: flex;
-      justify-content: space-between;
+      gap: 1rem;
       align-items: center;
+      margin-left: 3rem;
 
       button {
         background: var(--primary);
@@ -274,7 +275,7 @@ getUsers();
       display: flex;
       padding: 5px;
       border-radius: 10px;
-      gap: 3rem; // 32px
+      justify-content: space-between;
       align-items: center;
     }
 
