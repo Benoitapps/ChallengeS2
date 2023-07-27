@@ -33,7 +33,7 @@ const testres = ref([]);
 
 const getConnectedUser = async () => {
   try {
-    const userData = localStorage.getItem('myUser');;
+    const userData = localStorage.getItem('myUser');
     if (userData) {
       const parsedData = JSON.parse(userData);
 
@@ -213,7 +213,7 @@ function handleImageUpload(files, path) {
   async function uploadImage(base64Data,path) {
     console.log("path2", path)
     try {
-    const userData = localStorage.getItem('myUser');;
+    const userData = localStorage.getItem('myUser');
     if (userData) {
       const parsedData = JSON.parse(userData);
 
@@ -264,7 +264,7 @@ function handleImageUpload(files, path) {
 async function getImage() {
   console.log("getImage est apl");
     try {
-    const userData = localStorage.getItem('myUser');;
+    const userData = localStorage.getItem('myUser');
     if (userData) {
       const parsedData = JSON.parse(userData);
 

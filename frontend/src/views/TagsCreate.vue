@@ -5,6 +5,22 @@ import router from '../router';
 const env = import.meta.env;
 const showErrorLabelTag = ref(false);
 
+
+const getConnectedUser = async () => {
+    try {
+        const userData = localStorage.getItem('myUser');
+        if (userData) {
+            JSON.parse(userData);
+        }else{
+            router.push('/login');
+        }
+    } catch (error) {
+        error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
+    }
+};
+
+getConnectedUser();
+
 const createTag = async () => {
     let labelName = document.getElementById('tag-label').value
 
@@ -12,21 +28,6 @@ const createTag = async () => {
         showErrorLabelTag.value = true;
         return;
     }
-
-    const getConnectedUser = async () => {
-  try {
-    const userData = localStorage.getItem('myUser');;
-    if (userData) {
-      const parsedData = JSON.parse(userData);
-
-    }else{
-      router.push('/login');
-    }
-  } catch (error) {
-    error.value = "Une erreur s'est produite lors de la récupération de l'utilisateur connecté";
-  }
-};
-getConnectedUser();
 
     const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/tags/create`, {
         method: 'POST',

@@ -14,7 +14,7 @@ export default {
 
     const getConnectedUser = async () => {
   try {
-    const userData = localStorage.getItem('myUser');;
+    const userData = localStorage.getItem('myUser');
     if (userData) {
       const parsedData = JSON.parse(userData);
 

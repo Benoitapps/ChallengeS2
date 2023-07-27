@@ -9,10 +9,9 @@ let step = ref(1);
 
 const getConnectedUser = async () => {
   try {
-    const userData = localStorage.getItem('myUser');;
+    const userData = localStorage.getItem('myUser');
     if (userData) {
-      const parsedData = JSON.parse(userData);
-
+      SON.parse(userData);
     }else{
       router.push('/login');
     }
