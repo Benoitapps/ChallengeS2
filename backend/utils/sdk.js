@@ -1,7 +1,8 @@
+const env = import.meta.env
 const MOUSE_DELAY = 1000;
 const inactivityDelay = 15 * 60 * 1000; // en millisecondes
 let inactivityTimer;
-const env = import.meta.env
+let loadBalancing;
 
 export default class SDK {
     constructor(api_token) {
@@ -10,12 +11,13 @@ export default class SDK {
         this.mouse = [];
         this.clicks = [];
         this.paths = [];
+        this.tags = [];
         this.startTime = new Date();
         this.endTime = null;
         this.api_token = api_token;
         this.user_fingerprint = null;
 
-        console.log("SDK is running")
+        ////console.log("SDK is running")
         this.initUserInteractionForInactivity();
         this.initSendData();
     }
@@ -33,7 +35,7 @@ export default class SDK {
     }
 
     trackMouseMovement() {
-        console.log("start tracking mouse movement");
+        ////console.log("start tracking mouse movement");
         this.mouseMoveHandler = (e) => {
             this.mouseX = e.clientX;
             this.mouseY = e.clientY;
@@ -43,7 +45,7 @@ export default class SDK {
     }
 
     stopTrackingMouseMovement() {
-        console.log("stop tracking mouse movement");
+        //console.log("stop tracking mouse movement");
         document.removeEventListener("mousemove", this.mouseMoveHandler);
         this.stopUpdatingMousePosition();
     }
@@ -56,7 +58,7 @@ export default class SDK {
                 timestamp: Date.now(),
                 path: window.location.pathname,
             });
-            console.log("mouse position : ", this.mouseX, this.mouseY)
+            //console.log("mouse position : ", this.mouseX, this.mouseY)
         }, MOUSE_DELAY);
     }
 
@@ -65,7 +67,7 @@ export default class SDK {
     }
 
     trackMouseClick() {
-        console.log('start tracking mouse click');
+        //console.log('start tracking mouse click');
         this.trackerFunction = (e) => {
             this.clicks.push({
                 x: e.clientX,
@@ -74,19 +76,19 @@ export default class SDK {
                 target: e.target.outerHTML,
                 path: window.location.pathname,
             });
-            console.table("click on this element : ", e.target)
+            //console.table("click on this element : ", e.target)
         };
 
         document.body.addEventListener("click", this.trackerFunction);
     }
 
     stopTrackingMouseClick() {
-        console.log("stop tracking mouse click")
+        //console.log("stop tracking mouse click")
         document.body.removeEventListener("click", this.trackerFunction);
     }
 
     trackNavigation() {
-        console.log("start tracking navigation");
+        //console.log("start tracking navigation");
         this.navigationFunction = (e) => {
             // N'ajoute pas le meme path 2 fois
             if (this.paths.length > 0) {
@@ -99,41 +101,52 @@ export default class SDK {
                 path: window.location.pathname,
                 timestamp: Date.now(),
             });
-            console.log("navigation : ", window.location.pathname)
+            //console.log("navigation : ", window.location.pathname)
         };
 
         window.addEventListener("click", this.navigationFunction);
     }
 
     stopTrackingNavigation() {
-        console.log("stop tracking navigation");
+        //console.log("stop tracking navigation");
         window.removeEventListener("click", this.navigationFunction);
+    }
+
+    uuid() {
+        return ('10000000-1000-4000-8000-100000000000').replace(/[018]/g, c => (
+            c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)
+        );
     }
 
     getFingerprintUser() {
         let fingerprint = localStorage.getItem('fingerprint');
         if (fingerprint && fingerprint.trim() !== "") return fingerprint;
-        return localStorage.setItem('fingerprint', self.crypto.randomUUID());
+        return localStorage.setItem('fingerprint', this.uuid());
     }
 
     initSendData() {
         window.addEventListener("visibilitychange", (event) => {
             if (event.target.visibilityState === "hidden") {
-                let data = {
-                    api_token: this.api_token,
-                    user_fingerprint: this.getFingerprintUser(),
-                    mouse: this.mouse,
-                    clicks: this.clicks,
-                    paths: this.paths,
-                    startTime: this.startTime,
-                    endTime: new Date(),
-                }
-
-                navigator.sendBeacon('<%= URL_SITE_CLIENT %>/sdk', JSON.stringify(data));
-
-                this.resetData();
+                this.sendData();
             }
         });
+    }
+
+    sendData() {
+        let data = {
+            api_token: this.api_token,
+            user_fingerprint: this.getFingerprintUser(),
+            mouse: this.mouse,
+            clicks: this.clicks,
+            paths: this.paths,
+            tags: this.tags,
+            startTime: this.startTime,
+            endTime: new Date(),
+        }
+
+        navigator.sendBeacon('<%= URL_SITE_CLIENT %>/sdk', JSON.stringify(data));
+
+        this.resetData();
     }
 
     resetData() {
@@ -142,6 +155,7 @@ export default class SDK {
         this.mouse = [];
         this.clicks = [];
         this.paths = [];
+        this.tags = [];
         this.startTime = new Date();
         this.endTime = null;
     }
@@ -163,21 +177,8 @@ export default class SDK {
     }
 
     detectInactivity() {
-        console.log("User inactive!");
-
-        let data = {
-            api_token: this.api_token,
-            user_fingerprint: this.user_fingerprint,
-            mouse: this.mouse,
-            clicks: this.clicks,
-            paths: this.paths,
-            startTime: this.startTime,
-            endTime: this.endTime,
-        };
-
-        navigator.sendBeacon('<%= URL_SITE_CLIENT %>/sdk', JSON.stringify(data));
-        
-        this.resetData();
+        //console.log("User inactive!");
+        this.sendData();
     }
 
     handleUserInteraction() {
@@ -185,12 +186,9 @@ export default class SDK {
     }
     // ? ------------------------- USER INACTIVITY ------------------------- ? //
 
-    initTags() {
-        let tags = document.querySelectorAll('button[data-tag]');
-        tags.forEach((tag) => {
-            tag.addEventListener("click", (e) => {
-                console.table("click on this tag : ", e.target);
-            });
-        });
+    // ? ------------------------- TAGS ------------------------- ? //
+    addTagToQueue(tag) {
+        this.tags.push(tag);
     }
+    // ? ------------------------- TAGS ------------------------- ? //
 }

@@ -1,5 +1,5 @@
 <script setup>
-import {inject, onMounted, onUnmounted, ref} from 'vue';
+import { inject, onMounted, onUnmounted, ref } from 'vue';
 import 'prismjs';
 import 'prismjs/themes/prism.css';
 import router from '../router';
@@ -13,7 +13,7 @@ const getConnectedUser = async () => {
     if (userData) {
       const parsedData = JSON.parse(userData);
 
-    }else{
+    } else {
       router.push('/login');
     }
   } catch (error) {
@@ -104,7 +104,28 @@ const codeStep1 = `import SDK from 'chemin/vers/le/fichier/SDK';
 
 export default {
     install(app, apiToken) {
-        app.provide('sdk', new SDK(apiToken));
+        console.log("Tracking plugin is installed");
+        const sdk = new SDK(apiToken);
+        
+        app.provide('sdk', sdk);
+
+        app.directive('tracker', {
+            mounted(el, binding){
+                const tag = binding.value;
+                const events = Object.keys(binding.modifiers);
+
+                events.forEach(event => {
+                    el.addEventListener(event, () => {
+                        sdk.addTagToQueue({
+                            token: tag,
+                            path: window.location.pathname,
+                            timestamp: Date.now(),
+                            eventType: event,
+                        });
+                    });
+                });
+            }
+        });
     }
 };`;
 
@@ -118,16 +139,24 @@ app.mount('#app');`;
 
 const codeStep1_2 = `import { inject } from 'vue';
 
+sdk = inject('sdk');
 onMounted(() => {
-    this.sdk = inject('sdk');
     // Utilisez le SDK ici
-    // Exemple : this.sdk.trackMouseMovement();
+    // Exemple : 
+    sdk.initTracker();
 }`;
 
-const codeStep2 = `sdk.trackMouseMovement();`;
-const codeStep2_1 = `sdk.trackMouseClick();`;
-const codeStep2_2 = `sdk.initTracker();`;
-const codeStep3 = `const MOUSE_DELAY = 5000;`;
+const codeStep1_3 = `onUnmounted(() => {
+    sdk.stopTracker();
+});`;
+
+const codeStep2 = `sdk.trackMouseMovement();
+    // sdk.stopTrackingMouseMovement(); // Pour arrêter le suivi`;
+const codeStep2_1 = `sdk.trackMouseClick();
+    // sdk.stopTrackingMouseClick(); // Pour arrêter le suivi`;
+const codeStep2_2 = `sdk.initTracker();
+    // sdk.stopTracker(); // Pour arrêter le suivi`;
+const codeStep3 = `<button v-tracker.mouseover.click="'token_de_votre_tag'">Click me</button>`;
 
 onMounted(() => {
   const sdk = inject('sdk');
@@ -163,10 +192,15 @@ onMounted(() => {
             <CodeBlock :prismjs=true :code="codeStep1_1" lang="javascript" theme="default" :tabs=true copyText="Copier"
               copySuccessText="Copié !" />
             <p>Veillez à remplacer <code class="highlight">apiToken</code> par votre token qui doit être récupéré sur le
-              site.</p><br>
+              site.</p>
+            <CodeBlock :prismjs=true :code="codeStep1_3" lang="javascript" theme="default" :tabs=true copyText="Copier"
+              copySuccessText="Copié !" />
+            <br>
             <p>4. Pour utiliser le plugin dans un composant, vous devez l'importer et l'injecter dans le composant :</p>
             <CodeBlock :prismjs=true :code="codeStep1_2" lang="javascript" theme="default" :tabs=true copyText="Copier"
               copySuccessText="Copié !" />
+            <p>Si vous voulez arreter le suivi, vous pouvez utiliser la fonction <code
+                class="highlight">stopTracker()</code> du SDK :</p><br>
             <button @click="skipStep" class="buttonSkip">Suivant</button>
           </div>
 
@@ -187,11 +221,23 @@ onMounted(() => {
           </div>
 
           <div v-else-if="step === 3" class="step">
-            <h2>Étape 3 : Personnalisation du suivi</h2>
-            <p>Vous pouvez également personnaliser le suivi en modifiant les paramètres du SDK. Par exemple, vous pouvez
-              ajuster le délai entre les mouvements de souris à suivre.<br>Voici un exemple :</p>
-            <CodeBlock :prismjs=true :code="codeStep3" lang="javascript" theme="default" :tabs=true copyText="Copier"
-              copySuccessText="Copié !" />
+            <h2>Étape 3 : Personnalisation du suivi (Tags)</h2>
+            <p>Le plugin de suivi ajoute une directive personnalisée appelée v-tracker qui peut être utilisée pour suivre
+              les événements sur les éléments du DOM. La directive prend un argument obligatoire qui est le nom du tag à
+              suivre. Vous pouvez également ajouter des modificateurs pour suivre des événements spécifiques.<br>Voici un
+              exemple :</p>
+            <CodeBlock :prismjs=true :code="codeStep3" lang="html" theme="default" :tabs=true copyText="Copier"
+              copySuccessText="Copié !" /><br>
+            <h3>Détails sur la directive</h3>
+            <p>La directive v-tracker permet de suivre différents types d'événements sur un élément du DOM et
+              d'enregistrer les données associées dans le SDK.<br>Voici comment cela fonctionne :</p><br>
+            <p><code class="highlight">v-tracker</code> : La directive principale, suivie du type d'événement ou d'une
+              combinaison d'événements que vous souhaitez suivre.</p><br>
+            <p><code class="highlight">v-tracker.[événement]</code> : Vous pouvez spécifier un ou plusieurs événements
+              séparés par des points pour lesquels vous souhaitez effectuer le suivi. Par exemple, v-tracker.click.input
+              suivra à la fois les événements click et input.</p><br>
+            <p>Notez que vous pouvez personnaliser la tag selon vos besoins et l'utiliser pour différencier différents
+              événements dans le SDK.</p>
             <button @click="finishTutorial" class="buttonSkip">Recommencer le tutoriel</button>
           </div>
         </Transition>
@@ -245,5 +291,4 @@ h2 {
     font-size: 18px;
     font-weight: bold;
   }
-}
-</style>
+}</style>
