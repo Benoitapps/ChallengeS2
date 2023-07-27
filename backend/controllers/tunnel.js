@@ -1,8 +1,7 @@
 const Tunnel = require("../db").Tunnel;
 const TunnelTag = require("../db").TunnelTag;
 const jwt = require('jsonwebtoken');
-
-const generateToken = require('../utils/generateToken');
+require('dotenv').config({ path: '.env.local', override: true });
 
 async function create(req, res) {
     let data = req.body;
@@ -11,7 +10,7 @@ async function create(req, res) {
     if (!token) return res.status(401).json({ error: "Unauthorized" });
 
     try {
-        const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+        const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
         const userId = decodedToken.userId; 
 
         // Create tunnel in DB
@@ -41,7 +40,7 @@ async function all(req, res) {
     if (!token) return res.status(401).json({ error: "Unauthorized" });
 
     try {
-        const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET'); // ! RANDOM_TOKEN_SECRET dans env
+        const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
         const userId = decodedToken.userId; 
     
         let tunnels = [];
@@ -59,7 +58,7 @@ async function all(req, res) {
 
 async function deleteItem(req, res) {
     const token = req.cookies["token"];
-    const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+    const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
     const userId = decodedToken.userId; 
     const tunnelId = req.params.id;
     try {

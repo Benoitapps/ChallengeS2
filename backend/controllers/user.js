@@ -8,6 +8,7 @@ const services = '../services/user'
 const User = require("../db").User;
 const Usertracker = require("../models/Usertracker")
 const generateToken = require('../utils/generateToken');
+require('dotenv').config({ path: '.env.local', override: true });
 
 
 
@@ -77,7 +78,7 @@ async function login(req, res) {
 
         const token = jwt.sign(
             { userToken: user.api_token, userEmail : user.email, userRole: user.role, userId : user.id },
-            'RANDOM_TOKEN_SECRET',
+            process.env.TOKEN_SECRET,
             { expiresIn: '24h' }
         );
 
@@ -113,7 +114,7 @@ function getConnectedUser(req, res) {
     }
   
     try {
-      const decoded = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+      const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
       const userEmail = decoded.userEmail;
   
       // Rechercher l'utilisateur correspondant à l'ID
@@ -150,7 +151,7 @@ function getConnectedUser(req, res) {
     }
   
     try {
-      const decoded = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+      const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
       const userEmail = decoded.userEmail;
   
       // Rechercher l'utilisateur correspondant à l'ID

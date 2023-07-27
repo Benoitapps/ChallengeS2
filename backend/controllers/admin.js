@@ -1,5 +1,6 @@
 const User = require("../db").User;
 const jwt = require('jsonwebtoken');
+require('dotenv').config({ path: '.env.local', override: true });
 
 async function getUserNotVerified(req, res) {
   try {
@@ -51,12 +52,12 @@ async function updateToken(req, res) {
     if (!token) {
         return res.status(401).json({ error: 'Authentification requise !' });
     }
-  const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+  const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
   req.userId = decodedToken.userId; 
 
 
   try {
-    const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+    const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
     req.userId = decodedToken.userId; 
     const tokenUser = await getTokenUserbyId(req,res);
     const userId = req.params.userId;

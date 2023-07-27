@@ -7,7 +7,7 @@ const authMiddleware = require('../middleware/authMiddleware').default;
 const services = '../services/user'
 const User = require("../db").User;
 const Image = require("../db").Image;
-
+require('dotenv').config({ path: '.env.local', override: true });
 const Usertracker = require('../models/Usertracker');
 
 
@@ -19,7 +19,7 @@ function getConnectedUserId(req) {
   }
 
   try {
-    const decoded = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+    const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
     const userToken = decoded.userToken;
 
     return userToken;

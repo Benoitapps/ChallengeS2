@@ -1,11 +1,11 @@
 const Tag = require("../db").Tag;
 const jwt = require('jsonwebtoken');
-
+require('dotenv').config({ path: '.env.local', override: true });
 const generateToken = require('../utils/generateToken');
 
 function create(req, res) {
     const token = req.cookies["token"];
-    const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+    const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
     const userId = decodedToken.userId; 
     Tag.create({
         name: req.body.label,
@@ -23,7 +23,7 @@ function create(req, res) {
 function all(req, res) {
     const token = req.cookies["token"];
     if (!token) return res.status(401).json({ error: "Unauthorized" });
-    const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET'); // ! RANDOM_TOKEN_SECRET dans env
+    const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
     const userId = decodedToken.userId; 
 
     Tag.findAll({
@@ -46,7 +46,7 @@ function all(req, res) {
 
 function deleteItem(req, res) {
     const token = req.cookies["token"];
-    const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+    const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
     const userId = decodedToken.userId; 
     const tagId = req.params.id;
 
