@@ -1,7 +1,7 @@
 <script setup>
 import Card from "../../components/TableauDeBord/Card.vue";
 import Modal from "../../components/Modal.vue";
-import { inject, onMounted, onUnmounted, ref } from "vue";
+import { ref } from "vue";
 import { reactive, watchEffect  } from "vue";
 const env = import.meta.env
 import router from '../../router';
@@ -242,15 +242,6 @@ getConnectedUser();
 getKPI();
 getNoTag();
 getUserTag();
-
-onMounted(() => {
-  const sdk = inject("sdk");
-  sdk.initTracker();
-
-  onUnmounted(() => {
-    sdk.stopTracker();
-  });
-});
 
 function updatePeriod(card, selectedPeriod) {
   

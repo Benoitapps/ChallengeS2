@@ -1,6 +1,6 @@
 <script setup>
 import Navbar from "./components/Navbar.vue";
-import {inject, onMounted, onUnmounted, ref, watch} from "vue";
+import { onMounted, ref, watch} from "vue";
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
