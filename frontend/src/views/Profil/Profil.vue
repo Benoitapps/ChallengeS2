@@ -126,15 +126,6 @@ const regenerateToken = async () => {
 };
 
 getConnectedUser();
-
-onMounted(() => {
-  const sdk = inject('sdk');
-  sdk.initTracker();
-
-  onUnmounted(() => {
-    sdk.stopTracker();
-  });
-});
 </script>
 
 

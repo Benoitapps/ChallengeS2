@@ -9,8 +9,6 @@ let tunnels = ref([]);
 let defaultMessageTag = ref('Chargement des tags...');
 let defaultMessageTunnel = ref('Chargement des tunnels...');
 
-const sdk = inject('sdk');
-
 const getConnectedUser = async () => {
   try {
     const userData = localStorage.getItem('myUser');;
@@ -53,12 +51,6 @@ onMounted(async () => {
   if (resTunnel.length == 0) {
     defaultMessageTunnel.value = 'Aucun tunnel trouvé';
   }
-
-  sdk.initTracker();
-});
-
-onUnmounted(() => {
-  sdk.stopTracker();
 });
 </script>
 
@@ -88,9 +80,6 @@ onUnmounted(() => {
         <TabLine v-for="(tag, index) in tags" :key="index" :tag="tag" v-else/>
       </tbody>
     </table>
-
-    <button v-tracker.click.mouseover="'2ocraesx'">Click me (tag example)</button>
-
 
     <div class="container-btn">
       <h3>

@@ -9,7 +9,6 @@ const user = ref([]);
 const userRole =ref("");
 const error = ref("");
 const showNavbar = ref(true);
-const sdk = inject('sdk');
 
 const getConnectedUser = async () => {
   try {
@@ -47,14 +46,6 @@ watch(route, () => {
   } else {
     showNavbar.value = true;
   }
-});
-
-onMounted(() => {
-  sdk.trackNavigation();
-});
-
-onUnmounted(() => {
-  sdk.stopTrackingNavigation();
 });
 </script>
 

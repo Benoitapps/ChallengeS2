@@ -146,16 +146,6 @@ getConnectedUser();
 getAllCharts();
 getUserCharts();
 
-const sdk = inject('sdk');
-onMounted(() => {
-  sdk.initTracker();
-
-  getData();
-});
-onUnmounted(() => {
-  sdk.stopTracker();
-});
-
 const updateChart = async (values) => {
   title.value = values[0].toLowerCase();
   period.value = values[1];

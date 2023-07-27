@@ -1,5 +1,5 @@
 <script setup>
-import {inject, onMounted, onUnmounted, ref} from 'vue';
+import { onMounted, onUnmounted, ref} from 'vue';
 import 'prismjs';
 import 'prismjs/themes/prism.css';
 import router from '../router';
@@ -128,15 +128,6 @@ const codeStep2 = `sdk.trackMouseMovement();`;
 const codeStep2_1 = `sdk.trackMouseClick();`;
 const codeStep2_2 = `sdk.initTracker();`;
 const codeStep3 = `const MOUSE_DELAY = 5000;`;
-
-onMounted(() => {
-  const sdk = inject('sdk');
-  sdk.initTracker();
-
-  onUnmounted(() => {
-    sdk.stopTracker();
-  });
-});
 </script>
 
 <template>

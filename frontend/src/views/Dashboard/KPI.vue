@@ -292,15 +292,6 @@ getKPI();
 getAllKPI();
 getUserKPI();
 
-onMounted(() => {
-  const sdk = inject("sdk");
-  sdk.initTracker();
-
-  onUnmounted(() => {
-    sdk.stopTracker();
-  });
-});
-
 function updatePeriod(card, selectedPeriod) {
   
   resperiod.value = selectedPeriod[1];
