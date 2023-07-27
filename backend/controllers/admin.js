@@ -1,4 +1,5 @@
 const User = require("../db").User;
+const KpiName = require("../db").KpiName;
 const jwt = require('jsonwebtoken');
 
 async function getUserNotVerified(req, res) {
@@ -32,14 +33,7 @@ async function getAllUser(req, res) {
   }
 }
 
-async function getAllAllUser(req, res) {
-  try {
-    const users = await User.findAll({ where: { role: "user" } });
-    res.status(200).json(users);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-}
+
 
 async function getTokenUserbyId(req, res) {
   const tokenid = req.params.tokenid
@@ -84,6 +78,10 @@ async function updateToken(req, res) {
 
 async function getDelete(){
   const iduser = req.params.id;
+
+  const user = User.findOne({where: {id : iduser}})
+
+  //const tag = KpiName.findAll({where:{}})
 
 
   User.destroy({

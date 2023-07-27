@@ -18,6 +18,7 @@ const usertokenroutes = require("./routes/usertoken");
 const errorsHandler = require("./middleware/errorsHandler");
 const tunnelRoutes = require('./routes/tunnel');
 const tagRoutes = require('./routes/tag');
+const tagUserRoutes = require('./routes/tagUser');
 const { connect } = require('./services/mongoose');
 const { connectpg } = require('./db/');
 
@@ -49,6 +50,7 @@ app.use("/kpi", kpiroutes)
 app.use("/downloadsdk", downloadsdkroutes)
 app.use("/heatmap", Heatmaproutes)
 app.use("/userstoken", usertokenroutes)
+app.use("/taguser", tagUserRoutes)
 
 app.use("/charts", chartRoutes)
 

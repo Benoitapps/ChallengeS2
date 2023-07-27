@@ -14,6 +14,7 @@ import Test from "../views/Test.vue";
 import Download from "../views/Download.vue";
 import TagsCreate from "../views/TagsCreate.vue";
 import TunnelCreate from "../views/TunnelCreate.vue";
+import TagUser from "../views/Dashboard/TagUser.vue";
 
 const index = createRouter(
     {
@@ -22,6 +23,10 @@ const index = createRouter(
             {
                 path: '/',
                 component: KPI
+            },
+            {
+                path: '/taguser',
+                component: TagUser
             },
             {
                 path: '/charts',
