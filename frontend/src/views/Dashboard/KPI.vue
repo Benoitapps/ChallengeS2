@@ -461,6 +461,8 @@ function updatePeriod(card, selectedPeriod) {
       border: none;
       padding: 0.5rem 1rem; // 8px 16px
       border-radius: 4px;
+      font-weight: 700;
+      color: var(--secondary);
 
       &:hover {
         background: var(--accent);

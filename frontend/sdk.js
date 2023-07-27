@@ -181,22 +181,8 @@ export default class SDK {
     // ? ------------------------- USER INACTIVITY ------------------------- ? //
 
     // ? ------------------------- TAGS ------------------------- ? //
-    initTags() {
-        let tags = document.querySelectorAll('button[data-tag]');
-        tags.forEach((tag) => {
-            tag.addEventListener("click", (e) => {
-                // load balancing
-                clearTimeout(loadBalancing)
-                loadBalancing = setTimeout(() => {
-                    //console.table("click on this tag : ", e.target);
-                    this.tags.push({
-                        token: e.target.dataset.tag,
-                        path: window.location.pathname,
-                        timestamp: Date.now(),
-                    });
-                }, 400);
-            });
-        });
+    addTagToQueue(tag) {
+        this.tags.push(tag);
     }
     // ? ------------------------- TAGS ------------------------- ? //
 }

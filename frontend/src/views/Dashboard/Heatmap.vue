@@ -25,13 +25,13 @@ const srcbase = ref("");
 const src = ref("");
 const choiceType = ref("");
 
+const sdk = inject('sdk');
 onMounted(() => {
-  const sdk = inject('sdk');
   sdk.trackMouseMovement();
+});
 
-  onUnmounted(() => {
-    sdk.stopTrackingMouseMovement();
-  });
+onUnmounted(() => {
+  sdk.stopTrackingMouseMovement();
 });
 
 

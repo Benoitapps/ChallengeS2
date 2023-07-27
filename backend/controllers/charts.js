@@ -125,7 +125,7 @@ async function getCharts(req, res) {
                                     minute: {
                                         $subtract: [
                                             { $minute: "$visitors.sessions.startTime" },
-                                            { $mod: [{ $minute: "$visitors.sessions.startTime" }, 1] },
+                                            { $mod: [{ $minute: "$visitors.sessions.startTime" }, 10] },
                                         ],
                                     },
                                     second: 0,
@@ -141,7 +141,7 @@ async function getCharts(req, res) {
                                     minute: {
                                         $subtract: [
                                             { $minute: "$visitors.sessions.endTime" },
-                                            { $mod: [{ $minute: "$visitors.sessions.endTime" }, 1] },
+                                            { $mod: [{ $minute: "$visitors.sessions.endTime" }, 10] },
                                         ],
                                     },
                                     second: 0,
@@ -185,10 +185,9 @@ async function getCharts(req, res) {
 
                         dataSessions.forEach((session, index) => {
                             const sessionDate = new Date(session.date);
-                            const sessionDateEnd = new Date(sessionDate); // Create a new Date object
+                            const sessionDateEnd = new Date(sessionDate);
 
-                            // Add 1 minute to the sessionDateEnd
-                            sessionDateEnd.setMinutes(sessionDateEnd.getMinutes() + 1);
+                            sessionDateEnd.setMinutes(sessionDateEnd.getMinutes() + 10);
 
                             if (dataSessions[index + 1] && dataSessions[index + 1].date.getTime() !== sessionDateEnd.getTime()) {
                                 dataSessions.splice(index + 1, 0, {

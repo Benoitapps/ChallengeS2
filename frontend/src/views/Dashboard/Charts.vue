@@ -142,15 +142,14 @@ getConnectedUser();
 getAllCharts();
 getUserCharts();
 
+const sdk = inject('sdk');
 onMounted(() => {
-  const sdk = inject('sdk');
   sdk.initTracker();
 
   getData();
-
-  onUnmounted(() => {
-    sdk.stopTracker();
-  });
+});
+onUnmounted(() => {
+  sdk.stopTracker();
 });
 
 const updateChart = async (values) => {
@@ -385,6 +384,8 @@ const getUserdeleteCharts = async (charts) => {
       border: none;
       padding: 0.5rem 1rem; // 8px 16px
       border-radius: 4px;
+      font-weight: 700;
+      color: var(--secondary);
 
       &:hover {
         background: var(--accent);

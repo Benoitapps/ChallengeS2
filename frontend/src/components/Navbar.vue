@@ -1,24 +1,41 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref,watch } from 'vue'
+import { useRoute } from 'vue-router';
 const env = import.meta.env
 
 const user = ref("");
 const userRole =ref("");
 const error = ref("");
+const route = useRoute();
+
+const setLinkSelected = (link) => {
+  const linkHref = link.querySelector('a').getAttribute('href');
+
+  if (
+      linkHref !== "/" &&
+      !route.fullPath.match("/tunnels") &&
+      route.fullPath.match(linkHref)
+  ) {
+    document.querySelector(".selected")?.classList.remove("selected");
+    link.classList.add('selected');
+  } else if (
+      linkHref === "/" &&
+      linkHref === route.fullPath
+  ) {
+    document.querySelector(".selected")?.classList.remove("selected");
+    link.classList.add('selected');
+  } else if (
+      route.fullPath.match("/tunnels")
+  ) {
+    document.querySelector(".selected")?.classList.remove("selected");
+    document.querySelector("a[href*='/tags']").closest(".navbar__links").classList.add('selected');
+  }
+};
 
 onMounted(() => {
-  document.querySelectorAll(".navbar__links").forEach(link => {
-    if(link.querySelector("a").href === window.location.href) {
-      link.classList.add("selected");
-    }
-
-    link.addEventListener("click", () => {
-      if(document.querySelector(".selected")) {
-        document.querySelector(".selected").classList.remove("selected");
-      }
-
-      link.classList.add("selected");
-    });
+  const navbarLinks = document.querySelectorAll('.navbar__links');
+  navbarLinks.forEach((link) => {
+    setLinkSelected(link);
   });
   
 });
@@ -51,6 +68,15 @@ const getConnectedUser = async () => {
 };
 getConnectedUser();
 
+watch(
+    () => route.fullPath,
+    (newVal) => {
+      const navbarLinks = document.querySelectorAll('.navbar__links');
+      navbarLinks.forEach((link) => {
+        setLinkSelected(link);
+      });
+    }
+);
 </script>
 
 <template>
@@ -198,8 +224,14 @@ getConnectedUser();
           background-color: var(--primary);
 
           a {
+            color: var(--secondary);
+
             &:hover {
               background-color: var(--primary) !important;
+            }
+
+            path {
+              fill: var(--secondary);
             }
           }
         }

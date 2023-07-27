@@ -2,13 +2,13 @@
 import Navbar from "./components/Navbar.vue";
 import {inject, onMounted, onUnmounted, ref} from "vue";
 
+const sdk = inject('sdk');
 onMounted(() => {
-  const sdk = inject('sdk');
   sdk.trackNavigation();
+});
 
-  onUnmounted(() => {
-    sdk.stopTrackingNavigation();
-  });
+onUnmounted(() => {
+  sdk.stopTrackingNavigation();
 });
 </script>
 
@@ -110,6 +110,14 @@ select {
   &:focus {
     outline: 2px solid var(--primary);
     border-radius: 4px;
+  }
+}
+
+input {
+  &:-webkit-autofill,
+  &:autofill {
+    outline: var(--primary);
+    box-shadow: 0 0 0 1000px var(--accent) inset;
   }
 }
 

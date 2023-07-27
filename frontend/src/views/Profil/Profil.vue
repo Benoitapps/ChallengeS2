@@ -240,6 +240,8 @@ onMounted(() => {
       text-align: center;
       width: 100%;
       margin-top: 1.25rem;
+      font-weight: 700;
+      color: var(--secondary);
 
       &:hover {
         background-color: var(--accent);
@@ -257,6 +259,8 @@ onMounted(() => {
       font-size: 1rem;
       width: 100%;
       margin-top: 1.25rem;
+      font-weight: 700;
+      color: var(--secondary);
 
       &:hover {
         background-color: var(--accent);

@@ -9,10 +9,8 @@ let tunnels = ref([]);
 let defaultMessageTag = ref('Chargement des tags...');
 let defaultMessageTunnel = ref('Chargement des tunnels...');
 
+const sdk = inject('sdk');
 onMounted(async () => {
-  const sdk = inject('sdk');
-  sdk.initTags();
-
   // ? Get tags
   const responseTag = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/tags`, {
     method: 'GET',
@@ -42,10 +40,10 @@ onMounted(async () => {
   }
 
   sdk.initTracker();
+});
 
-  onUnmounted(() => {
-    sdk.stopTracker();
-  });
+onUnmounted(() => {
+  sdk.stopTracker();
 });
 </script>
 
@@ -76,7 +74,7 @@ onMounted(async () => {
       </tbody>
     </table>
 
-    <button data-tag="6c4t71zz">Click me (tag example)</button>
+    <button v-tracker.click.mouseover="'2ocraesx'">Click me (tag example)</button>
 
 
     <div class="container-btn">
