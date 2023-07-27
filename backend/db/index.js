@@ -22,9 +22,13 @@ const Tag = db.Tag;
 const Tunnel = db.Tunnel;
 const TunnelTag = db.TunnelTag;
 const Image = db.Image;
+const TagName = db.TagName;
 
 User.belongsToMany(KpiName, { through: "UserKpiNames" });
 KpiName.belongsToMany(User, { through: "UserKpiNames" });
+
+User.belongsToMany(TagName, { through: "UserTagName" });
+TagName.belongsToMany(User, { through: "UserTagName" });
 
 User.belongsToMany(ChartsName, { through: "UserChartsNames" });
 ChartsName.belongsToMany(User, { through: "UserChartsNames" });
