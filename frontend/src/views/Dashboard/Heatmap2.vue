@@ -237,7 +237,11 @@ function handleImageUpload(files, path) {
    
     console.log("imagechemin",response);
     if (response.ok) {
+      try{
       getImage();
+      }catch{
+        return error.value = "pas d'image";
+      }
       document.getElementById('input[type=file]').value = '';
 
       // Image uploaded successfully
@@ -325,8 +329,11 @@ getImage();
       <img class="image" :src="srcImage.src" alt="Image décodée" />
     </div>
 
-    <div v-for="item in mapmouse.resPageMouse" :key="item.id" >
-      <p>Ajouter une image pour la page : {{ item.path }}</p>
+    <div class="ajoutimage" v-for="item in mapmouse.resPageMouse" :key="item.id" >
+      <div class="titreimage">
+      <p>Ajouter une image pour la page :</p>
+        <p class="titre"> {{ item.path }}</p>
+    </div>
     <input type="file" @change="(e) => handleImageUpload(e.target.files, item.path)" />
   </div>
 
@@ -348,10 +355,28 @@ getImage();
   // height: 20em;
   border: black solid 5px;
   background: rgba(0, 0, 0, .4);
-  width: 100em;
-  height: 50em;
-  margin-top: 2px;
+  width: 1136px;
+  height: 570px;
+  //margin-top: 2px;
   overflow: hidden;
+}
+
+.titreimage{
+  display: flex;
+  margin-top: 5px;
+}
+
+.titre{
+  background-color: var(--primary);
+  padding: 2px;
+
+}
+
+.ajoutimage{
+  background-color: white;
+  border: #000 solid 1px;
+  padding: 5px;
+  width: 25em;
 }
 
 .image{
@@ -360,10 +385,15 @@ getImage();
 
 }
 
+main{
+  overflow: auto;
+}
+
 .bodypage{
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: fit-content;
 }
 
 .bouton{
@@ -394,6 +424,7 @@ getImage();
 
   .interieur{
     display: flex;
+    flex-wrap: wrap;
   }
 
   .titre{

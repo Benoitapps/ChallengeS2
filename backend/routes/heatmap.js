@@ -4,12 +4,12 @@ const HeatmapCtrl = require('../controllers/heatmap');
 const auth = require('../middleware/auth');
 const authMiddleware = require('../middleware/authMiddleware');
 
-router.post('/', HeatmapCtrl.getHeatmapClic);
+router.post('/',authMiddleware, HeatmapCtrl.getHeatmapClic);
 
-router.post('/mouse', HeatmapCtrl.getHeatmapMouse);
+router.post('/mouse',authMiddleware, HeatmapCtrl.getHeatmapMouse);
 
-router.post('/upload', HeatmapCtrl.uploadImage);
-router.post('/upload/get', HeatmapCtrl.getImageSrc);
-router.post('/upload/getOne', HeatmapCtrl.getOneImageSrc);
+router.post('/upload',authMiddleware, HeatmapCtrl.uploadImage);
+router.post('/upload/get',authMiddleware, HeatmapCtrl.getImageSrc);
+router.post('/upload/getOne',authMiddleware, HeatmapCtrl.getOneImageSrc);
 
 module.exports = router;

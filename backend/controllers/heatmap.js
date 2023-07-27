@@ -3,7 +3,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
-const authMiddleware = require('../middleware/authMiddleware');
+const authMiddleware = require('../middleware/authMiddleware').default;
 const services = '../services/user'
 const User = require("../db").User;
 const Image = require("../db").Image;
@@ -120,7 +120,8 @@ const result = await Usertracker.aggregate(pipeline).exec();
                //console.log( coord2.x-10,"<=",coord.x,"<=",coord2.x+10);
                 if( ((coord2.x-10 <= coord.x) && (coord.x <= coord2.x+10))&& (coord2.y-10 <= coord.y) && (coord.y <= coord2.y+10) ){
                     //console.log("res= ",((coord2.x-10 <= coord.x) && (coord.x <= coord2.x+10))&& (coord2.y-10 <= coord.y) && (coord.y <= coord2.y+10))
-                   
+                    coord.x = coord.x*1136/1536;
+                    coord.y = coord.y*570/864;
 
                     coord.value++
                 }
@@ -224,6 +225,8 @@ const result = await Usertracker.aggregate(pipeline).exec();
                 if( ((coord2.x-10 <= coord.x) && (coord.x <= coord2.x+10))&& (coord2.y-10 <= coord.y) && (coord.y <= coord2.y+10) ){
                     //console.log("res= ",((coord2.x-10 <= coord.x) && (coord.x <= coord2.x+10))&& (coord2.y-10 <= coord.y) && (coord.y <= coord2.y+10))
                     coord.value++;
+                    coord.x = coord.x*1136/1536;
+                    coord.y = coord.y*570/864;
                     
                 }
             })          

@@ -26,7 +26,7 @@ const signup = async () => {
     } else {
       // erreur
       const data = await response.json();
-      error.value = data.message;
+      error.value = data.error;
     }
   } catch (e) {
     // Gestion des erreurs de connexion
