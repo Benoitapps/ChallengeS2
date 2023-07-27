@@ -1,10 +1,18 @@
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import router from '../router';
 
 const env = import.meta.env;
+const showErrorLabelTag = ref(false);
 
 const createTag = async () => {
+    let labelName = document.getElementById('tag-label').value
+
+    if (labelName.length < 4) {
+        showErrorLabelTag.value = true;
+        return;
+    }
+
     const response = await fetch(`${env.VITE_URL}:${env.VITE_PORT_BACK}/tags/create`, {
         method: 'POST',
         headers: {
@@ -46,6 +54,9 @@ onMounted(() => {
             <div class="container-label">
                 <label for="tag_label">Nom de votre tag</label>
                 <input type="text" name="tag_label" id="tag-label" placeholder="Label de votre tag">
+                <div v-show="showErrorLabelTag" class="error-message">
+                    Le label de votre tag doit contenir au moins 4 caractères.
+                </div>
                 <button @click="createTag()">CREER</button>
                 <div class="container-info">
                     <svg width="80px" height="80px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -113,5 +124,10 @@ onMounted(() => {
 
     .info {
         margin-left: 14px;
+    }
+
+    .error-message {
+        color: red;
+        margin-bottom: 5px;
     }
 </style>

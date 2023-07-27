@@ -74,7 +74,7 @@ onUnmounted(() => {
       </tbody>
     </table>
 
-    <button v-tracker:click.mouseover="'2ocraesx'">Click me (tag example)</button>
+    <button v-tracker.click.mouseover="'2ocraesx'">Click me (tag example)</button>
 
 
     <div class="container-btn">

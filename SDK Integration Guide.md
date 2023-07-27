@@ -94,14 +94,14 @@ Maintenant que le suivi est initialisé, vous pouvez utiliser les fonctionnalit�
 Le plugin de suivi ajoute une directive personnalisée appelée v-tracker qui peut être utilisée pour suivre les événements sur les éléments du DOM. La directive prend un argument obligatoire qui est le nom du tag à suivre. Vous pouvez également ajouter des modificateurs pour suivre des événements spécifiques. Voici un exemple :
 
 ```html
-<button v-tracker:mouseover.click="'token_de_votre_tag'">Click me</button>
+<button v-tracker.mouseover.click="'token_de_votre_tag'">Click me</button>
 ```
 ### Détails sur la directive
 La directive v-tracker permet de suivre différents types d'événements sur un élément du DOM et d'enregistrer les données associées dans le SDK. Voici comment cela fonctionne :
 
 - `v-tracker`: La directive principale, suivie du type d'événement ou d'une combinaison d'événements que vous souhaitez suivre.
 
-- `v-tracker:[événement]`: Vous pouvez spécifier un ou plusieurs événements séparés par des points pour lesquels vous souhaitez effectuer le suivi. Par exemple, `v-tracker:click.input` suivra à la fois les événements click et input.
+- `v-tracker.[événement]`: Vous pouvez spécifier un ou plusieurs événements séparés par des points pour lesquels vous souhaitez effectuer le suivi. Par exemple, `v-tracker.click.input` suivra à la fois les événements click et input.
 
 
 Notez que vous pouvez personnaliser la tag selon vos besoins et l'utiliser pour différencier différents événements dans le SDK.
