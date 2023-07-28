@@ -112,8 +112,8 @@ watchEffect(() => {
   cards.value = reactiveCards;
 });
 
-nameCard.value = "test";
-resperiod.value = "test2";
+nameCard.value = "all";
+resperiod.value = "all";
 
 function testState(name) {
   for (const element of kpiUserData.value) {
@@ -163,7 +163,7 @@ const getKPI = async () => {
     if (response.ok) {
       const data = await response.json();
 
-      if (nameCard.value != "test") {
+      if (nameCard.value != "all") {
 
         cards.value.forEach(element => {
           if (nameCard.value == element.id) {
