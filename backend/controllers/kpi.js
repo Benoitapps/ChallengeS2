@@ -212,6 +212,13 @@ async function getKPI(req, res) {
         },
       },
       {
+        $sort: {
+          count: -1, // Pour un tri décroissant
+          //count: 1, // Pour un tri croissant
+          "_id": 1,
+        },
+      },
+      {
         $group: {
           _id: null, // Utiliser null pour regrouper tous les résultats en un seul groupe
           results: {
@@ -292,6 +299,13 @@ async function getKPI(req, res) {
         $group: {
           _id: "$visitesPaths",
           count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: {
+          count: -1, // Pour un tri décroissant
+          //count: 1, // Pour un tri croissant
+          "_id": 1,
         },
       },
       {
