@@ -94,6 +94,13 @@ async function getTag(req, res) {
         },
       },
       {
+        $sort: {
+          count: -1, // Pour un tri décroissant
+          //count: 1, // Pour un tri croissant
+          "_id": 1,
+        },
+      },
+      {
         $group: {
           _id: null,
           results: {
@@ -199,6 +206,13 @@ async function getTag(req, res) {
         $group: {
           _id: "$clickTokens",
           count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: {
+          count: -1, // Pour un tri décroissant
+          //count: 1, // Pour un tri croissant
+          "_id": 1,
         },
       },
       {
