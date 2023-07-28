@@ -73,7 +73,7 @@ async function getKPI(req, res) {
     ];
 
     const result = await Usertracker.aggregate(pipeline).exec();
-    const totalSessions = result[0].totalSessions;
+    const totalSessions = result.length > 0 ? result[0].totalSessions : 0;
     ////////////////////clics////////////////////////////////////////
     const pipeline2 = [
       { $match: { api_token: api_tokenUser } },
@@ -101,7 +101,7 @@ async function getKPI(req, res) {
     ];
 
     const result2 = await Usertracker.aggregate(pipeline2).exec();
-    const totalClicks = result2[0].totalClicks;
+    const totalClicks = result2.length > 0 ? result2[0].totalClicks : 0;
 
     /////////////////////////////////////mtemps des session////////////////////////////////////////
     const pipeline3 = [
@@ -141,7 +141,7 @@ async function getKPI(req, res) {
     ];
 
     const result3 = await Usertracker.aggregate(pipeline3).exec();
-    const resMoyenne = result3[0].averageDuration;
+    const resMoyenne = result3.length > 0 ? result3[0].averageDuration : 0;
 
     ////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////nombre de visiteur//////////////////////////////////////////
@@ -157,7 +157,7 @@ async function getKPI(req, res) {
     ];
 
     const result4 = await Usertracker.aggregate(pipeline4).exec();
-    const resVisiteur = result4[0].numberOfVisitors;
+    const resVisiteur = result4.length > 0 ? result4[0].numberOfVisitors : 0;
 
     ////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////clics par page ///////////////////////////////////////
@@ -212,6 +212,13 @@ async function getKPI(req, res) {
         },
       },
       {
+        $sort: {
+          count: -1, // Pour un tri décroissant
+          //count: 1, // Pour un tri croissant
+          "_id": 1,
+        },
+      },
+      {
         $group: {
           _id: null, // Utiliser null pour regrouper tous les résultats en un seul groupe
           results: {
@@ -231,7 +238,7 @@ async function getKPI(req, res) {
     ];
 
     const result5 = await Usertracker.aggregate(pipeline5).exec();
-    const resPages = result5[0];
+    const resPages = result5.length > 0 ? result5[0] : { result: { results: [] } };
 
 
     ////// Nombre de visites par page
@@ -295,6 +302,13 @@ async function getKPI(req, res) {
         },
       },
       {
+        $sort: {
+          count: -1, // Pour un tri décroissant
+          //count: 1, // Pour un tri croissant
+          "_id": 1,
+        },
+      },
+      {
         $group: {
           _id: null,
           results: {
@@ -318,7 +332,7 @@ async function getKPI(req, res) {
     ];
 
     const result6 = await Usertracker.aggregate(pipeline6).exec();
-    const resPagesVisite = result6[0];
+    const resPagesVisite = result6.length > 0 ? result6[0] : { result: { results: [] } };
 
     ////////////////////////////////////////////////////////////////////////////////
     let timeStamp = 1688999649562;

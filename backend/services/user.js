@@ -4,46 +4,12 @@ const ValidationError = require("../errors/ValidationError");
 
 module.exports = function UserService() {
   return {
-    findAll: async function (filters, options) {
-      let dbOptions = {
-        where: filters,
-      };
-      if (options.order) {
-        dbOptions.order = Object.entries(options.order);
-      }
-      if (options.limit) {
-        dbOptions.limit = options.limit;
-        dbOptions.offset = options.offset;
-      }
-      return User.findAll(dbOptions);
-    },
-    findOne: async function (filters) {
-      return User.findOne({ where: filters });
-    },
-    create: async function (data) {
-      try {
-        return await User.create(data);
-      } catch (e) {
-        if (e instanceof Sequelize.ValidationError) {
-          throw ValidationError.fromSequelizeValidationError(e);
-        }
-        throw e;
-      }
-    },
-    replace: async function (filters, newData) {
-      try {
-        const nbDeleted = await this.delete(filters);
-        const user = await this.create(newData);
-        return [[user, nbDeleted === 0]];
-      } catch (e) {
-        if (e instanceof Sequelize.ValidationError) {
-          throw ValidationError.fromSequelizeValidationError(e);
-        }
-        throw e;
-      }
-    },
     update: async (filters, newData) => {
+      if (newData.length !== 2 && newData.email == undefined && newData.website == undefined) 
+        return res.status(400).json({ error: "Mauvaise requête" });
+
       try {
+        
         const [nbUpdated, users] = await User.update(newData, {
           where: filters,
           returning: true,

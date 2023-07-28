@@ -65,26 +65,27 @@ async function getHeatmapClic(req, res) {
     ];
 
     const result = await Usertracker.aggregate(pipeline).exec();
-    const resPages = result[0].result.results;
+    const resPages = result.length > 0 ? result[0].result.results : [];
 
-    resPages.forEach((element) => {
-      element.coordinates.forEach((coord) => {
-        coord.value = 0;
-        element.coordinates.forEach((coord2) => {
-          if (
-            coord2.x - 10 <= coord.x &&
-            coord.x <= coord2.x + 10 &&
-            coord2.y - 10 <= coord.y &&
-            coord.y <= coord2.y + 10
-          ) {
-            coord.x = (coord.x * 1136) / 1536;
-            coord.y = (coord.y * 570) / 864;
-
-            coord.value++;
-          }
+    if (resPages.length > 0) {
+      resPages.forEach((element) => {
+        element.coordinates.forEach((coord) => {
+          coord.value = 0;
+          element.coordinates.forEach((coord2) => {
+            if (
+              coord2.x - 10 <= coord.x &&
+              coord.x <= coord2.x + 10 &&
+              coord2.y - 10 <= coord.y &&
+              coord.y <= coord2.y + 10
+            ) {
+              coord.value++;
+              coord.x = (coord.x * 1136) / 1536;
+              coord.y = (coord.y * 570) / 864;
+            }
+          });
         });
       });
-    });
+    }
 
     res.status(200).json({
       resPage: resPages,
@@ -156,25 +157,27 @@ async function getHeatmapMouse(req, res) {
     ];
 
     const result = await Usertracker.aggregate(pipeline).exec();
-    const resPages = result[0].result.results;
+    const resPages = result.length > 0 ? result[0].result.results : [];
 
-    resPages.forEach((element) => {
-      element.coordinates.forEach((coord) => {
-        coord.value = 0;
-        element.coordinates.forEach((coord2) => {
-          if (
-            coord2.x - 10 <= coord.x &&
-            coord.x <= coord2.x + 10 &&
-            coord2.y - 10 <= coord.y &&
-            coord.y <= coord2.y + 10
-          ) {
-            coord.value++;
-            coord.x = (coord.x * 1136) / 1536;
-            coord.y = (coord.y * 570) / 864;
-          }
+    if (resPages.length > 0) {
+      resPages.forEach((element) => {
+        element.coordinates.forEach((coord) => {
+          coord.value = 0;
+          element.coordinates.forEach((coord2) => {
+            if (
+              coord2.x - 10 <= coord.x &&
+              coord.x <= coord2.x + 10 &&
+              coord2.y - 10 <= coord.y &&
+              coord.y <= coord2.y + 10
+            ) {
+              coord.value++;
+              coord.x = (coord.x * 1136) / 1536;
+              coord.y = (coord.y * 570) / 864;
+            }
+          });
         });
       });
-    });
+    }
 
     res.status(200).json({
       resPageMouse: resPages,
