@@ -9,7 +9,7 @@ const sinon = require("sinon");
 const bcrypt = require("bcrypt");
 
 describe("POST /login", () => {
-    afterEach(() => {
+    beforeEach(() => {
         sinon.restore();
     });
 
