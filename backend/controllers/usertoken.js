@@ -14,12 +14,6 @@ async function updateToken(req, res) {
       { $set: { api_token: newToken } }
     );
 
-    if (result.modifiedCount === 0) {
-      return res
-        .status(404)
-        .json({ error: "Aucun document trouvé avec l'ancien token" });
-    }
-
     const [nbUpdated, users] = await User.update(
       { api_token: newToken },
       {

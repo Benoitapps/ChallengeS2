@@ -10,6 +10,14 @@ async function signup(req, res) {
       return res.status(400).json({ error: "Missing parameters" });
     }
 
+    if (!/\S+@\S+\.\S+/.test(req.body.email)) {
+      return res
+        .status(400)
+        .json({
+          error: "L'adresse e-mail est invalide.",
+        });
+    }
+
     if (req.body.password.length < 8 || req.body.password.length > 32) {
       return res
         .status(400)
