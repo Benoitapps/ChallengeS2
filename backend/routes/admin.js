@@ -6,7 +6,7 @@ const adminMiddleware = require('../middleware/adminMiddleware');
 const authMiddleware = require('../middleware/authMiddleware');
 
 
-router.get('/notverified', adminMiddleware, adminCtrl.getUserNotVerified);
+router.get('/notverified',adminMiddleware, adminCtrl.getUserNotVerified);
 router.put('/verified/:id',adminMiddleware, adminCtrl.UserVerified);
 
 router.get('/alluser', adminMiddleware, adminCtrl.getAllUser);
