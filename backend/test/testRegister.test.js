@@ -3,7 +3,6 @@ let chaiHttp = require('chai-http');
 let server = require('../server');
 const should = chai.should();
 chai.use(chaiHttp);
-require('./test.env.js');
 //const connection = require("../db/db");
 
 
