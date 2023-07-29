@@ -9,35 +9,32 @@ const sinon = require("sinon");
 const bcrypt = require("bcrypt");
 
 describe("POST /login", () => {
-    beforeEach(() => {
-        // sinon.stub(User, "findOne").resolves({
-        //     id: 1,
-        //     email: "test@test.com",
-        //     password: "hashed_password", // Utilisez le même mot de passe ici
-        //     is_verified: true,
-        //     role: "user",
-        //     api_token: "api_token",
-        // });
-
-        // sinon.stub(bcrypt, "compare").resolves(true);
-    });
-
     afterEach(() => {
         sinon.restore();
     });
 
-    // it("should login an existing user with correct credentials", async () => {
-    //     const userData = {
-    //         email: "test@test.com",
-    //         password: "hashed_password", // Utilisez le même mot de passe ici
-    //     };
+    it("should login an existing user with correct credentials", async () => {
+        const mockUser = {
+            email: "test@test.com",
+            password: bcrypt.hashSync("password123", 10), // Hashed password for the mock user
+        };
+        sinon.stub(User, "findOne").resolves(mockUser);
 
-    //     const res = await chai.request(server).post("/login").send(userData);
+        // Données de test
+        const userData = {
+            email: "test@test.com",
+            password: "password123",
+        };
 
-    //     expect(res).to.have.status(200);
-    //     expect(res.body).to.have.property("userId").to.be.a("number");
-    //     expect(res.body).to.have.property("token").to.be.a("string");
-    // });
+        // Appeler la route /login avec les données de test
+        const res = await chai.request(server).post("/login").send(userData);
+
+        // Vérifier le code de statut de réponse
+        expect(res).to.have.status(200);
+
+        // Vérifier que la réponse contient l'ID de l'utilisateur et le token
+        expect(res.body).to.have.property("token").to.be.a("string");
+    });
 
     it("should return 401 when user is not found", async () => {
         // Données de test
