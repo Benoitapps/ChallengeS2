@@ -7,31 +7,7 @@ const should = chai.should(); // ! ne pas supprimer
 chai.use(chaiHttp);
 const sinon = require("sinon");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-
-function generateJWTAndCookie(user) {
-    const token = jwt.sign(
-        {
-            userToken: user.api_token,
-            userEmail: user.email,
-            userRole: user.role,
-            userId: user.id,
-        },
-        "RANDOM_TOKEN_SECRET",
-        { expiresIn: "24h" }
-    );
-
-    // Créer le cookie contenant le token JWT
-    const cookieOptions = {
-        maxAge: 24 * 60 * 60 * 1000,
-        httpOnly: true,
-        secure: false,
-        sameSite: false,
-        signed: false,
-    };
-
-    return { token, cookieOptions };
-}
+const { generateJWTAndCookie } = require("./utils/jwt");
 
 describe("Auth Middleware", () => {
     it("should allow access to protected route with valid JWT cookie", async () => {
