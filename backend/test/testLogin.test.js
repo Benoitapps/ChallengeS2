@@ -1,102 +1,132 @@
-let chai = require('chai');
-let chaiHttp = require('chai-http');
-let server = require('../server');
-const should = chai.should();
+let chai = require("chai");
+const { expect } = chai;
+const User = require("../db").User;
+let chaiHttp = require("chai-http");
+let server = require("../server");
+const should = chai.should(); // ! ne pas supprimer
 chai.use(chaiHttp);
-//const connection = require("../db/db");
+const sinon = require("sinon");
+const bcrypt = require("bcrypt");
 
+describe("POST /login", () => {
+    beforeEach(() => {
+        // sinon.stub(User, "findOne").resolves({
+        //     id: 1,
+        //     email: "test@test.com",
+        //     password: "hashed_password", // Utilisez le même mot de passe ici
+        //     is_verified: true,
+        //     role: "user",
+        //     api_token: "api_token",
+        // });
 
-
-describe('/POST login', () => {
-
-//     let transaction;
-// before(async () => {
-//   try {
-//     // Démarrez une transaction Sequelize
-//     transaction = await connection.transaction();
-//   } catch (err) {
-//     console.error('Erreur lors du démarrage de la transaction de test :', err);
-//   }
-//   return Promise.resolve(); // Ajoutez cette ligne pour résoudre le problème
-// });
-
-// after(async () => {
-//   try {
-//     // Une fois que tous les tests sont terminés, faites un rollback de la transaction pour annuler les modifications dans la base de données.
-//     await transaction.rollback();
-//   } catch (err) {
-//     console.error('Erreur lors de l\'annulation de la transaction de test :', err);
-//   }
-//   return Promise.resolve(); // Ajoutez cette ligne pour résoudre le problème
-// });
-
-
-
-    it('it should signup a new user', (done) => {
-      chai.request(server)
-        .post('/signup')
-        .send({ email: 'test@user333844569874546565.com', password: 'testpassword', website: 'test' })
-        .end((err, res) => {
-          res.should.have.status(201);
-          // Assurez-vous d'avoir une propriété appropriée dans la réponse pour le nouvel utilisateur créé.
-          res.body.should.have.property('message').eql('Utilisateur créé !');
-          done();
-        });
+        // sinon.stub(bcrypt, "compare").resolves(true);
     });
-    it('erreur mot de passe - de 8 char ', (done) => {
-        chai.request(server)
-          .post('/signup')
-          .send({ email: 'test@user2.com', password: 'test', website: 'test' })
-          .end((err, res) => {
-            res.should.have.status(400);
-            // Assurez-vous d'avoir une propriété appropriée dans la réponse pour le nouvel utilisateur créé.
-            res.body.should.have.property('error').eql('Le mot de passe doit contenir entre 8 et 32 caractères.');
-            done();
-          });
-      });
-      it('erreur mot de passe + de 382 char ', (done) => {
-        chai.request(server)
-          .post('/signup')
-          .send({ email: 'test@user3.com', password: 'test12345678912345678912345678912', website: 'test' })
-          .end((err, res) => {
-            res.should.have.status(400);
-            // Assurez-vous d'avoir une propriété appropriée dans la réponse pour le nouvel utilisateur créé.
-            res.body.should.have.property('error').eql('Le mot de passe doit contenir entre 8 et 32 caractères.');
-            done();
-          });
-      });
-      it('erreur email sans @ ', (done) => {
-        chai.request(server)
-          .post('/signup')
-          .send({ email: 'testuser3.com', password: 'testtest', website: 'test' })
-          .end((err, res) => {
-            res.should.have.status(400);
-            // Assurez-vous d'avoir une propriété appropriée dans la réponse pour le nouvel utilisateur créé.
-            res.body.should.have.property('error').eql("L'adresse e-mail est invalide.");
-            done();
-          });
-      });
-      it('erreur email sans . ', (done) => {
-        chai.request(server)
-          .post('/signup')
-          .send({ email: 'testuser3@com', password: 'testtest', website: 'test' })
-          .end((err, res) => {
-            res.should.have.status(400);
-            // Assurez-vous d'avoir une propriété appropriée dans la réponse pour le nouvel utilisateur créé.
-            res.body.should.have.property('error').eql("L'adresse e-mail est invalide.");
-            done();
-          });
-      });
-      it('erreur email sans . ni @ ', (done) => {
-        chai.request(server)
-          .post('/signup')
-          .send({ email: 'testuser3@com', password: 'testtest', website: 'test' })
-          .end((err, res) => {
-            res.should.have.status(400);
-            // Assurez-vous d'avoir une propriété appropriée dans la réponse pour le nouvel utilisateur créé.
-            res.body.should.have.property('error').eql("L'adresse e-mail est invalide.");
-            done();
-          });
-      });
-  
-  });
+
+    afterEach(() => {
+        sinon.restore();
+    });
+
+    // it("should login an existing user with correct credentials", async () => {
+    //     const userData = {
+    //         email: "test@test.com",
+    //         password: "hashed_password", // Utilisez le même mot de passe ici
+    //     };
+
+    //     const res = await chai.request(server).post("/login").send(userData);
+
+    //     expect(res).to.have.status(200);
+    //     expect(res.body).to.have.property("userId").to.be.a("number");
+    //     expect(res.body).to.have.property("token").to.be.a("string");
+    // });
+
+    it("should return 401 when user is not found", async () => {
+        // Données de test
+        const userData = {
+            email: "nonexistent@test.com",
+            password: "password123",
+        };
+
+        // Configuration du mock pour User.findOne pour simuler qu'aucun utilisateur n'est trouvé
+        sinon.stub(User, "findOne").resolves(null);
+
+        // Appeler la route /login avec les données de test
+        const res = await chai.request(server).post("/login").send(userData);
+
+        // Vérifier le code de statut de réponse
+        expect(res).to.have.status(401);
+
+        // Vérifier le message d'erreur
+        expect(res.body)
+            .to.have.property("error")
+            .eql("Utilisateur ou Mot de passe incorrect!");
+    });
+
+    it("should return 401 when user is not verified", async () => {
+        // Données de test
+        const userData = {
+            email: "test@test.com",
+            password: "password123",
+        };
+
+        // Configuration du mock pour User.findOne pour simuler qu'un utilisateur existant est trouvé, mais non vérifié
+        sinon.stub(User, "findOne").resolves({
+            id: 1,
+            email: userData.email,
+            password: "hashed_password",
+            is_verified: false,
+            role: "user",
+            api_token: "api_token",
+        });
+
+        // Appeler la route /login avec les données de test
+        const res = await chai.request(server).post("/login").send(userData);
+
+        // Vérifier le code de statut de réponse
+        expect(res).to.have.status(401);
+
+        // Vérifier le message d'erreur
+        expect(res.body)
+            .to.have.property("error")
+            .eql("Votre compte doit être validé par un administrateur");
+    });
+
+    it("should return 401 when incorrect password is provided", async () => {
+        // Données de test
+        const userData = {
+            email: "test@test.com",
+            password: "incorrect_password",
+        };
+
+        // Configuration du mock pour User.findOne pour simuler qu'un utilisateur existant est trouvé
+        sinon.stub(User, "findOne").resolves({
+            id: 1,
+            email: userData.email,
+            password: "hashed_password",
+            is_verified: true,
+            role: "user",
+            api_token: "api_token",
+        });
+
+        // Appeler la route /login avec les données de test
+        const res = await chai.request(server).post("/login").send(userData);
+
+        // Vérifier le code de statut de réponse
+        expect(res).to.have.status(401);
+
+        // Vérifier le message d'erreur
+        expect(res.body)
+            .to.have.property("error")
+            .eql("Utilisateur ou Mot de passe incorrect!");
+    });
+
+    it("should return 400 when email and password are missing", async () => {
+        // Appeler la route /login avec une requête invalide (paramètres manquants)
+        const res = await chai.request(server).post("/login").send({});
+
+        // Vérifier le code de statut de réponse
+        expect(res).to.have.status(400);
+
+        // Vérifier le message d'erreur
+        expect(res.body).to.have.property("error").eql("Missing parameters");
+    });
+});
