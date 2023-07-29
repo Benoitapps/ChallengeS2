@@ -8,7 +8,7 @@ chai.use(chaiHttp);
 const sinon = require("sinon");
 
 describe("User", () => {
-    afterEach(() => {
+    beforeEach(() => {
         sinon.restore();
     });
 
