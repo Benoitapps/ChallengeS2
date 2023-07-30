@@ -61,8 +61,8 @@ const hostname = process.env.DOMAIN_NAME;
 
 app.listen(port, hostname, () => {
    console.log(`Server running at ${hostname}:${port}/`);
-  if (process.env.NODE_ENV !== 'test')
-  connect();
+
+  if (process.env.NODE_ENV !== 'test') connect();
 });
 
 module.exports = app;

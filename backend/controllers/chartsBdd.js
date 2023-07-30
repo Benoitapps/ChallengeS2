@@ -24,7 +24,7 @@ async function getChartsUser(req, res) {//apiToken
 
         const chartsNames = user.ChartsNames.map((chartsName) => chartsName.name);
 
-        res.json({ userToken, chartsNames });
+        res.status(200).json({ userToken, chartsNames });
     } catch (error) {
         console.error(error);
         res.status(500).json({error: error.message });
@@ -61,7 +61,7 @@ async function getChartsNotUser(req, res) {
         // Récupérer uniquement les noms des charts non liés à l'utilisateur
         const unlinkedChartsNamesOnly = unlinkedChartsNames.map((chartsName) => chartsName.name);
 
-        res.json({ userToken, unlinkedChartsNames: unlinkedChartsNamesOnly });
+        res.status(200).json({ userToken, unlinkedChartsNames: unlinkedChartsNamesOnly });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });
@@ -82,7 +82,7 @@ async function addChartsToUser(req, res) {
 
         await user.addChartsName(chartsName);
 
-        res.json({ message: "ChartsName ajouté à l'utilisateur avec succès." });
+        res.status(201).json({ message: "ChartsName ajouté à l'utilisateur avec succès." });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });
@@ -103,7 +103,7 @@ async function removeChartsFromUser(req, res) {
 
         await user.removeChartsName(chartsName);
 
-        res.json({ message: "ChartsName supprimé de l'utilisateur avec succès." });
+        res.status(200).json({ message: "ChartsName supprimé de l'utilisateur avec succès." });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });
@@ -114,7 +114,7 @@ async function getAllChartsNames(req, res) {
     try {
         const chartsNames = await ChartsName.findAll();
 
-        res.json(chartsNames);
+        res.status(200).json(chartsNames);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });

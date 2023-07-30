@@ -1,0 +1,33 @@
+name: Run Tests
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - test/testdev
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+
+      - name: Install dependencies
+        working-directory: backend
+        run: npm install
+
+      - name: Run tests
+        working-directory: backend  
+        env:
+          TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
+          NODE_ENV: ${{ secrets.NODE_ENV }}
+          URL_SITE_CLIENT: ${{ secrets.URL_SITE_CLIENT }}
+        run: npm test
