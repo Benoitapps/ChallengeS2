@@ -93,6 +93,15 @@ describe("Tag Routes", () => {
 
             expect(res).to.have.status(201);
         });
+
+        it("should return 401 when no token is provided", async () => {
+            const res = await chai.request(server).post("/tags/create");
+
+            expect(res).to.have.status(401);
+            expect(res.body).to.deep.equal({
+                error: "Authentification requise !",
+            });
+        });
     });
 
     describe("DELETE /tags/delete/:id", () => {
