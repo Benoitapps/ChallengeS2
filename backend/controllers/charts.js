@@ -32,8 +32,10 @@ async function getCharts(req, res) {
     // const api_tokenUsder =getConnectedUserId(req);
     const api_tokenUsder =apiToken;
 
-    if(!req.params?.nameCard || !req.params?.resperiod) {
-        return res.status(400).json({ error: 'Missing parameters' });
+    if(!req.params?.nameCard) {
+        return res.status(400).json({ error: 'Nom de la card manquante' });
+    } else if(!req.params?.resperiod) {
+        return res.status(400).json({ error: 'Période manquante' });
     } else {
         if(req.params?.resperiod === '24h') {
             unit = 'hour';
@@ -47,6 +49,8 @@ async function getCharts(req, res) {
         } else if(req.params?.resperiod === '12m') {
             unit = 'month';
             amount = 12;
+        } else {
+            return res.status(400).json({ error: 'Période invalide' });
         }
 
         if(req.params?.nameCard === 'clics') {
@@ -96,7 +100,7 @@ async function getCharts(req, res) {
                     }
                 ]
             )
-                .then(clicks => res.json(clicks))
+                .then(clicks => res.status(200).json(clicks))
                 .catch(err => res.status(400).json('Error: ' + err));
         }
 
@@ -197,7 +201,7 @@ async function getCharts(req, res) {
                             }
                         });
 
-                        res.json(dataSessions);
+                        res.status(200).json(dataSessions);
                     }
                 )
                 .catch(err => res.status(400).json('Error: ' + err));
