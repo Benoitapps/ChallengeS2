@@ -33,9 +33,13 @@ function all(req, res) {
   })
     .then((tags) => {
       tags = tags.map((tag) => {
-        tag = tag.dataValues;
-        delete tag.userId;
-        return tag;
+        if(tag.dataValues) {
+          tag = tag.dataValues;
+          delete tag.userId;
+          return tag;
+        } else {
+          return tag;
+        }
       });
       res.status(200).json(tags);
     })
