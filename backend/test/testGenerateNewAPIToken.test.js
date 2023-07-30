@@ -10,13 +10,13 @@ const bcrypt = require("bcrypt");
 const { generateJWTAndCookie } = require("./utils/jwt");
 const Usertracker = require("../models/Usertracker");
 
-describe("Generate Token", () => {
+describe("Generate New API Key (api_token)", () => {
     beforeEach(() => {
         sinon.restore();
     });
 
     describe("PATCH /userstoken/:id", () => {
-        it("should generate a new token for the user", async () => {
+        it("should generate a new API key for the user", async () => {
             const mockUser = {
                 id: 100,
                 email: "unittest@test.com",
