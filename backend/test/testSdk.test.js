@@ -14,6 +14,7 @@ describe("SDK", () => {
     let tagData;
 
     beforeEach(() => {
+        sinon.restore();
         userData = {
             id: 1,
             email: "test@test.com",
