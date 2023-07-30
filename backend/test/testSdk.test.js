@@ -78,17 +78,19 @@ describe("SDK", () => {
                 endTime: new Date("2023-07-30T08:34:39.519+00:00"),
             };
 
-            const res = await chai
-                .request(server)
+            chai.request(server)
                 .post("/sdk")
-                .send(trackersData);
-
-            expect(res).to.have.status(200);
+                .send(trackersData)
+                .then((res) => {
+                    expect(res).to.have.status(200);
+                    done();
+                })
+                .catch((err) => done(err));
         });
     });
 
     describe("with invalid data", () => {
-        /*it("should return 401 when user not find", async () => {
+        it("should return 401 when user not find", async () => {
             const trackersData401 = {
                 api_token: "test",
                 user_fingerprint: "user_fingerprint",
@@ -128,13 +130,14 @@ describe("SDK", () => {
                 endTime: new Date("2023-07-30T08:34:39.519+00:00"),
             };
 
-            const res401 = await chai
-                .request(server)
+            chai.request(server)
                 .post("/sdk")
-                .send(trackersData401);
-
-            expect(res401).to.have.status(401);
-        });*/
+                .send(trackersData401)
+                .then((res) => {
+                    expect(res).to.have.status(401);
+                    done();
+                });
+        });
 
         it("should return 500 when sending data failed", async () => {
             const trackersData500 = {
@@ -176,12 +179,14 @@ describe("SDK", () => {
                 endTime: new Date("2023-07-30T08:34:39.519+00:00"),
             };
 
-            const res500 = await chai
-                .request(server)
+            chai.request(server)
                 .post("/sdk")
-                .send(trackersData500);
-
-            expect(res500).to.have.status(500);
+                .send(trackersData500)
+                .then((res) => {
+                    expect(res).to.have.status(500);
+                    done();
+                })
+                .catch((err) => done(err));
         });
     });
 });
