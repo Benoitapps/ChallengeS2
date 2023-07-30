@@ -21,12 +21,21 @@ async function create(req, res) {
         })
 
         data.tags.forEach((tag) => {
-            // Create tunnel_tag in DB
-            TunnelTag.create({
-                tunnelId: tunnel.dataValues.id,
-                tagId: tag.id,
-                position: tag.position,
-            })
+            if (tunnel.dataValues) {
+                // Create tunnel_tag in DB
+                TunnelTag.create({
+                    tunnelId: tunnel.dataValues.id,
+                    tagId: tag.id,
+                    position: tag.position,
+                })
+            } else  {
+                // Create tunnel_tag in DB
+                TunnelTag.create({
+                    tunnelId: tunnel.id,
+                    tagId: tag.id,
+                    position: tag.position,
+                })
+            }
         })
 
         res.status(201).json(tunnel);
@@ -61,6 +70,8 @@ async function deleteItem(req, res) {
     const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
     const userId = decodedToken.userId; 
     const tunnelId = req.params.id;
+    if (!token) return res.status(401).json({ error: "Unauthorized" });
+
     try {
         await TunnelTag.destroy({
             where: {

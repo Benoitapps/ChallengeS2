@@ -33,9 +33,13 @@ function all(req, res) {
   })
     .then((tags) => {
       tags = tags.map((tag) => {
-        tag = tag.dataValues;
-        delete tag.userId;
-        return tag;
+        if(tag.dataValues) {
+          tag = tag.dataValues;
+          delete tag.userId;
+          return tag;
+        } else {
+          return tag;
+        }
       });
       res.status(200).json(tags);
     })
@@ -46,11 +50,23 @@ function all(req, res) {
     });
 }
 
-function deleteItem(req, res) {
+async function deleteItem(req, res) {
   const token = req.cookies["token"];
   const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
   const userId = decodedToken.userId;
   const tagId = req.params.id;
+
+  let tag = await Tag.findOne({
+    where: {
+      id: tagId,
+    },
+  });
+
+  if (tag.userId !== userId) {
+    return res.status(401).json({
+      error: "Unauthorized",
+    });
+  }
 
   Tag.destroy({
     where: {
@@ -302,12 +318,12 @@ async function getTag(req, res) {
 
 async function updateName(req, res) {
   const token = req.cookies["token"];
+  if (!token) return res.status(401).json({ error: "Unauthorized" });
   const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
   const userId = decodedToken.userId;
   let data = JSON.parse(req.body);
   const tagId = req.params.id;
   const newName = data.name;
-
   try {
     await Tag.update(
       {

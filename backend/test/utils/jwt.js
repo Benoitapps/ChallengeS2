@@ -8,7 +8,7 @@ function generateJWTAndCookie(user) {
             userRole: user.role,
             userId: user.id,
         },
-        "RANDOM_TOKEN_SECRET",
+        process.env.TOKEN_SECRET,
         { expiresIn: "24h" }
     );
 

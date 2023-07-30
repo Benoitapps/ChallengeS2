@@ -1,6 +1,7 @@
 let chai = require("chai");
 const { expect } = chai;
 const User = require("../db").User;
+const Tag = require("../db").Tag;
 let chaiHttp = require("chai-http");
 let server = require("../server");
 const should = chai.should(); // ! ne pas supprimer
@@ -19,6 +20,23 @@ describe("Auth Middleware", () => {
             role: "user",
         };
         sinon.stub(User, "findOne").resolves(mockUser);
+
+        const mockTags = [
+            {
+                id: 1,
+                name: "tag1",
+                token: "token1",
+                userId: 1,
+
+            },
+            {
+                id: 2,
+                name: "tag2",
+                token: "token2",
+                userId: 1,
+            }
+        ]
+        sinon.stub(Tag, "findAll").resolves(mockTags);
 
         const { token, cookieOptions } = generateJWTAndCookie(mockUser);
 
