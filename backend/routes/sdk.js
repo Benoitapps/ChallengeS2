@@ -6,7 +6,11 @@ const Tag = require("../db").Tag;
 
 router.post("/", async (req, res) => {
     try {
-        let data = JSON.parse(req.body);
+        let data = req.body;
+
+        if(typeof req.body === "string") {
+            data = JSON.parse(data);
+        }
 
         // find user by api_token
         const user = await User.findOne({ where: { api_token: data.api_token } });
@@ -70,7 +74,6 @@ router.post("/", async (req, res) => {
             message: 'Données sauvegardées !'
         })
     } catch (error) {
-        console.error(error);
         res.status(500).json({
             message: "Echec de l'envoi des données"
         });
