@@ -6,6 +6,7 @@ require('dotenv').config({ path: '.env.local', override: true });
 async function getUserNotVerified(req, res) {
   try {
     const users = await User.findAll({ where: { is_verified: false } });
+    console.log(users);
     res.status(200).json(users);
   } catch (error) {
     res.status(400).json({ error: error.message });
