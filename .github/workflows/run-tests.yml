@@ -29,4 +29,5 @@ jobs:
         env:
           TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
           NODE_ENV: ${{ secrets.NODE_ENV }}
+          URL_SITE_CLIENT: ${{ secrets.URL_SITE_CLIENT }}
         run: npm test
