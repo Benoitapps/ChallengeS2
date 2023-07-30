@@ -15,7 +15,7 @@ const generateToken = require("../utils/generateToken");
 sinon.stub(generateToken);
 
 describe("Tag Routes", () => {
-    afterEach(() => {
+    beforeEach(() => {
         sinon.restore();
     });
 
