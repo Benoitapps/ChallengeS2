@@ -3,7 +3,8 @@ name: Run Tests
 on:
   push:
     branches:
-      - test/testdev
+      - main
+      - dev
 
 jobs:
   test:
