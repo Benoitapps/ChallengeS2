@@ -234,6 +234,7 @@ async function getImageSrc(req, res) {
 
     res.status(200).json({ image });
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: "Failed to retrieve image source" });
   }
 }

@@ -46,8 +46,14 @@ describe("Tunnel Routes", () => {
                 ],
             };
 
+            let mockTunnel = {
+                id: 1,
+                name: "Test Tunnel",
+                userId: mockUser.id,
+            };
+
             // Stub the Tunnel.create and TunnelTag.create methods
-            sinon.stub(Tunnel, "create").resolves({ id: 1, name: "Test Tunnel", userId: mockUser.id });
+            sinon.stub(Tunnel, "create").resolves(mockTunnel);
             sinon.stub(TunnelTag, "create").resolves();
 
             const res = await chai
@@ -57,11 +63,7 @@ describe("Tunnel Routes", () => {
                 .send(requestBody);
 
             expect(res).to.have.status(201);
-            expect(res.body).to.deep.equal({
-                id: 1,
-                name: "Test Tunnel",
-                userId: mockUser.id,
-            });
+            expect(res.body).to.deep.equal(mockTunnel);
         });
 
         it("should return 401 when unauthorized (no token)", async () => {
