@@ -15,29 +15,25 @@ describe("Tunnel Routes", () => {
     let token, cookieOptions, mockUser;
 
     before(async () => {
-        // Generate JWT and cookies for authentication in the tests
         mockUser = {
             id: 1,
             email: "test@test.com",
-            password: "password123", // Note: We don't need to hash the password in the tests
+            password: "password123",
         };
         ({ token, cookieOptions } = generateJWTAndCookie(mockUser));
     });
 
     afterEach(() => {
-        // Restore sinon stubs after each test
         sinon.restore();
     });
 
     describe("POST /tunnels/create", () => {
         it("should create a new tunnel and return success message", async () => {
-            // Mock the decoded token for authentication
             const decodedToken = {
                 userId: mockUser.id,
             };
             sinon.stub(jwt, "verify").returns(decodedToken);
 
-            // Mock the request body and tags for creating a tunnel
             const requestBody = {
                 tunnel: "Test Tunnel",
                 tags: [
@@ -52,7 +48,6 @@ describe("Tunnel Routes", () => {
                 userId: mockUser.id,
             };
 
-            // Stub the Tunnel.create and TunnelTag.create methods
             sinon.stub(Tunnel, "create").resolves(mockTunnel);
             sinon.stub(TunnelTag, "create").resolves();
 
@@ -74,7 +69,6 @@ describe("Tunnel Routes", () => {
         });
     });
 
-    // Add tests for other routes (e.g., GET /tunnels, DELETE /tunnels/delete/:id, etc.) in a similar manner
 
     describe("GET /tunnels", () => {
         it("should return all tunnels for the user", async () => {
